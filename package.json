@@ -12,7 +12,7 @@
     "dev:server": "tsx watch src/server.ts",
     "dev": "concurrently -n \"CSS,SERVER\" -c \"magenta,cyan\" \"npm run dev:css\" \"npm run dev:server\"",
     "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tsx --test tests/unit/fulfillment.test.ts tests/integration/api.test.ts"
   },
   "keywords": [
     "fastify",
@@ -24,16 +24,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fastify/multipart": "^10.1.6",
     "@fastify/static": "^10.1.7",
     "@fastify/swagger": "^9.9.2",
     "@scalar/fastify-api-reference": "^1.75.1",
     "@tailwindcss/cli": "^4.3.3",
     "alpinejs": "^3.17.5",
+    "better-sqlite3": "^13.0.3",
     "daisyui": "^5.7.50",
     "fastify": "^5.12.7",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^26.6.5",
     "concurrently": "^10.0.6",
     "tsx": "^4.23.15",

@@ -12,7 +12,16 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# Private Hiring Team Documentation
+# Private Hiring Team Documentation (Confidential Evaluation Dossier)
 README.private.md
 README_PRIVATE.md
 
+# Database & Data files (Strictly excluded from version control)
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.csv
