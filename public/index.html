@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pharmatory - Fastify + Swagger + Scalar + Alpine + DaisyUI + Tailwind</title>
+  <title>Pharmatory - Fastify + Scalar API Docs + Alpine + DaisyUI + Tailwind</title>
   <link rel="stylesheet" href="/css/styles.css">
   <!-- Alpine.js -->
   <script defer src="/js/alpine.min.js"></script>
@@ -24,10 +24,10 @@
     
     <!-- Quick Nav Links -->
     <div class="flex-none gap-2">
-      <a href="/docs" target="_blank" class="btn btn-sm btn-ghost gap-1">
-        <span>📖 Swagger UI</span>
+      <a href="/api/v1/openapi" target="_blank" class="btn btn-sm btn-ghost gap-1">
+        <span>📄 OpenAPI JSON</span>
       </a>
-      <a href="/scalar" target="_blank" class="btn btn-sm btn-primary gap-1">
+      <a href="/api/v1/docs" target="_blank" class="btn btn-sm btn-primary gap-1">
         <span>✨ Scalar Docs</span>
       </a>
 
@@ -64,23 +64,23 @@
       <div class="card-body p-6 sm:p-10">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary w-fit">
           <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-          Fastify TypeScript • Swagger OpenAPI • Scalar • Tailwind v4 • DaisyUI v5 • Alpine.js
+          Fastify TypeScript • Scalar Docs • Tailwind v4 • DaisyUI v5 • Alpine.js
         </div>
         <h1 class="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight">
           Pharmatory API & Web Ready
         </h1>
         <p class="text-base-content/70 max-w-2xl text-sm sm:text-base">
-          Sistem farmasi modern bertenaga Fastify 5 dengan dokumentasi interaktif ganda: <strong>Swagger UI</strong> dan <strong>Scalar</strong>.
+          Sistem farmasi modern bertenaga Fastify 5 dengan dokumentasi interaktif <strong>Scalar</strong> dan endpoint skema OpenAPI raw JSON.
         </p>
 
         <!-- Documentation CTA buttons -->
         <div class="flex flex-wrap gap-3 pt-3">
-          <a href="/scalar" target="_blank" class="btn btn-primary">
-            <span>Buka Scalar Reference (/scalar)</span>
+          <a href="/api/v1/docs" target="_blank" class="btn btn-primary">
+            <span>Buka Scalar Docs (/api/v1/docs)</span>
             <span>↗</span>
           </a>
-          <a href="/docs" target="_blank" class="btn btn-outline">
-            <span>Buka Swagger UI (/docs)</span>
+          <a href="/api/v1/openapi" target="_blank" class="btn btn-outline">
+            <span>Raw OpenAPI JSON (/api/v1/openapi)</span>
             <span>↗</span>
           </a>
         </div>
@@ -88,8 +88,8 @@
         <!-- Tech Badges -->
         <div class="flex flex-wrap gap-2 pt-4 border-t border-base-200 mt-2">
           <span class="badge badge-outline">Fastify 5.x</span>
-          <span class="badge badge-outline">Swagger UI 6.x</span>
-          <span class="badge badge-outline">Scalar 1.x</span>
+          <span class="badge badge-outline">Scalar Docs 1.x</span>
+          <span class="badge badge-outline">OpenAPI 3.1</span>
           <span class="badge badge-outline">Tailwind CSS 4.x</span>
           <span class="badge badge-outline">DaisyUI 5.x</span>
           <span class="badge badge-outline">Alpine.js 3.x</span>
@@ -111,7 +111,7 @@
         async loadMedicines() {
           this.loading = true;
           try {
-            const res = await fetch('/api/medicines');
+            const res = await fetch('/api/v1/medicines');
             this.medicines = await res.json();
           } catch(e) {
             console.error(e);
@@ -122,7 +122,7 @@
         async addMedicine() {
           if (!this.medicineName.trim()) return;
           try {
-            const res = await fetch('/api/medicines', {
+            const res = await fetch('/api/v1/medicines', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -243,15 +243,15 @@
           <div class="mt-4 space-y-4">
             <!-- Documentation Hub -->
             <div class="p-3 rounded-xl bg-base-200 space-y-2">
-              <div class="text-xs font-bold uppercase tracking-wider text-base-content/70">Dokumentasi Terintegrasi</div>
+              <div class="text-xs font-bold uppercase tracking-wider text-base-content/70">Dokumentasi API</div>
               <div class="grid grid-cols-2 gap-2">
-                <a href="/docs" target="_blank" class="btn btn-sm btn-outline bg-base-100 flex items-center justify-between">
-                  <span>Swagger UI</span>
-                  <span class="text-xs opacity-60">/docs</span>
+                <a href="/api/v1/docs" target="_blank" class="btn btn-sm btn-primary flex items-center justify-between">
+                  <span>Scalar Docs</span>
+                  <span class="text-xs opacity-75">/api/v1/docs</span>
                 </a>
-                <a href="/scalar" target="_blank" class="btn btn-sm btn-primary flex items-center justify-between">
-                  <span>Scalar API</span>
-                  <span class="text-xs opacity-75">/scalar</span>
+                <a href="/api/v1/openapi" target="_blank" class="btn btn-sm btn-outline bg-base-100 flex items-center justify-between">
+                  <span>Raw OpenAPI</span>
+                  <span class="text-xs opacity-60">/api/v1/openapi</span>
                 </a>
               </div>
             </div>
@@ -281,11 +281,15 @@
                 </div>
                 <div class="flex items-center justify-between bg-base-200/50 p-2 rounded">
                   <span class="badge badge-xs badge-info">GET</span>
-                  <code class="font-mono">/api/medicines</code>
+                  <code class="font-mono">/api/v1/medicines</code>
                 </div>
                 <div class="flex items-center justify-between bg-base-200/50 p-2 rounded">
                   <span class="badge badge-xs badge-success">POST</span>
-                  <code class="font-mono">/api/medicines</code>
+                  <code class="font-mono">/api/v1/medicines</code>
+                </div>
+                <div class="flex items-center justify-between bg-base-200/50 p-2 rounded">
+                  <span class="badge badge-xs badge-warning">GET</span>
+                  <code class="font-mono">/api/v1/openapi</code>
                 </div>
               </div>
             </div>
@@ -300,7 +304,7 @@
   <!-- Footer -->
   <footer class="footer footer-center p-6 bg-base-100 text-base-content/60 text-xs border-t border-base-300 mt-12">
     <div>
-      <p>Pharmatory © 2026 - Fastify, Swagger, Scalar, Tailwind CSS, DaisyUI & Alpine.js</p>
+      <p>Pharmatory © 2026 - Fastify, Scalar Docs, Tailwind CSS, DaisyUI & Alpine.js</p>
     </div>
   </footer>
 

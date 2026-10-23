@@ -1,7 +1,6 @@
 import Fastify, { FastifyInstance } from 'fastify'
 import fastifyStatic from '@fastify/static'
 import fastifySwagger from '@fastify/swagger'
-import fastifySwaggerUi from '@fastify/swagger-ui'
 import scalarApiReference from '@scalar/fastify-api-reference'
 import path from 'node:path'
 
@@ -29,13 +28,13 @@ const medicines: Medicine[] = [
   { id: 3, name: 'Cetirizine 10mg', category: 'Antihistamin', stock: 80, price: 18000 }
 ]
 
-// 1. Register Swagger (OpenAPI 3.1)
+// 1. Register Swagger (OpenAPI 3.1 generator)
 await fastify.register(fastifySwagger, {
   openapi: {
     openapi: '3.1.0',
     info: {
       title: 'Pharmatory API',
-      description: 'API Documentation for Pharmatory Pharmaceutical System with Swagger & Scalar',
+      description: 'API Documentation for Pharmatory Pharmaceutical System powered by Scalar',
       version: '1.0.0'
     },
     servers: [
@@ -51,131 +50,147 @@ await fastify.register(fastifySwagger, {
   }
 })
 
-// 2. Register Swagger UI at /docs
-await fastify.register(fastifySwaggerUi, {
-  routePrefix: '/docs',
-  uiConfig: {
-    docExpansion: 'list',
-    deepLinking: false
-  }
-})
-
-// 3. Register Scalar API Reference at /scalar
+// 2. Register Scalar API Reference at /api/v1/docs
 await fastify.register(scalarApiReference, {
-  routePrefix: '/scalar',
+  routePrefix: '/api/v1/docs',
   configuration: {
     theme: 'fastify'
   }
 })
 
-// 4. Register static file serving from public/
+// 3. Register static file serving from public/
 await fastify.register(fastifyStatic, {
   root: path.join(process.cwd(), 'public'),
   prefix: '/',
   index: ['index.html']
 })
 
-// --- API Routes with Schemas for Swagger / Scalar ---
-
+// 4. Raw OpenAPI JSON endpoint at /api/v1/openapi
 fastify.get(
-  '/api/health',
+  '/api/v1/openapi',
   {
     schema: {
-      tags: ['System'],
-      summary: 'Health Check',
-      description: 'Returns the health status and current timestamp of the server',
-      response: {
-        200: {
-          type: 'object',
-          properties: {
-            status: { type: 'string', example: 'healthy' },
-            timestamp: { type: 'string', format: 'date-time' }
-          }
-        }
-      }
+      hide: true // Hide this meta-endpoint from the API documentation
     }
   },
   async () => {
-    return { status: 'healthy', timestamp: new Date().toISOString() }
+    return fastify.swagger()
   }
 )
 
-fastify.get(
-  '/api/medicines',
-  {
-    schema: {
-      tags: ['Medicines'],
-      summary: 'Get All Medicines',
-      description: 'Retrieves the complete list of medicines currently in stock',
-      response: {
-        200: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              id: { type: 'number' },
-              name: { type: 'string' },
-              category: { type: 'string' },
-              stock: { type: 'number' },
-              price: { type: 'number' }
-            }
-          }
+// --- API Routes with Schemas for Scalar Documentation ---
+
+const healthSchema = {
+  tags: ['System'],
+  summary: 'Health Check',
+  description: 'Returns the health status and current timestamp of the server',
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        status: { type: 'string', example: 'healthy' },
+        timestamp: { type: 'string', format: 'date-time' }
+      }
+    }
+  }
+}
+
+const getMedicinesSchema = {
+  tags: ['Medicines'],
+  summary: 'Get All Medicines',
+  description: 'Retrieves the complete list of medicines currently in stock',
+  response: {
+    200: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'number' },
+          name: { type: 'string' },
+          category: { type: 'string' },
+          stock: { type: 'number' },
+          price: { type: 'number' }
         }
       }
     }
-  },
-  async () => {
-    return medicines
   }
-)
+}
+
+const postMedicineSchema = {
+  tags: ['Medicines'],
+  summary: 'Create Medicine',
+  description: 'Adds a new medicine item to the inventory',
+  body: {
+    type: 'object',
+    required: ['name', 'category', 'stock', 'price'],
+    properties: {
+      name: { type: 'string', example: 'Ibuprofen 400mg' },
+      category: { type: 'string', example: 'Analgesik / NSAID' },
+      stock: { type: 'number', example: 50 },
+      price: { type: 'number', example: 22000 }
+    }
+  },
+  response: {
+    201: {
+      type: 'object',
+      properties: {
+        id: { type: 'number' },
+        name: { type: 'string' },
+        category: { type: 'string' },
+        stock: { type: 'number' },
+        price: { type: 'number' }
+      }
+    }
+  }
+}
+
+// Health check routes
+fastify.get('/api/health', { schema: healthSchema }, async () => {
+  return { status: 'healthy', timestamp: new Date().toISOString() }
+})
+fastify.get('/api/v1/health', { schema: { ...healthSchema, hide: true } }, async () => {
+  return { status: 'healthy', timestamp: new Date().toISOString() }
+})
+
+// Medicines routes
+fastify.get('/api/v1/medicines', { schema: getMedicinesSchema }, async () => {
+  return medicines
+})
+fastify.get('/api/medicines', { schema: { ...getMedicinesSchema, hide: true } }, async () => {
+  return medicines
+})
 
 fastify.post<{
   Body: { name: string; category: string; stock: number; price: number }
-}>(
-  '/api/medicines',
-  {
-    schema: {
-      tags: ['Medicines'],
-      summary: 'Create Medicine',
-      description: 'Adds a new medicine item to the inventory',
-      body: {
-        type: 'object',
-        required: ['name', 'category', 'stock', 'price'],
-        properties: {
-          name: { type: 'string', example: 'Ibuprofen 400mg' },
-          category: { type: 'string', example: 'Analgesik / NSAID' },
-          stock: { type: 'number', example: 50 },
-          price: { type: 'number', example: 22000 }
-        }
-      },
-      response: {
-        201: {
-          type: 'object',
-          properties: {
-            id: { type: 'number' },
-            name: { type: 'string' },
-            category: { type: 'string' },
-            stock: { type: 'number' },
-            price: { type: 'number' }
-          }
-        }
-      }
-    }
-  },
-  async (request, reply) => {
-    const { name, category, stock, price } = request.body
-    const newMedicine: Medicine = {
-      id: Date.now(),
-      name,
-      category,
-      stock,
-      price
-    }
-    medicines.push(newMedicine)
-    reply.status(201)
-    return newMedicine
+}>('/api/v1/medicines', { schema: postMedicineSchema }, async (request, reply) => {
+  const { name, category, stock, price } = request.body
+  const newMedicine: Medicine = {
+    id: Date.now(),
+    name,
+    category,
+    stock,
+    price
   }
-)
+  medicines.push(newMedicine)
+  reply.status(201)
+  return newMedicine
+})
+
+fastify.post<{
+  Body: { name: string; category: string; stock: number; price: number }
+}>('/api/medicines', { schema: { ...postMedicineSchema, hide: true } }, async (request, reply) => {
+  const { name, category, stock, price } = request.body
+  const newMedicine: Medicine = {
+    id: Date.now(),
+    name,
+    category,
+    stock,
+    price
+  }
+  medicines.push(newMedicine)
+  reply.status(201)
+  return newMedicine
+})
 
 const start = async (): Promise<void> => {
   try {
