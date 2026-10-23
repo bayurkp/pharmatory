@@ -1,23 +1,39 @@
 {
   "name": "pharmatory",
   "version": "1.0.0",
-  "description": "Pharmatory API service",
+  "description": "Pharmatory application with Fastify, TypeScript, Tailwind CSS, DaisyUI, and Alpine.js",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build:css": "tailwindcss -i src/styles/app.css -o public/css/styles.css --minify",
+    "build:ts": "tsc",
+    "build": "npm run build:css && npm run build:ts",
+    "dev:css": "tailwindcss -i src/styles/app.css -o public/css/styles.css --watch",
+    "dev:server": "tsx watch src/server.ts",
+    "dev": "concurrently -n \"CSS,SERVER\" -c \"magenta,cyan\" \"npm run dev:css\" \"npm run dev:server\"",
     "start": "node dist/server.js",
-    "dev": "tsx watch src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "fastify",
+    "typescript",
+    "tailwind",
+    "daisyui",
+    "alpinejs"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^5.12.7"
+    "@fastify/static": "^10.1.7",
+    "@tailwindcss/cli": "^4.3.3",
+    "alpinejs": "^3.17.5",
+    "daisyui": "^5.7.50",
+    "fastify": "^5.12.7",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
+    "concurrently": "^10.0.6",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }

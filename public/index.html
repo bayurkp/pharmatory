@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="emerald">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmatory - Fastify + Alpine + DaisyUI + Tailwind</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- Alpine.js -->
+  <script defer src="/js/alpine.min.js"></script>
+</head>
+<body class="min-h-screen bg-base-200 text-base-content antialiased">
+
+  <!-- Navbar -->
+  <header class="navbar bg-base-100 shadow-sm sticky top-0 z-50 px-4 sm:px-8">
+    <div class="flex-1 items-center gap-2">
+      <div class="w-9 h-9 rounded-xl bg-primary text-primary-content flex items-center justify-center font-bold text-lg shadow-sm">
+        💊
+      </div>
+      <div>
+        <span class="font-bold text-xl tracking-tight">Pharmatory</span>
+        <span class="badge badge-sm badge-success ml-2">Fastify LTS</span>
+      </div>
+    </div>
+    <div class="flex-none gap-3" x-data="{
+      theme: 'emerald',
+      themes: ['emerald', 'corporate', 'synthwave', 'cyberpunk', 'dark', 'light'],
+      changeTheme(t) {
+        this.theme = t;
+        document.documentElement.setAttribute('data-theme', t);
+      }
+    }">
+      <!-- Theme Selector via Alpine -->
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-sm btn-outline">
+          <span>Theme: </span>
+          <span class="font-semibold capitalize" x-text="theme"></span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+        <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-44 p-2 shadow-lg border border-base-300">
+          <template x-for="t in themes" :key="t">
+            <li>
+              <button @click="changeTheme(t)" :class="{ 'active font-bold': theme === t }" class="capitalize" x-text="t"></button>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Content -->
+  <main class="container mx-auto px-4 py-8 max-w-5xl space-y-8">
+    
+    <!-- Hero Banner -->
+    <section class="card bg-base-100 shadow-md border border-base-300 overflow-hidden">
+      <div class="card-body p-6 sm:p-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary w-fit">
+          <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          Fastify TypeScript • Tailwind v4 • DaisyUI v5 • Alpine.js
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight">
+          Pharmatory Application Setup Ready
+        </h1>
+        <p class="text-base-content/70 max-w-2xl text-sm sm:text-base">
+          Projek farmasi & apotek modern dengan arsitektur backend super cepat menggunakan Fastify, TypeScript, dan frontend interaktif tanpa framework berat (Tailwind CSS, DaisyUI, Alpine.js).
+        </p>
+
+        <!-- Tech Badges -->
+        <div class="flex flex-wrap gap-2 pt-2">
+          <span class="badge badge-outline">Fastify 5.x</span>
+          <span class="badge badge-outline">TypeScript 5.x / 7.x</span>
+          <span class="badge badge-outline">Tailwind CSS 4.x</span>
+          <span class="badge badge-outline">DaisyUI 5.x</span>
+          <span class="badge badge-outline">Alpine.js 3.x</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid: Alpine Interactive Test & Server Status -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Alpine.js Interactivity Card -->
+      <section class="card bg-base-100 shadow-md border border-base-300" x-data="{
+        count: 0,
+        medicineName: '',
+        medicines: [
+          { id: 1, name: 'Paracetamol 500mg', stock: 120, category: 'Analgesik' },
+          { id: 2, name: 'Amoxicillin 500mg', stock: 45, category: 'Antibiotik' }
+        ],
+        addMedicine() {
+          if (!this.medicineName.trim()) return;
+          this.medicines.push({
+            id: Date.now(),
+            name: this.medicineName.trim(),
+            stock: 10,
+            category: 'Umum'
+          });
+          this.medicineName = '';
+        },
+        removeMedicine(id) {
+          this.medicines = this.medicines.filter(m => m.id !== id);
+        }
+      }">
+        <div class="card-body p-6">
+          <div class="flex items-center justify-between border-b border-base-200 pb-3">
+            <h2 class="card-title text-lg flex items-center gap-2">
+              <span>⚡ Alpine.js State Test</span>
+            </h2>
+            <span class="badge badge-primary" x-text="`${medicines.length} Item`"></span>
+          </div>
+
+          <!-- Counter Section -->
+          <div class="mt-4 p-4 rounded-xl bg-base-200 flex items-center justify-between">
+            <div>
+              <div class="text-xs text-base-content/70">Reactive Counter:</div>
+              <div class="text-2xl font-black" x-text="count">0</div>
+            </div>
+            <div class="join">
+              <button @click="count--" class="btn btn-sm btn-outline join-item">-</button>
+              <button @click="count = 0" class="btn btn-sm btn-outline join-item">Reset</button>
+              <button @click="count++" class="btn btn-sm btn-primary join-item">+</button>
+            </div>
+          </div>
+
+          <!-- Mini CRUD Demo -->
+          <div class="mt-4 space-y-3">
+            <label class="text-xs font-semibold uppercase tracking-wider text-base-content/60">Simulasi Stok Obat</label>
+            <form @submit.prevent="addMedicine()" class="flex gap-2">
+              <input 
+                type="text" 
+                x-model="medicineName" 
+                placeholder="Nama obat baru..." 
+                class="input input-sm input-bordered flex-1"
+              >
+              <button type="submit" class="btn btn-sm btn-primary">Tambah</button>
+            </form>
+
+            <ul class="divide-y divide-base-200 text-sm max-h-48 overflow-y-auto">
+              <template x-for="item in medicines" :key="item.id">
+                <li class="py-2 flex items-center justify-between">
+                  <div>
+                    <span class="font-medium" x-text="item.name"></span>
+                    <span class="badge badge-ghost badge-xs ml-1" x-text="item.category"></span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-base-content/60" x-text="`Stok: ${item.stock}`"></span>
+                    <button @click="removeMedicine(item.id)" class="btn btn-ghost btn-xs text-error">✕</button>
+                  </div>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fastify API & DaisyUI Components Card -->
+      <section class="card bg-base-100 shadow-md border border-base-300" x-data="{
+        apiStatus: 'checking...',
+        apiTimestamp: '-',
+        loading: false,
+        async checkApi() {
+          this.loading = true;
+          try {
+            const res = await fetch('/api/health');
+            const data = await res.json();
+            this.apiStatus = data.status;
+            this.apiTimestamp = data.timestamp;
+          } catch (err) {
+            this.apiStatus = 'offline / error';
+          } finally {
+            this.loading = false;
+          }
+        }
+      }" x-init="checkApi()">
+        <div class="card-body p-6">
+          <div class="flex items-center justify-between border-b border-base-200 pb-3">
+            <h2 class="card-title text-lg flex items-center gap-2">
+              <span>🚀 Fastify Backend Status</span>
+            </h2>
+            <button @click="checkApi()" class="btn btn-xs btn-outline" :disabled="loading">
+              <span x-show="!loading">Refresh</span>
+              <span x-show="loading" class="loading loading-spinner loading-xs"></span>
+            </button>
+          </div>
+
+          <div class="mt-4 space-y-4">
+            <!-- Status Item -->
+            <div class="flex items-center justify-between p-3 rounded-lg border border-base-200 bg-base-100">
+              <span class="text-sm font-medium">API Endpoint</span>
+              <code class="text-xs bg-base-200 px-2 py-1 rounded">GET /api/health</code>
+            </div>
+
+            <div class="flex items-center justify-between p-3 rounded-lg border border-base-200 bg-base-100">
+              <span class="text-sm font-medium">Health Status</span>
+              <span 
+                class="badge" 
+                :class="apiStatus === 'healthy' ? 'badge-success' : 'badge-warning'" 
+                x-text="apiStatus"
+              ></span>
+            </div>
+
+            <div class="flex items-center justify-between p-3 rounded-lg border border-base-200 bg-base-100">
+              <span class="text-sm font-medium">Server Time</span>
+              <span class="text-xs text-base-content/70 font-mono" x-text="apiTimestamp"></span>
+            </div>
+
+            <!-- DaisyUI Component Showcase -->
+            <div class="pt-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-base-content/60">Komponen DaisyUI</span>
+              <div class="flex flex-wrap gap-2 mt-2">
+                <button class="btn btn-xs btn-primary">Primary</button>
+                <button class="btn btn-xs btn-secondary">Secondary</button>
+                <button class="btn btn-xs btn-accent">Accent</button>
+                <button class="btn btn-xs btn-neutral">Neutral</button>
+                <button class="btn btn-xs btn-outline btn-info">Info</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Quick Start Guide -->
+    <section class="card bg-base-100 shadow-md border border-base-300">
+      <div class="card-body p-6">
+        <h3 class="font-bold text-base flex items-center gap-2">
+          <span>📁 Panduan Direktori & Development</span>
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3 text-sm">
+          <div class="p-3 rounded-lg bg-base-200">
+            <div class="font-semibold text-primary">Backend (Fastify)</div>
+            <p class="text-xs text-base-content/70 mt-1">
+              File server TypeScript berada di <code>src/server.ts</code>. API route dapat ditambahkan di sini.
+            </p>
+          </div>
+          <div class="p-3 rounded-lg bg-base-200">
+            <div class="font-semibold text-secondary">Styles (Tailwind + DaisyUI)</div>
+            <p class="text-xs text-base-content/70 mt-1">
+              File CSS utama di <code>src/styles/app.css</code> dan dikompilasi otomatis ke <code>public/css/styles.css</code>.
+            </p>
+          </div>
+          <div class="p-3 rounded-lg bg-base-200">
+            <div class="font-semibold text-accent">Frontend (HTML + Alpine)</div>
+            <p class="text-xs text-base-content/70 mt-1">
+              Semua aset statis dan HTML berada di <code>public/</code>. Alpine.js dimuat secara lokal.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer footer-center p-6 bg-base-100 text-base-content/60 text-xs border-t border-base-300 mt-12">
+    <div>
+      <p>Pharmatory © 2026 - Fastify, TypeScript, Tailwind CSS, DaisyUI & Alpine.js</p>
+    </div>
+  </footer>
+
+</body>
+</html>
