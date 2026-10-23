@@ -1,270 +1,262 @@
-# 💊 Pharmatory
+# Pharmatory
 
 [![Node.js Version](https://img.shields.io/badge/Node.js-v22.x%20LTS-339933?logo=node.js&logoColor=white)](#prerequisites)
 [![Fastify Version](https://img.shields.io/badge/Fastify-v5.x%20LTS-000000?logo=fastify&logoColor=white)](#tech-stack)
 [![API Standard: ByJSON v2.0](https://img.shields.io/badge/API_Standard-ByJSON%20v2.0-0ea5e9?logo=json&logoColor=white)](https://github.com/bayurkp/by-json)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x%20%2F%207.x-3178C6?logo=typescript&logoColor=white)](#tech-stack)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Strict%20Mode-3178C6?logo=typescript&logoColor=white)](#tech-stack)
+[![Database: SQLite](https://img.shields.io/badge/Database-better--sqlite3-003B57?logo=sqlite&logoColor=white)](#tech-stack)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.x-06B6D4?logo=tailwindcss&logoColor=white)](#tech-stack)
 [![DaisyUI](https://img.shields.io/badge/DaisyUI-v5.x-5A0EF8?logo=daisyui&logoColor=white)](#tech-stack)
 [![Alpine.js](https://img.shields.io/badge/Alpine.js-v3.x-8BC0D0?logo=alpinedotjs&logoColor=white)](#tech-stack)
 [![API Documentation](https://img.shields.io/badge/API_Docs-Scalar-059669)](#api-documentation--endpoints)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 
-> A high-throughput, enterprise-grade Pharmacy Management System and RESTful API engine engineered with **Fastify (LTS)**, **TypeScript**, the **ByJSON Specification (v2.0)**, **Tailwind CSS v4**, **DaisyUI v5**, **Alpine.js**, and modern interactive API documentation powered by **Scalar**.
+> High-performance, deterministic medical warehouse selection and order fulfillment engine engineered with **Fastify (LTS)**, **TypeScript**, **better-sqlite3**, the **ByJSON Specification (v2.0)**, **Tailwind CSS v4**, **DaisyUI v5**, **Alpine.js**, and interactive API documentation powered by **Scalar**.
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
-- [Overview](#-overview)
-- [ByJSON v2.0 Specification Compliance](#-byjson-v20-specification-compliance)
-- [Architectural Highlights](#-architectural-highlights)
-- [Directory Structure](#-directory-structure)
-- [Tech Stack](#-tech-stack)
-- [Quick Start](#-quick-start)
+- [Overview](#overview)
+- [ByJSON v2.0 Compliance Audit](#byjson-v20-compliance-audit)
+  - [Response Envelope Specification](#response-envelope-specification)
+  - [Standard Error Codes & Validation Paths](#standard-error-codes--validation-paths)
+  - [Query Filtering & Wire Conventions](#query-filtering--wire-conventions)
+- [Domain Model & Business Rules](#domain-model--business-rules)
+  - [Cold Chain Inviolability](#cold-chain-inviolability)
+  - [Fulfillment Decision Engine](#fulfillment-decision-engine)
+  - [In-Memory Historical Traffic Intelligence](#in-memory-historical-traffic-intelligence)
+- [Architecture & Separation of Concerns](#architecture--separation-of-concerns)
+  - [Project Directory Layout](#project-directory-layout)
+- [API Specification & Endpoints](#api-specification--endpoints)
+- [Testing Strategy](#testing-strategy)
+- [Quick Start](#quick-start)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+  - [Automated Tests](#automated-tests)
   - [Development Mode](#development-mode)
-  - [Production Build & Execution](#production-build--execution)
-- [API Documentation & Endpoints](#-api-documentation--endpoints)
-- [Frontend Architecture](#-frontend-architecture)
-- [NPM Scripts Reference](#-npm-scripts-reference)
-- [License](#-license)
+  - [Production Build & Run](#production-build--run)
+- [Interactive Web Dashboard](#interactive-web-dashboard)
+- [License](#license)
 
 ---
 
-## 🌟 Overview
+## Overview
 
-**Pharmatory** is designed as a lightweight, performance-critical pharmaceutical inventory management platform. Rather than incurring the heavy bundling, hydration latency, and memory footprint of complex Single Page Application (SPA) meta-frameworks, Pharmatory demonstrates a **lean full-stack architecture**:
+**Pharmatory** is a deterministic warehouse selection and order fulfillment engine designed for a regional medical and pharmaceutical distribution network across East Java (Surabaya, Sidoarjo, Gresik, Pasuruan, Malang, Jember).
 
-- **API Standardization**: Fully compliant with the [**ByJSON Specification v2.0**](https://github.com/bayurkp/by-json), guaranteeing predictable four-key response envelopes (`success`, `data`, `error`, `meta`) with discriminated type safety across all endpoints.
-- **Backend**: Microsecond-latency routing and JSON serialization powered by Fastify v5 LTS and native TypeScript.
-- **Frontend**: Zero-hydration-overhead dynamic HTML served directly via `@fastify/static`, coupled with Alpine.js for local reactive state and DaisyUI 5 / Tailwind CSS 4 for utility-first styling.
-- **Documentation**: Automated OpenAPI 3.1 specification serving interactive documentation via Scalar at `/docs/v1` (with convenience redirect from `/docs`), alongside raw OpenAPI JSON specs at `/docs/v1/openapi.json` and `/api/v1/openapi`.
+When orders containing multiple medical and pharmaceutical products are placed by healthcare facilities, the engine evaluates:
+1. **Stock Availability**: Live inventory across 8 regional storage facilities.
+2. **Cold Chain Integrity**: Biological vaccines strictly require both refrigerated warehouse storage ($2^\circ\text{C}-8^\circ\text{C}$) and active refrigerated delivery vehicles to prevent irreversible product degradation.
+3. **Logistics Optimization**: Single-warehouse consolidation is prioritized to minimize freight overhead. A deterministic split-order solver activates whenever inventory or fleet constraints mandate multi-hub dispatch.
+4. **Traffic Intelligence**: Empirical delivery durations from historical records are applied to predict travel times during weekday rush hours and weekend tourism corridors.
+5. **In-Memory Dynamic Datasets**: Supports custom historical CSV uploads processed entirely in runtime memory with zero file storage writes.
+6. **Strict ByJSON v2.0 Standard**: 100% of endpoints return the four-key **ByJSON Specification v2.0** envelope (`{ success, data, error, meta }`).
 
 ---
 
-## 📐 ByJSON v2.0 Specification Compliance
+## ByJSON v2.0 Compliance Audit
 
-All RESTful endpoints strictly adhere to the [ByJSON Specification (Version 2.0)](https://github.com/bayurkp/by-json). Every response envelope contains exactly four top-level keys without ambiguity:
+The API strictly adheres to the official [ByJSON Specification (Version 2.0)](https://github.com/bayurkp/by-json):
+
+### Response Envelope Specification
+
+Every response contains exactly four root keys:
 
 ```typescript
-export type ApiResponse<T> =
-  | {
-      success: true;
-      data: T;
-      error: null;
-      meta: ApiMeta;
-    }
-  | {
-      success: false;
-      data: null;
-      error: ApiError;
-      meta: ApiMeta;
-    };
-```
-
-### 1. Success Response Structure (`2xx`)
-
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "name": "Paracetamol 500mg",
-      "category": "Analgesik",
-      "stock": 120,
-      "price": 15000
-    }
-  ],
-  "error": null,
-  "meta": {
-    "requestId": "f719ed82-2332-43e9-928a-1de09c0bd8b2",
-    "timestamp": "2026-10-23T03:12:28.573Z"
-  }
+export interface ApiResponse<T> {
+  success: boolean;       // Explicit discriminator (true on 2xx, false on 4xx/5xx)
+  data: T | null;         // Populated on success; strictly null on error
+  error: ApiError | null; // Populated on error; strictly null on success
+  meta: ApiMeta;          // Request context: requestId (UUID) and timestamp (ISO 8601)
 }
 ```
 
-### 2. Validation Error Structure (`HTTP 422 Unprocessable Content`)
+### Standard Error Codes & Validation Paths
 
-Field-level validation errors leverage dot-notation paths for seamless binding with client form libraries:
-
-```json
-{
-  "success": false,
-  "data": null,
-  "error": {
-    "code": "validation_error",
-    "message": "The request data is invalid. Please check your input.",
-    "details": [
-      {
-        "field": "category",
-        "code": "missing_field",
-        "message": "must have required property 'category'"
-      }
-    ]
-  },
-  "meta": {
-    "requestId": "f86c5a3d-3105-4c50-a96e-996f8ed36ec2",
-    "timestamp": "2026-10-23T03:12:28.608Z"
+- Machine-readable error codes strictly use `snake_case` (Section 2.3 & 7.1).
+- Validation errors use **Dot Notation** for field paths (Section 5.4 A):
+  ```json
+  {
+    "success": false,
+    "data": null,
+    "error": {
+      "code": "validation_error",
+      "message": "The request payload failed validation against the OpenAPI specification schema.",
+      "details": [
+        {
+          "field": "items.0.quantity",
+          "code": "minimum_value",
+          "message": "must be >= 1"
+        }
+      ]
+    },
+    "meta": {
+      "requestId": "8f830a6e-4e8c-4a37-b6e5-22e70df4ab75",
+      "timestamp": "2026-10-23T12:00:00.000Z"
+    }
   }
-}
+  ```
+- File validation failures conform to ByJSON Table 7.1:
+  - Non-CSV file uploads return HTTP 422 with `code: "unsupported_file_type"`.
+  - Oversized payloads return HTTP 422 with `code: "file_too_large"`.
+  - Malformed JSON payloads return HTTP 400 with `code: "bad_request"`.
+
+### Query Filtering & Wire Conventions
+
+- All JSON body keys and query parameters use `camelCase` (Section 2.1 & 4.5).
+- Equality query filtering is supported across collections:
+  - `GET /api/v1/products?coldChainRequired=true`
+  - `GET /api/v1/products?category=Pharmaceutical`
+  - `GET /api/v1/warehouses?location=Surabaya`
+  - `GET /api/v1/warehouses?fullColdChainCapable=true`
+
+---
+
+## Domain Model & Business Rules
+
+### Cold Chain Inviolability
+
+- **Temperature-Sensitive Products**:
+  - `P002`: Vaccine — Hepatitis B (10-dose vial)
+  - `P004`: Vaccine — Tetanus Toxoid (10-dose vial)
+- **Fleet Qualification Rules**:
+  - Facilities **W02 (Surabaya)** and **W06 (Malang)** feature refrigerated storage units but **only operate standard non-refrigerated vehicles**. Delivering vaccines in non-refrigerated vehicles violates biological transport safety. Therefore, W02 and W06 are **disqualified** from fulfilling cold-chain shipments.
+  - Only facilities with active refrigerated vans (**W04 Gresik**, **W07 Pasuruan**, **W08 Jember**) are qualified to dispatch vaccines.
+
+### Fulfillment Decision Engine
+
+```mermaid
+flowchart TD
+    A["Incoming Order Items"] --> B["Validate Schema via AJV"]
+    B --> C["Identify Temperature Constraints"]
+    C --> D{"Single Warehouse with 100% Stock & Cold-Chain Fleet?"}
+    D -- Yes --> E["Select Candidate with Lowest Duration / Distance"]
+    E --> F["Generate Decision Rationale"]
+    D -- No --> G["Activate Split-Order Solver"]
+    G --> H["Assign Cold Items to Nearest Refrigerated Van Hub (W04/W07/W08)"]
+    H --> I["Assign Remaining Ambient Items to Nearest Stocked Hub"]
+    I --> F
+    F --> J["Wrap in ByJSON v2.0 Envelope"]
+    J --> K["Return HTTP 200 OK"]
 ```
 
----
+### In-Memory Historical Traffic Intelligence
 
-## ⚡ Architectural Highlights
-
-- **Standardized ByJSON Envelopes**: Built-in TypeScript utility module (`src/utils/by-json.ts`) generating type-safe discriminated union envelopes.
-- **Fastify v5 LTS Runtime**: Delivers industry-leading Node.js throughput, utilizing compiled schema validation through AJV.
-- **Full Type Safety**: Strict TypeScript compiler configuration (`target: ES2022`, `moduleResolution: NodeNext`) ensuring compile-time contract enforcement.
-- **Modern CSS-First Pipeline**: Uses `@tailwindcss/cli` with Tailwind CSS v4 and DaisyUI v5 plugin integration, compiling in sub-second intervals without legacy PostCSS or JavaScript configuration files.
-- **Autonomous & Offline-Ready**: Bundles the Alpine.js runtime locally within `public/js/alpine.min.js`, ensuring full functionality without external CDN dependencies.
-- **Automated OpenAPI Contract**: Generates standards-compliant OpenAPI 3.1 definitions dynamically from route JSON schemas.
+- **Surabaya Urban Corridor (W01, W02)**: Morning rush (07:30–08:30) and evening rush (16:30–18:00) increase transit times by up to $3\times$ (e.g., W01 increases from 12 mins off-peak to 50–55 mins).
+- **Malang Corridor (W05, W06)**: Weekend tourism traffic heading to Malang (Friday afternoon / Saturday morning) increases transit times to 165–180 mins; Sunday return traffic reaches 190–200 mins.
+- **In-Memory CSV Stream**: Custom CSV files uploaded via `POST /api/v1/traffic/upload` are processed directly in memory without disk persistence.
 
 ---
 
-## 📁 Directory Structure
+## Architecture & Separation of Concerns
+
+The codebase follows a **Clean Feature-Driven Modular Architecture** inspired by official Fastify guidelines and [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices):
+
+1. **HTTP / Controller Layer**: Handles HTTP requests, AJV schema binding, and ByJSON envelope wrapping. Contains zero business logic and zero direct database queries.
+2. **Service Layer**: Pure TypeScript domain orchestration. Decoupled from Fastify request/reply objects, ensuring platform agnosticism and isolated testability.
+3. **Repository Layer**: Encapsulates raw SQLite persistence (`better-sqlite3`). Shields business logic from database driver specifics.
+4. **Domain Engine (`fulfillment.engine.ts`)**: Pure deterministic logic calculating warehouse candidate scores, vehicle compatibility, and split-order combinations.
+
+### Project Directory Layout
 
 ```text
 pharmatory/
-├── dist/                      # Production JavaScript output (compiled via tsc)
-├── public/                    # Static assets served by @fastify/static
-│   ├── css/
-│   │   └── styles.css         # Minified Tailwind CSS v4 + DaisyUI bundle
-│   ├── js/
-│   │   └── alpine.min.js      # Local Alpine.js runtime distribution
-│   └── index.html             # Responsive management dashboard (consuming ByJSON API)
+├── public/                              # Zero-build frontend presentation
+│   ├── css/styles.css                   # Compiled Tailwind + DaisyUI
+│   ├── js/alpine.min.js                 # Vendored Alpine.js runtime
+│   └── index.html                       # Minimalist management dashboard
 ├── src/
-│   ├── styles/
-│   │   └── app.css            # Tailwind CSS entrypoint (@import & @plugin directives)
-│   ├── utils/
-│   │   └── by-json.ts         # ByJSON v2.0 specification implementation & envelope helpers
-│   └── server.ts              # Fastify bootstrap, ByJSON error handlers & routes
-├── .gitignore                 # Version control exclusions (node_modules, dist, private files)
-├── package.json               # Package manifest, dependencies, and build pipeline
-├── README.md                  # Public documentation & architecture guide
-└── tsconfig.json              # Strict TypeScript compiler options
+│   ├── app.ts                           # Application factory (Fastify instance & plugins)
+│   ├── server.ts                        # Entry point bootstrapper (TCP listener)
+│   ├── config/                          # Central configuration
+│   ├── db/                              # Persistence connection, schema, and seeder
+│   ├── shared/                          # ByJSON types, helpers, and error classes
+│   ├── plugins/                         # Fastify infrastructure (error-handler, swagger, static, multipart)
+│   └── modules/                         # Feature domain modules
+│       ├── product/                     # Product catalog domain
+│       ├── warehouse/                   # Regional warehouse & inventory domain
+│       ├── traffic/                     # In-memory traffic analytics & custom CSV upload
+│       └── fulfillment/                 # Core warehouse selection & scoring engine
+├── tests/
+│   ├── unit/fulfillment.test.ts         # Deterministic domain logic unit tests
+│   └── integration/api.test.ts          # End-to-end Fastify inject() API tests
+├── package.json
+└── tsconfig.json
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## API Specification & Endpoints
 
-| Layer | Technology | Version | Purpose / Justification |
-| :--- | :--- | :--- | :--- |
-| **Runtime** | [Node.js](https://nodejs.org/) | `^22.17.0` | Modern LTS JavaScript runtime with native fetch, crypto, and ESM support. |
-| **Language** | [TypeScript](https://www.typescriptlang.org/) | `^7.0.2` | Compile-time type verification, strong typing, and discriminated unions. |
-| **API Contract** | [ByJSON](https://github.com/bayurkp/by-json) | `v2.0` | Balanced, type-safe JSON standard for REST API envelopes and errors. |
-| **Backend Framework** | [Fastify](https://fastify.dev/) | `^5.12.7` | High-performance, low-overhead Node.js web framework with built-in schema compilation. |
-| **API Specification** | [@fastify/swagger](https://github.com/fastify/fastify-swagger) | `^9.9.2` | Generates OpenAPI 3.1 specifications dynamically from Fastify route schemas. |
-| **API Documentation** | [@scalar/fastify-api-reference](https://scalar.com/) | `^1.75.1` | Modern, responsive, and interactive API documentation interface. |
-| **Static Asset Engine** | [@fastify/static](https://github.com/fastify/fastify-static) | `^10.1.7` | High-efficiency static file serving with caching and index resolution. |
-| **CSS Framework** | [Tailwind CSS](https://tailwindcss.com/) | `^4.3.3` | Next-generation utility-first stylesheet engine with native CSS imports. |
-| **UI Components** | [DaisyUI](https://daisyui.com/) | `^5.7.50` | Semantic component classes with accessible themes (Emerald, Corporate, etc.). |
-| **Client Reactivity** | [Alpine.js](https://alpinejs.dev/) | `^3.17.5` | Lightweight reactive state management without the complexity of a virtual DOM. |
-| **Tooling & Watcher** | [tsx](https://github.com/privatenumber/tsx) | `^4.23.15` | Zero-configuration TypeScript execution with hot-reloading for development. |
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/orders/fulfill` | Evaluates warehouse selection, cold chain compliance, and generates fulfillment plan. |
+| `GET` | `/api/v1/products` | Lists pharmaceutical and medical supplies. Supports `?category` and `?coldChainRequired`. |
+| `GET` | `/api/v1/warehouses` | Lists 8 regional warehouses. Supports `?location` and `?fullColdChainCapable`. |
+| `GET` | `/api/v1/traffic/patterns`| Returns aggregated delivery duration statistics and active trip records. |
+| `GET` | `/api/v1/traffic/summary` | Read-only aggregate metrics alias conforming to ByJSON Section 6.2. |
+| `POST` | `/api/v1/traffic/upload` | Processes custom delivery CSV in memory (zero disk storage). |
+| `POST` | `/api/v1/traffic/reset` | Resets in-memory traffic models back to benchmark records. |
+| `GET` | `/api/health` | Health check endpoint returning system status in ByJSON format. |
+| `GET` | `/docs/v1` | Interactive Scalar API Documentation portal. |
+| `GET` | `/docs/v1/openapi.json` | Raw OpenAPI 3.1 JSON specification. |
 
 ---
 
-## 🚀 Quick Start
+## Testing Strategy
+
+Pharmatory uses a **pragmatic, high-ROI testing strategy** powered by Node.js native test runner (`node:test` + `node:assert/strict`) via `tsx`:
+- **Domain Engine Unit Tests (`tests/unit/fulfillment.test.ts`)**: Exhaustively verifies cold-chain enforcement (disqualifying W02/W06 for vaccines), single-warehouse prioritization, deterministic split logic, and traffic penalty calculations.
+- **Fastify Injection Tests (`tests/integration/api.test.ts`)**: Tests the full HTTP lifecycle using `app.inject()` without opening network ports, verifying 200 ByJSON envelopes, query filtering, 422 AJV schema validation errors, 422 unsupported file types, and 404 handlers.
+
+Execute the test suite:
+```bash
+npm test
+```
+
+---
+
+## Quick Start
 
 ### Prerequisites
-
-- **Node.js**: `v20.x` or `v22.x LTS` (Verified on Node.js `v22.17.0`)
-- **npm**: `v10.x` or `v11.x`
+- **Node.js**: `v20.x` or `v22.x` (LTS recommended)
+- **NPM**: `v10.x` or higher
 
 ### Installation
-
-Clone the repository and install all project dependencies:
-
 ```bash
-git clone <repository-url>
-cd pharmatory
 npm install
 ```
 
+### Automated Tests
+```bash
+npm test
+```
+
 ### Development Mode
-
-Start the integrated development environment. This concurrently spins up the Fastify server with hot-reload (`tsx watch`) and the Tailwind CSS watcher:
-
+Runs Tailwind CSS watcher and Fastify server concurrently:
 ```bash
 npm run dev
 ```
 
-The application will be accessible at:
-- **Application Dashboard**: [http://localhost:3000](http://localhost:3000)
-- **Interactive Scalar Docs**: [http://localhost:3000/docs/v1](http://localhost:3000/docs/v1) *(or [http://localhost:3000/docs](http://localhost:3000/docs))*
-- **Raw OpenAPI 3.1 JSON**: [http://localhost:3000/docs/v1/openapi.json](http://localhost:3000/docs/v1/openapi.json) *(or [http://localhost:3000/api/v1/openapi](http://localhost:3000/api/v1/openapi))*
-
-### Production Build & Execution
-
-Compile both the CSS bundle and TypeScript source code into optimized production artifacts:
-
+### Production Build & Run
 ```bash
-# 1. Build minified CSS and compile TypeScript into dist/
 npm run build
-
-# 2. Launch the compiled production server
-npm run start
+npm start
 ```
+The server will start at `http://localhost:3000`.
 
 ---
 
-## 🔌 API Documentation & Endpoints
+## Interactive Web Dashboard
 
-Pharmatory provides interactive documentation powered by **Scalar** alongside raw OpenAPI 3.1 schema endpoints for CI/CD, Postman, and automated client generation. All responses are framed in ByJSON v2.0 envelopes.
-
-### Documentation Endpoints
-
-- **Scalar API Reference UI**: `GET /docs/v1` *(convenience redirect from `GET /docs`)*  
-  Interactive web portal showcasing endpoints, request body models, schema properties, and a live testing sandbox.
-- **Raw OpenAPI Specification**: `GET /docs/v1/openapi.json` & `GET /api/v1/openapi`  
-  Machine-readable OpenAPI 3.1 JSON contracts representing all registered routes and data models.
-
-### Endpoint Catalog
-
-| HTTP Method | Route | Description | Format | Auth / Tag |
-| :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/` | Web Management Dashboard | HTML | Public |
-| `GET` | `/docs/v1` | Scalar Interactive API Documentation | HTML | Public |
-| `GET` | `/docs` | Convenience redirect to `/docs/v1` | 302 | Public |
-| `GET` | `/docs/v1/openapi.json` | Raw OpenAPI 3.1 JSON Specification | JSON | Public |
-| `GET` | `/api/v1/openapi` | Raw OpenAPI 3.1 JSON Specification (Alias) | JSON | Public |
-| `GET` | `/api/health` | Service health status and timestamp | ByJSON | `System` |
-| `GET` | `/api/v1/medicines` | Retrieve complete inventory of medicines | ByJSON | `Medicines` |
-| `POST` | `/api/v1/medicines` | Create and register a new medicine item | ByJSON | `Medicines` |
+Access `http://localhost:3000` to interact with the operational dashboard:
+- **Order Construction Simulator**: Interactively select items, adjust quantities, choose dispatch departure times, and evaluate fulfillment decisions.
+- **Decision Inspector**: Visualizes warehouse origin, cold-chain verification status, vehicle fleet types, route distance, and human-readable decision explanations.
+- **Regional Inventory Matrix**: Live stock balances across all 8 facilities.
+- **In-Memory CSV Stream**: Upload custom CSV files directly into memory to dynamically re-calibrate routing and duration models.
 
 ---
 
-## 🎨 Frontend Architecture
+## License
 
-The user interface emphasizes **progressive enhancement** and **minimal client payload**:
-
-1. **Server-Rendered HTML**: The core layout in [`public/index.html`](public/index.html) is served instantly with zero JavaScript compilation delay.
-2. **DaisyUI & Tailwind v4**: Theme switching (e.g., `emerald`, `corporate`, `dark`) operates directly through the HTML `data-theme` attribute.
-3. **Reactive State with Alpine.js**:
-   - Asynchronous data fetching from `/api/v1/medicines` unwrapping ByJSON `result.data` on initialization (`x-init`).
-   - Client-side form submission using `fetch` with real-time UI state updates and `result.meta.requestId` logging.
-   - Client-side counter and dynamic theme switcher without page reloads.
-
----
-
-## 📋 NPM Scripts Reference
-
-| Command | Description |
-| :--- | :--- |
-| `npm run dev` | Runs Tailwind CSS compilation and Fastify server concurrently in watch mode. |
-| `npm run dev:server` | Runs the Fastify backend via `tsx watch src/server.ts`. |
-| `npm run dev:css` | Watches `src/styles/app.css` and updates `public/css/styles.css`. |
-| `npm run build` | Builds both production assets: compiles minified CSS and compiles TypeScript to `dist/`. |
-| `npm run build:css` | Compiles and minifies Tailwind CSS and DaisyUI into `public/css/styles.css`. |
-| `npm run build:ts` | Compiles TypeScript source files into JavaScript inside the `dist/` folder. |
-| `npm run start` | Executes the compiled production server from `dist/server.js`. |
-
----
-
-## 📄 License
-
-This repository is distributed under the terms of the **ISC License**. See the [LICENSE](LICENSE) file for further information.
+ISC License.
