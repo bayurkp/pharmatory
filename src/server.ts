@@ -1,18 +1,18 @@
-import Fastify from 'fastify'
+import Fastify, { FastifyInstance } from 'fastify'
 
-const fastify = Fastify({
+const fastify: FastifyInstance = Fastify({
   logger: true
 })
 
 fastify.get('/', async (request, reply) => {
-  return { status: 'ok', message: 'Pharmatory API is running' }
+  return { status: 'ok', message: 'Pharmatory API is running with TypeScript' }
 })
 
 fastify.get('/health', async (request, reply) => {
   return { status: 'healthy', timestamp: new Date().toISOString() }
 })
 
-const start = async () => {
+const start = async (): Promise<void> => {
   try {
     const port = Number(process.env.PORT) || 3000
     await fastify.listen({ port, host: '0.0.0.0' })
