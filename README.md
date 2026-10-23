@@ -6,10 +6,10 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.x-06B6D4?logo=tailwindcss&logoColor=white)](#tech-stack)
 [![DaisyUI](https://img.shields.io/badge/DaisyUI-v5.x-5A0EF8?logo=daisyui&logoColor=white)](#tech-stack)
 [![Alpine.js](https://img.shields.io/badge/Alpine.js-v3.x-8BC0D0?logo=alpinedotjs&logoColor=white)](#tech-stack)
-[![API Documentation](https://img.shields.io/badge/API_Docs-Scalar-059669)](#api-documentation)
+[![API Documentation](https://img.shields.io/badge/API_Docs-Scalar-059669)](#api-documentation--endpoints)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 
-> A high-throughput, enterprise-grade Pharmacy Management System and RESTful API engine engineered with **Fastify (LTS)**, **TypeScript**, **Tailwind CSS v4**, **DaisyUI v5**, **Alpine.js**, and automated interactive API documentation powered by **Scalar**.
+> A high-throughput, enterprise-grade Pharmacy Management System and RESTful API engine engineered with **Fastify (LTS)**, **TypeScript**, **Tailwind CSS v4**, **DaisyUI v5**, **Alpine.js**, and modern interactive API documentation powered by **Scalar**.
 
 ---
 
@@ -37,7 +37,7 @@
 
 - **Backend**: Microsecond-latency routing and JSON serialization powered by Fastify v5 LTS and native TypeScript.
 - **Frontend**: Zero-hydration-overhead dynamic HTML served directly via `@fastify/static`, coupled with Alpine.js for local reactive state and DaisyUI 5 / Tailwind CSS 4 for utility-first styling.
-- **Documentation**: Fully automated OpenAPI 3.1 specification serving interactive documentation via Scalar at `/api/v1/docs`.
+- **Documentation**: Fully automated OpenAPI 3.1 specification serving interactive documentation via Scalar at `/docs/v1` (with convenience redirect from `/docs`), alongside raw OpenAPI JSON specs at `/docs/v1/openapi.json` and `/api/v1/openapi`.
 
 ---
 
@@ -118,8 +118,8 @@ npm run dev
 
 The application will be accessible at:
 - **Application Dashboard**: [http://localhost:3000](http://localhost:3000)
-- **Interactive Scalar Docs**: [http://localhost:3000/api/v1/docs](http://localhost:3000/api/v1/docs)
-- **Raw OpenAPI 3.1 JSON**: [http://localhost:3000/api/v1/openapi](http://localhost:3000/api/v1/openapi)
+- **Interactive Scalar Docs**: [http://localhost:3000/docs/v1](http://localhost:3000/docs/v1) *(or [http://localhost:3000/docs](http://localhost:3000/docs))*
+- **Raw OpenAPI 3.1 JSON**: [http://localhost:3000/docs/v1/openapi.json](http://localhost:3000/docs/v1/openapi.json) *(or [http://localhost:3000/api/v1/openapi](http://localhost:3000/api/v1/openapi))*
 
 ### Production Build & Execution
 
@@ -137,22 +137,24 @@ npm run start
 
 ## 🔌 API Documentation & Endpoints
 
-Pharmatory provides interactive documentation powered by **Scalar** alongside a raw OpenAPI 3.1 schema endpoint for CI/CD, Postman, and automated client generation.
+Pharmatory provides interactive documentation powered by **Scalar** alongside raw OpenAPI 3.1 schema endpoints for CI/CD, Postman, and automated client generation.
 
 ### Documentation Endpoints
 
-- **Scalar API Reference UI**: `GET /api/v1/docs`  
+- **Scalar API Reference UI**: `GET /docs/v1` *(convenience redirect from `GET /docs`)*  
   Interactive web portal showcasing endpoints, request body models, schema properties, and a live testing sandbox.
-- **Raw OpenAPI Specification**: `GET /api/v1/openapi`  
-  Machine-readable OpenAPI 3.1 JSON contract representing all registered routes and data models.
+- **Raw OpenAPI Specification**: `GET /docs/v1/openapi.json` & `GET /api/v1/openapi`  
+  Machine-readable OpenAPI 3.1 JSON contracts representing all registered routes and data models.
 
 ### Endpoint Catalog
 
 | HTTP Method | Route | Description | Auth / Tag |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/` | Web Management Dashboard (HTML) | Public |
-| `GET` | `/api/v1/docs` | Scalar Interactive API Documentation | Public |
-| `GET` | `/api/v1/openapi` | Raw OpenAPI 3.1 JSON Specification | Public |
+| `GET` | `/docs/v1` | Scalar Interactive API Documentation | Public |
+| `GET` | `/docs` | Convenience redirect to `/docs/v1` | Public |
+| `GET` | `/docs/v1/openapi.json` | Raw OpenAPI 3.1 JSON Specification | Public |
+| `GET` | `/api/v1/openapi` | Raw OpenAPI 3.1 JSON Specification (Alias) | Public |
 | `GET` | `/api/health` | Service health status and timestamp | `System` |
 | `GET` | `/api/v1/medicines` | Retrieve complete inventory of medicines | `Medicines` |
 | `POST` | `/api/v1/medicines` | Create and register a new medicine item | `Medicines` |

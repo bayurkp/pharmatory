@@ -50,9 +50,9 @@ await fastify.register(fastifySwagger, {
   }
 })
 
-// 2. Register Scalar API Reference at /api/v1/docs
+// 2. Register Scalar API Reference at /docs/v1
 await fastify.register(scalarApiReference, {
-  routePrefix: '/api/v1/docs',
+  routePrefix: '/docs/v1',
   configuration: {
     theme: 'fastify'
   }
@@ -65,18 +65,18 @@ await fastify.register(fastifyStatic, {
   index: ['index.html']
 })
 
-// 4. Raw OpenAPI JSON endpoint at /api/v1/openapi
-fastify.get(
-  '/api/v1/openapi',
-  {
-    schema: {
-      hide: true // Hide this meta-endpoint from the API documentation
-    }
-  },
-  async () => {
-    return fastify.swagger()
-  }
-)
+// 4. OpenAPI Specification Endpoints (Raw JSON)
+fastify.get('/api/v1/openapi', { schema: { hide: true } }, async () => {
+  return fastify.swagger()
+})
+
+// 5. Convenience Redirects
+fastify.get('/docs', { schema: { hide: true } }, async (request, reply) => {
+  return reply.redirect('/docs/v1')
+})
+fastify.get('/api/v1/docs', { schema: { hide: true } }, async (request, reply) => {
+  return reply.redirect('/docs/v1')
+})
 
 // --- API Routes with Schemas for Scalar Documentation ---
 

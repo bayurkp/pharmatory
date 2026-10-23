@@ -24,11 +24,11 @@
     
     <!-- Quick Nav Links -->
     <div class="flex-none gap-2">
-      <a href="/api/v1/openapi" target="_blank" class="btn btn-sm btn-ghost gap-1">
+      <a href="/docs/v1/openapi.json" target="_blank" class="btn btn-sm btn-ghost gap-1">
         <span>📄 OpenAPI JSON</span>
       </a>
-      <a href="/api/v1/docs" target="_blank" class="btn btn-sm btn-primary gap-1">
-        <span>✨ Scalar Docs</span>
+      <a href="/docs/v1" target="_blank" class="btn btn-sm btn-primary gap-1">
+        <span>✨ API Docs (/docs/v1)</span>
       </a>
 
       <!-- Theme Selector via Alpine -->
@@ -70,17 +70,17 @@
           Pharmatory API & Web Ready
         </h1>
         <p class="text-base-content/70 max-w-2xl text-sm sm:text-base">
-          Sistem farmasi modern bertenaga Fastify 5 dengan dokumentasi interaktif <strong>Scalar</strong> dan endpoint skema OpenAPI raw JSON.
+          Sistem farmasi modern bertenaga Fastify 5 dengan dokumentasi interaktif <strong>Scalar</strong> di <code>/docs/v1</code> dan spesifikasi OpenAPI mentah di <code>/docs/v1/openapi.json</code>.
         </p>
 
         <!-- Documentation CTA buttons -->
         <div class="flex flex-wrap gap-3 pt-3">
-          <a href="/api/v1/docs" target="_blank" class="btn btn-primary">
-            <span>Buka Scalar Docs (/api/v1/docs)</span>
+          <a href="/docs/v1" target="_blank" class="btn btn-primary">
+            <span>Buka Scalar Docs (/docs/v1)</span>
             <span>↗</span>
           </a>
-          <a href="/api/v1/openapi" target="_blank" class="btn btn-outline">
-            <span>Raw OpenAPI JSON (/api/v1/openapi)</span>
+          <a href="/docs/v1/openapi.json" target="_blank" class="btn btn-outline">
+            <span>Raw OpenAPI JSON (/docs/v1/openapi.json)</span>
             <span>↗</span>
           </a>
         </div>
@@ -245,13 +245,13 @@
             <div class="p-3 rounded-xl bg-base-200 space-y-2">
               <div class="text-xs font-bold uppercase tracking-wider text-base-content/70">Dokumentasi API</div>
               <div class="grid grid-cols-2 gap-2">
-                <a href="/api/v1/docs" target="_blank" class="btn btn-sm btn-primary flex items-center justify-between">
+                <a href="/docs/v1" target="_blank" class="btn btn-sm btn-primary flex items-center justify-between">
                   <span>Scalar Docs</span>
-                  <span class="text-xs opacity-75">/api/v1/docs</span>
+                  <span class="text-xs opacity-75">/docs/v1</span>
                 </a>
-                <a href="/api/v1/openapi" target="_blank" class="btn btn-sm btn-outline bg-base-100 flex items-center justify-between">
-                  <span>Raw OpenAPI</span>
-                  <span class="text-xs opacity-60">/api/v1/openapi</span>
+                <a href="/docs/v1/openapi.json" target="_blank" class="btn btn-sm btn-outline bg-base-100 flex items-center justify-between">
+                  <span>OpenAPI JSON</span>
+                  <span class="text-xs opacity-60">openapi.json</span>
                 </a>
               </div>
             </div>
@@ -289,7 +289,7 @@
                 </div>
                 <div class="flex items-center justify-between bg-base-200/50 p-2 rounded">
                   <span class="badge badge-xs badge-warning">GET</span>
-                  <code class="font-mono">/api/v1/openapi</code>
+                  <code class="font-mono">/docs/v1/openapi.json</code>
                 </div>
               </div>
             </div>
