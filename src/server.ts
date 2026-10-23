@@ -1,16 +1,80 @@
-import Fastify, { FastifyInstance } from 'fastify'
+import Fastify, { FastifyInstance, FastifyError } from 'fastify'
 import fastifyStatic from '@fastify/static'
 import fastifySwagger from '@fastify/swagger'
 import scalarApiReference from '@scalar/fastify-api-reference'
 import path from 'node:path'
+import crypto from 'node:crypto'
+import {
+  byJsonSuccess,
+  byJsonError,
+  buildByJsonSuccessSchema,
+  buildByJsonErrorSchema,
+  ByJsonErrorDetail
+} from './utils/by-json.js'
 
 const fastify: FastifyInstance = Fastify({
   logger: true,
+  genReqId: () => crypto.randomUUID(),
   ajv: {
     customOptions: {
       strict: false
     }
   }
+})
+
+// Global Error Handler conforming to ByJSON Specification v2.0
+fastify.setErrorHandler((error: FastifyError, request, reply) => {
+  const requestId = (request.id as string) || crypto.randomUUID()
+
+  // Handle Schema Validation Errors (HTTP 422 Unprocessable Content)
+  if (error.validation) {
+    const details: ByJsonErrorDetail[] = error.validation.map((v) => {
+      const field = v.instancePath
+        ? v.instancePath.replace(/^\//, '').replace(/\//g, '.')
+        : ((v.params as Record<string, unknown>)?.missingProperty as string) || 'body'
+      const code = v.keyword === 'required' ? 'missing_field' : v.keyword || 'invalid_format'
+      return {
+        field,
+        code,
+        message: v.message || 'Field validation failed'
+      }
+    })
+
+    reply.status(422)
+    return byJsonError(
+      'validation_error',
+      'The request data is invalid. Please check your input.',
+      requestId,
+      details
+    )
+  }
+
+  // Handle generic HTTP errors
+  const statusCode = error.statusCode && error.statusCode >= 400 ? error.statusCode : 500
+  const errorCode = statusCode === 400 ? 'bad_request' : 'internal_error'
+
+  reply.status(statusCode)
+  return byJsonError(
+    errorCode,
+    error.message || 'An unexpected server error occurred.',
+    requestId
+  )
+})
+
+// Custom 404 Handler conforming to ByJSON Specification v2.0
+fastify.setNotFoundHandler((request, reply) => {
+  const requestId = (request.id as string) || crypto.randomUUID()
+
+  if (request.url.startsWith('/api/')) {
+    reply.status(404)
+    return byJsonError(
+      'not_found',
+      `The requested endpoint '${request.method} ${request.url}' was not found.`,
+      requestId
+    )
+  }
+
+  reply.status(404).send('Not Found')
 })
 
 // In-memory data store for demonstration
@@ -34,7 +98,7 @@ await fastify.register(fastifySwagger, {
     openapi: '3.1.0',
     info: {
       title: 'Pharmatory API',
-      description: 'API Documentation for Pharmatory Pharmaceutical System powered by Scalar',
+      description: 'API Documentation for Pharmatory Pharmaceutical System (Conforming to ByJSON v2.0 Standard: https://github.com/bayurkp/by-json)',
       version: '1.0.0'
     },
     servers: [
@@ -78,48 +142,54 @@ fastify.get('/api/v1/docs', { schema: { hide: true } }, async (request, reply) =
   return reply.redirect('/docs/v1')
 })
 
-// --- API Routes with Schemas for Scalar Documentation ---
+// --- API Routes with Schemas for Scalar Documentation (ByJSON v2.0 Envelope) ---
+
+const healthDataSchema = {
+  type: 'object',
+  properties: {
+    status: { type: 'string', example: 'healthy' },
+    timestamp: { type: 'string', format: 'date-time' }
+  }
+}
+
+const medicineItemSchema = {
+  type: 'object',
+  properties: {
+    id: { type: 'number', example: 1 },
+    name: { type: 'string', example: 'Paracetamol 500mg' },
+    category: { type: 'string', example: 'Analgesik' },
+    stock: { type: 'number', example: 120 },
+    price: { type: 'number', example: 15000 }
+  }
+}
+
+const medicinesListDataSchema = {
+  type: 'array',
+  items: medicineItemSchema
+}
 
 const healthSchema = {
   tags: ['System'],
   summary: 'Health Check',
-  description: 'Returns the health status and current timestamp of the server',
+  description: 'Returns the health status and current timestamp in ByJSON v2.0 format',
   response: {
-    200: {
-      type: 'object',
-      properties: {
-        status: { type: 'string', example: 'healthy' },
-        timestamp: { type: 'string', format: 'date-time' }
-      }
-    }
+    200: buildByJsonSuccessSchema(healthDataSchema)
   }
 }
 
 const getMedicinesSchema = {
   tags: ['Medicines'],
   summary: 'Get All Medicines',
-  description: 'Retrieves the complete list of medicines currently in stock',
+  description: 'Retrieves the complete list of medicines currently in stock in ByJSON v2.0 format',
   response: {
-    200: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'number' },
-          name: { type: 'string' },
-          category: { type: 'string' },
-          stock: { type: 'number' },
-          price: { type: 'number' }
-        }
-      }
-    }
+    200: buildByJsonSuccessSchema(medicinesListDataSchema)
   }
 }
 
 const postMedicineSchema = {
   tags: ['Medicines'],
   summary: 'Create Medicine',
-  description: 'Adds a new medicine item to the inventory',
+  description: 'Adds a new medicine item to the inventory (ByJSON v2.0 format)',
   body: {
     type: 'object',
     required: ['name', 'category', 'stock', 'price'],
@@ -131,33 +201,31 @@ const postMedicineSchema = {
     }
   },
   response: {
-    201: {
-      type: 'object',
-      properties: {
-        id: { type: 'number' },
-        name: { type: 'string' },
-        category: { type: 'string' },
-        stock: { type: 'number' },
-        price: { type: 'number' }
-      }
-    }
+    201: buildByJsonSuccessSchema(medicineItemSchema),
+    422: buildByJsonErrorSchema('validation_error', 'The request data is invalid. Please check your input.')
   }
 }
 
 // Health check routes
-fastify.get('/api/health', { schema: healthSchema }, async () => {
-  return { status: 'healthy', timestamp: new Date().toISOString() }
+fastify.get('/api/health', { schema: healthSchema }, async (request) => {
+  return byJsonSuccess(
+    { status: 'healthy', timestamp: new Date().toISOString() },
+    request.id as string
+  )
 })
-fastify.get('/api/v1/health', { schema: { ...healthSchema, hide: true } }, async () => {
-  return { status: 'healthy', timestamp: new Date().toISOString() }
+fastify.get('/api/v1/health', { schema: { ...healthSchema, hide: true } }, async (request) => {
+  return byJsonSuccess(
+    { status: 'healthy', timestamp: new Date().toISOString() },
+    request.id as string
+  )
 })
 
 // Medicines routes
-fastify.get('/api/v1/medicines', { schema: getMedicinesSchema }, async () => {
-  return medicines
+fastify.get('/api/v1/medicines', { schema: getMedicinesSchema }, async (request) => {
+  return byJsonSuccess(medicines, request.id as string)
 })
-fastify.get('/api/medicines', { schema: { ...getMedicinesSchema, hide: true } }, async () => {
-  return medicines
+fastify.get('/api/medicines', { schema: { ...getMedicinesSchema, hide: true } }, async (request) => {
+  return byJsonSuccess(medicines, request.id as string)
 })
 
 fastify.post<{
@@ -173,7 +241,7 @@ fastify.post<{
   }
   medicines.push(newMedicine)
   reply.status(201)
-  return newMedicine
+  return byJsonSuccess(newMedicine, request.id as string)
 })
 
 fastify.post<{
@@ -189,7 +257,7 @@ fastify.post<{
   }
   medicines.push(newMedicine)
   reply.status(201)
-  return newMedicine
+  return byJsonSuccess(newMedicine, request.id as string)
 })
 
 const start = async (): Promise<void> => {

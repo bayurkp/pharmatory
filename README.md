@@ -2,6 +2,7 @@
 
 [![Node.js Version](https://img.shields.io/badge/Node.js-v22.x%20LTS-339933?logo=node.js&logoColor=white)](#prerequisites)
 [![Fastify Version](https://img.shields.io/badge/Fastify-v5.x%20LTS-000000?logo=fastify&logoColor=white)](#tech-stack)
+[![API Standard: ByJSON v2.0](https://img.shields.io/badge/API_Standard-ByJSON%20v2.0-0ea5e9?logo=json&logoColor=white)](https://github.com/bayurkp/by-json)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x%20%2F%207.x-3178C6?logo=typescript&logoColor=white)](#tech-stack)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.x-06B6D4?logo=tailwindcss&logoColor=white)](#tech-stack)
 [![DaisyUI](https://img.shields.io/badge/DaisyUI-v5.x-5A0EF8?logo=daisyui&logoColor=white)](#tech-stack)
@@ -9,13 +10,14 @@
 [![API Documentation](https://img.shields.io/badge/API_Docs-Scalar-059669)](#api-documentation--endpoints)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 
-> A high-throughput, enterprise-grade Pharmacy Management System and RESTful API engine engineered with **Fastify (LTS)**, **TypeScript**, **Tailwind CSS v4**, **DaisyUI v5**, **Alpine.js**, and modern interactive API documentation powered by **Scalar**.
+> A high-throughput, enterprise-grade Pharmacy Management System and RESTful API engine engineered with **Fastify (LTS)**, **TypeScript**, the **ByJSON Specification (v2.0)**, **Tailwind CSS v4**, **DaisyUI v5**, **Alpine.js**, and modern interactive API documentation powered by **Scalar**.
 
 ---
 
 ## 📖 Table of Contents
 
 - [Overview](#-overview)
+- [ByJSON v2.0 Specification Compliance](#-byjson-v20-specification-compliance)
 - [Architectural Highlights](#-architectural-highlights)
 - [Directory Structure](#-directory-structure)
 - [Tech Stack](#-tech-stack)
@@ -35,14 +37,86 @@
 
 **Pharmatory** is designed as a lightweight, performance-critical pharmaceutical inventory management platform. Rather than incurring the heavy bundling, hydration latency, and memory footprint of complex Single Page Application (SPA) meta-frameworks, Pharmatory demonstrates a **lean full-stack architecture**:
 
+- **API Standardization**: Fully compliant with the [**ByJSON Specification v2.0**](https://github.com/bayurkp/by-json), guaranteeing predictable four-key response envelopes (`success`, `data`, `error`, `meta`) with discriminated type safety across all endpoints.
 - **Backend**: Microsecond-latency routing and JSON serialization powered by Fastify v5 LTS and native TypeScript.
 - **Frontend**: Zero-hydration-overhead dynamic HTML served directly via `@fastify/static`, coupled with Alpine.js for local reactive state and DaisyUI 5 / Tailwind CSS 4 for utility-first styling.
-- **Documentation**: Fully automated OpenAPI 3.1 specification serving interactive documentation via Scalar at `/docs/v1` (with convenience redirect from `/docs`), alongside raw OpenAPI JSON specs at `/docs/v1/openapi.json` and `/api/v1/openapi`.
+- **Documentation**: Automated OpenAPI 3.1 specification serving interactive documentation via Scalar at `/docs/v1` (with convenience redirect from `/docs`), alongside raw OpenAPI JSON specs at `/docs/v1/openapi.json` and `/api/v1/openapi`.
+
+---
+
+## 📐 ByJSON v2.0 Specification Compliance
+
+All RESTful endpoints strictly adhere to the [ByJSON Specification (Version 2.0)](https://github.com/bayurkp/by-json). Every response envelope contains exactly four top-level keys without ambiguity:
+
+```typescript
+export type ApiResponse<T> =
+  | {
+      success: true;
+      data: T;
+      error: null;
+      meta: ApiMeta;
+    }
+  | {
+      success: false;
+      data: null;
+      error: ApiError;
+      meta: ApiMeta;
+    };
+```
+
+### 1. Success Response Structure (`2xx`)
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Paracetamol 500mg",
+      "category": "Analgesik",
+      "stock": 120,
+      "price": 15000
+    }
+  ],
+  "error": null,
+  "meta": {
+    "requestId": "f719ed82-2332-43e9-928a-1de09c0bd8b2",
+    "timestamp": "2026-10-23T03:12:28.573Z"
+  }
+}
+```
+
+### 2. Validation Error Structure (`HTTP 422 Unprocessable Content`)
+
+Field-level validation errors leverage dot-notation paths for seamless binding with client form libraries:
+
+```json
+{
+  "success": false,
+  "data": null,
+  "error": {
+    "code": "validation_error",
+    "message": "The request data is invalid. Please check your input.",
+    "details": [
+      {
+        "field": "category",
+        "code": "missing_field",
+        "message": "must have required property 'category'"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "f86c5a3d-3105-4c50-a96e-996f8ed36ec2",
+    "timestamp": "2026-10-23T03:12:28.608Z"
+  }
+}
+```
 
 ---
 
 ## ⚡ Architectural Highlights
 
+- **Standardized ByJSON Envelopes**: Built-in TypeScript utility module (`src/utils/by-json.ts`) generating type-safe discriminated union envelopes.
 - **Fastify v5 LTS Runtime**: Delivers industry-leading Node.js throughput, utilizing compiled schema validation through AJV.
 - **Full Type Safety**: Strict TypeScript compiler configuration (`target: ES2022`, `moduleResolution: NodeNext`) ensuring compile-time contract enforcement.
 - **Modern CSS-First Pipeline**: Uses `@tailwindcss/cli` with Tailwind CSS v4 and DaisyUI v5 plugin integration, compiling in sub-second intervals without legacy PostCSS or JavaScript configuration files.
@@ -61,11 +135,13 @@ pharmatory/
 │   │   └── styles.css         # Minified Tailwind CSS v4 + DaisyUI bundle
 │   ├── js/
 │   │   └── alpine.min.js      # Local Alpine.js runtime distribution
-│   └── index.html             # Responsive management dashboard
+│   └── index.html             # Responsive management dashboard (consuming ByJSON API)
 ├── src/
 │   ├── styles/
 │   │   └── app.css            # Tailwind CSS entrypoint (@import & @plugin directives)
-│   └── server.ts              # Fastify server bootstrap, schema definitions & route handlers
+│   ├── utils/
+│   │   └── by-json.ts         # ByJSON v2.0 specification implementation & envelope helpers
+│   └── server.ts              # Fastify bootstrap, ByJSON error handlers & routes
 ├── .gitignore                 # Version control exclusions (node_modules, dist, private files)
 ├── package.json               # Package manifest, dependencies, and build pipeline
 ├── README.md                  # Public documentation & architecture guide
@@ -78,8 +154,9 @@ pharmatory/
 
 | Layer | Technology | Version | Purpose / Justification |
 | :--- | :--- | :--- | :--- |
-| **Runtime** | [Node.js](https://nodejs.org/) | `^22.17.0` | Modern LTS JavaScript runtime with native fetch and ESM support. |
-| **Language** | [TypeScript](https://www.typescriptlang.org/) | `^7.0.2` | Compile-time type verification, strong typing, and enhanced DX. |
+| **Runtime** | [Node.js](https://nodejs.org/) | `^22.17.0` | Modern LTS JavaScript runtime with native fetch, crypto, and ESM support. |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) | `^7.0.2` | Compile-time type verification, strong typing, and discriminated unions. |
+| **API Contract** | [ByJSON](https://github.com/bayurkp/by-json) | `v2.0` | Balanced, type-safe JSON standard for REST API envelopes and errors. |
 | **Backend Framework** | [Fastify](https://fastify.dev/) | `^5.12.7` | High-performance, low-overhead Node.js web framework with built-in schema compilation. |
 | **API Specification** | [@fastify/swagger](https://github.com/fastify/fastify-swagger) | `^9.9.2` | Generates OpenAPI 3.1 specifications dynamically from Fastify route schemas. |
 | **API Documentation** | [@scalar/fastify-api-reference](https://scalar.com/) | `^1.75.1` | Modern, responsive, and interactive API documentation interface. |
@@ -137,7 +214,7 @@ npm run start
 
 ## 🔌 API Documentation & Endpoints
 
-Pharmatory provides interactive documentation powered by **Scalar** alongside raw OpenAPI 3.1 schema endpoints for CI/CD, Postman, and automated client generation.
+Pharmatory provides interactive documentation powered by **Scalar** alongside raw OpenAPI 3.1 schema endpoints for CI/CD, Postman, and automated client generation. All responses are framed in ByJSON v2.0 envelopes.
 
 ### Documentation Endpoints
 
@@ -148,16 +225,16 @@ Pharmatory provides interactive documentation powered by **Scalar** alongside ra
 
 ### Endpoint Catalog
 
-| HTTP Method | Route | Description | Auth / Tag |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/` | Web Management Dashboard (HTML) | Public |
-| `GET` | `/docs/v1` | Scalar Interactive API Documentation | Public |
-| `GET` | `/docs` | Convenience redirect to `/docs/v1` | Public |
-| `GET` | `/docs/v1/openapi.json` | Raw OpenAPI 3.1 JSON Specification | Public |
-| `GET` | `/api/v1/openapi` | Raw OpenAPI 3.1 JSON Specification (Alias) | Public |
-| `GET` | `/api/health` | Service health status and timestamp | `System` |
-| `GET` | `/api/v1/medicines` | Retrieve complete inventory of medicines | `Medicines` |
-| `POST` | `/api/v1/medicines` | Create and register a new medicine item | `Medicines` |
+| HTTP Method | Route | Description | Format | Auth / Tag |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/` | Web Management Dashboard | HTML | Public |
+| `GET` | `/docs/v1` | Scalar Interactive API Documentation | HTML | Public |
+| `GET` | `/docs` | Convenience redirect to `/docs/v1` | 302 | Public |
+| `GET` | `/docs/v1/openapi.json` | Raw OpenAPI 3.1 JSON Specification | JSON | Public |
+| `GET` | `/api/v1/openapi` | Raw OpenAPI 3.1 JSON Specification (Alias) | JSON | Public |
+| `GET` | `/api/health` | Service health status and timestamp | ByJSON | `System` |
+| `GET` | `/api/v1/medicines` | Retrieve complete inventory of medicines | ByJSON | `Medicines` |
+| `POST` | `/api/v1/medicines` | Create and register a new medicine item | ByJSON | `Medicines` |
 
 ---
 
@@ -168,8 +245,8 @@ The user interface emphasizes **progressive enhancement** and **minimal client p
 1. **Server-Rendered HTML**: The core layout in [`public/index.html`](public/index.html) is served instantly with zero JavaScript compilation delay.
 2. **DaisyUI & Tailwind v4**: Theme switching (e.g., `emerald`, `corporate`, `dark`) operates directly through the HTML `data-theme` attribute.
 3. **Reactive State with Alpine.js**:
-   - Asynchronous data fetching from `/api/v1/medicines` on initialization (`x-init`).
-   - Client-side form submission using `fetch` with real-time UI state updates.
+   - Asynchronous data fetching from `/api/v1/medicines` unwrapping ByJSON `result.data` on initialization (`x-init`).
+   - Client-side form submission using `fetch` with real-time UI state updates and `result.meta.requestId` logging.
    - Client-side counter and dynamic theme switcher without page reloads.
 
 ---
