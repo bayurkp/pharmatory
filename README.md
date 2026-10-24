@@ -293,6 +293,18 @@ npm start
 
 The server will start at `http://localhost:3000`.
 
+### Docker Deployment
+
+Build and run using the optimized multi-stage container:
+
+```bash
+# Build the production container image
+docker build -t pharmatory .
+
+# Run container on port 3000
+docker run -d -p 3000:3000 --name pharmatory-app pharmatory
+```
+
 ---
 
 ## Interactive Web Dashboard

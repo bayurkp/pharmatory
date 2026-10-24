@@ -121,8 +121,8 @@
       <div class="flex items-center gap-1 -mb-px flex-nowrap shrink-0">
         <button
           @click="activeTab = 'simulator'"
-          :class="activeTab === 'simulator' ? 'border-teal-600 text-teal-700 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-800 font-medium'"
-          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          :class="activeTab === 'simulator' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
+          class="relative py-3 px-2.5 sm:px-3.5 text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <svg
             class="w-4 h-4 shrink-0"
@@ -138,41 +138,60 @@
             ></path>
           </svg>
           <span>Fulfillment Simulator</span>
+          <span
+            class="absolute inset-x-0 -bottom-px h-0.5 bg-teal-600 rounded-t"
+            x-show="activeTab === 'simulator'"
+          ></span>
         </button>
 
         <button
           @click="activeTab = 'warehouses'"
-          :class="activeTab === 'warehouses' ? 'border-teal-600 text-teal-700 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-800 font-medium'"
-          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          :class="activeTab === 'warehouses' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
+          class="relative py-3 px-2.5 sm:px-3.5 text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <span>Warehouses</span>
           <span
-            class="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600"
+            class="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
+            :class="activeTab === 'warehouses' ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'"
             x-text="warehouses.length || 8"
+          ></span>
+          <span
+            class="absolute inset-x-0 -bottom-px h-0.5 bg-teal-600 rounded-t"
+            x-show="activeTab === 'warehouses'"
           ></span>
         </button>
 
         <button
           @click="activeTab = 'products'"
-          :class="activeTab === 'products' ? 'border-teal-600 text-teal-700 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-800 font-medium'"
-          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          :class="activeTab === 'products' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
+          class="relative py-3 px-2.5 sm:px-3.5 text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <span>Products</span>
           <span
-            class="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600"
+            class="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
+            :class="activeTab === 'products' ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'"
             x-text="products.length || 5"
+          ></span>
+          <span
+            class="absolute inset-x-0 -bottom-px h-0.5 bg-teal-600 rounded-t"
+            x-show="activeTab === 'products'"
           ></span>
         </button>
 
         <button
           @click="activeTab = 'traffic'"
-          :class="activeTab === 'traffic' ? 'border-teal-600 text-teal-700 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-800 font-medium'"
-          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          :class="activeTab === 'traffic' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
+          class="relative py-3 px-2.5 sm:px-3.5 text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <span>Traffic &amp; Datasets</span>
           <span
-            class="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600"
+            class="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
+            :class="activeTab === 'traffic' ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'"
             x-text="trafficRecords.length ? trafficRecords.length + ' Trips' : '38 Trips'"
+          ></span>
+          <span
+            class="absolute inset-x-0 -bottom-px h-0.5 bg-teal-600 rounded-t"
+            x-show="activeTab === 'traffic'"
           ></span>
         </button>
       </div>

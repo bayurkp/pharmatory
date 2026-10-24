@@ -38,6 +38,7 @@ function createPharmatoryComponent() {
     lastEvaluatedSummary: '',
     isDirty: false,
     showRawJson: false,
+    rawResponse: null,
 
     products: [],
     warehouses: [],
@@ -292,6 +293,7 @@ function createPharmatoryComponent() {
         })
 
         const json = await res.json()
+        this.rawResponse = json
 
         if (json.success) {
           this.result = json.data
@@ -307,11 +309,18 @@ function createPharmatoryComponent() {
           this.lastEvaluatedSummary = `${summaryParts.join(' + ')} · ${this.orderTime}`
         } else {
           this.error = json.error
+          this.meta = json.meta
           this.result = null
         }
       } catch (err) {
         this.error = { message: err.message || 'Fulfillment request failed.' }
         this.result = null
+        this.rawResponse = {
+          success: false,
+          data: null,
+          error: this.error,
+          meta: { timestamp: new Date().toISOString() }
+        }
       } finally {
         this.loading = false
       }

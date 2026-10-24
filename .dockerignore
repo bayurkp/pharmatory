@@ -1,0 +1,15 @@
+node_modules
+dist
+data/*.db
+data/*.db-shm
+data/*.db-wal
+.git
+.github
+tests
+README.private.md
+README_PRIVATE.md
+.env*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
