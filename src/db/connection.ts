@@ -61,7 +61,9 @@ export function initDatabase(db: Database.Database): void {
   `)
 
   // 2. Seed Initial Products if empty
-  const productCount = (db.prepare('SELECT COUNT(*) as count FROM products').get() as { count: number }).count
+  const productCount = (
+    db.prepare('SELECT COUNT(*) as count FROM products').get() as { count: number }
+  ).count
   if (productCount === 0) {
     const insertProduct = db.prepare(`
       INSERT INTO products (id, name, category, cold_chain_required, description)
@@ -69,11 +71,41 @@ export function initDatabase(db: Database.Database): void {
     `)
 
     const initialProducts = [
-      ['P001', 'Surgical Gloves (Box of 100)', 'Medical Supplies', 0, 'Standard ambient medical examination gloves'],
-      ['P002', 'Vaccine — Hepatitis B (10-dose vial)', 'Pharmaceutical', 1, 'Temperature-sensitive vaccine strictly requiring 2°C to 8°C cold chain'],
-      ['P003', 'Disposable Syringe (Box of 50)', 'Medical Supplies', 0, 'Sterile single-use medical syringes'],
-      ['P004', 'Vaccine — Tetanus Toxoid (10-dose vial)', 'Pharmaceutical', 1, 'Temperature-sensitive vaccine strictly requiring 2°C to 8°C cold chain'],
-      ['P005', 'Paracetamol Tablets (Box of 100)', 'Pharmaceutical', 0, 'Standard ambient oral analgesic and antipyretic medication']
+      [
+        'P001',
+        'Surgical Gloves (Box of 100)',
+        'Medical Supplies',
+        0,
+        'Standard ambient medical examination gloves'
+      ],
+      [
+        'P002',
+        'Vaccine — Hepatitis B (10-dose vial)',
+        'Pharmaceutical',
+        1,
+        'Temperature-sensitive vaccine strictly requiring 2°C to 8°C cold chain'
+      ],
+      [
+        'P003',
+        'Disposable Syringe (Box of 50)',
+        'Medical Supplies',
+        0,
+        'Sterile single-use medical syringes'
+      ],
+      [
+        'P004',
+        'Vaccine — Tetanus Toxoid (10-dose vial)',
+        'Pharmaceutical',
+        1,
+        'Temperature-sensitive vaccine strictly requiring 2°C to 8°C cold chain'
+      ],
+      [
+        'P005',
+        'Paracetamol Tablets (Box of 100)',
+        'Pharmaceutical',
+        0,
+        'Standard ambient oral analgesic and antipyretic medication'
+      ]
     ]
 
     const seedProducts = db.transaction(() => {
@@ -85,7 +117,9 @@ export function initDatabase(db: Database.Database): void {
   }
 
   // 3. Seed Initial Warehouses if empty
-  const warehouseCount = (db.prepare('SELECT COUNT(*) as count FROM warehouses').get() as { count: number }).count
+  const warehouseCount = (
+    db.prepare('SELECT COUNT(*) as count FROM warehouses').get() as { count: number }
+  ).count
   if (warehouseCount === 0) {
     const insertWarehouse = db.prepare(`
       INSERT INTO warehouses (id, name, location, distance_km, storage_type, fleet_type, full_cold_chain_capable)
@@ -94,10 +128,42 @@ export function initDatabase(db: Database.Database): void {
 
     const initialWarehouses = [
       ['W01', 'Surabaya Central Depot', 'Surabaya', 5.0, 'General Storage', 'Standard Vehicles', 0],
-      ['W02', 'Surabaya Cold Logistics', 'Surabaya', 12.0, 'Refrigerated Unit', 'Standard Vehicles', 0],
-      ['W03', 'Sidoarjo Distribution Hub', 'Sidoarjo', 25.0, 'General Storage', 'Standard Vehicles', 0],
-      ['W04', 'Gresik Cold Chain Express', 'Gresik', 30.0, 'Refrigerated Unit', 'Refrigerated Vans', 1],
-      ['W05', 'Malang Regional Terminal', 'Malang', 90.0, 'General Storage', 'Standard Vehicles', 0],
+      [
+        'W02',
+        'Surabaya Cold Logistics',
+        'Surabaya',
+        12.0,
+        'Refrigerated Unit',
+        'Standard Vehicles',
+        0
+      ],
+      [
+        'W03',
+        'Sidoarjo Distribution Hub',
+        'Sidoarjo',
+        25.0,
+        'General Storage',
+        'Standard Vehicles',
+        0
+      ],
+      [
+        'W04',
+        'Gresik Cold Chain Express',
+        'Gresik',
+        30.0,
+        'Refrigerated Unit',
+        'Refrigerated Vans',
+        1
+      ],
+      [
+        'W05',
+        'Malang Regional Terminal',
+        'Malang',
+        90.0,
+        'General Storage',
+        'Standard Vehicles',
+        0
+      ],
       ['W06', 'Malang Cold Facility', 'Malang', 95.0, 'Refrigerated Unit', 'Standard Vehicles', 0],
       ['W07', 'Pasuruan Pharma Hub', 'Pasuruan', 45.0, 'Refrigerated Unit', 'Refrigerated Vans', 1],
       ['W08', 'Jember Eastern Depot', 'Jember', 150.0, 'Refrigerated Unit', 'Refrigerated Vans', 1]

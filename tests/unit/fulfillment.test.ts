@@ -12,10 +12,30 @@ describe('FulfillmentEngine Unit Tests', () => {
 
   const mockProducts: Product[] = [
     { id: 'P001', name: 'Surgical Gloves', category: 'Medical Supplies', coldChainRequired: false },
-    { id: 'P002', name: 'Vaccine — Hepatitis B', category: 'Pharmaceutical', coldChainRequired: true },
-    { id: 'P003', name: 'Disposable Syringe', category: 'Medical Supplies', coldChainRequired: false },
-    { id: 'P004', name: 'Vaccine — Tetanus Toxoid', category: 'Pharmaceutical', coldChainRequired: true },
-    { id: 'P005', name: 'Paracetamol Tablets', category: 'Pharmaceutical', coldChainRequired: false }
+    {
+      id: 'P002',
+      name: 'Vaccine — Hepatitis B',
+      category: 'Pharmaceutical',
+      coldChainRequired: true
+    },
+    {
+      id: 'P003',
+      name: 'Disposable Syringe',
+      category: 'Medical Supplies',
+      coldChainRequired: false
+    },
+    {
+      id: 'P004',
+      name: 'Vaccine — Tetanus Toxoid',
+      category: 'Pharmaceutical',
+      coldChainRequired: true
+    },
+    {
+      id: 'P005',
+      name: 'Paracetamol Tablets',
+      category: 'Pharmaceutical',
+      coldChainRequired: false
+    }
   ]
 
   const mockWarehouses: Warehouse[] = [
@@ -103,7 +123,7 @@ describe('FulfillmentEngine Unit Tests', () => {
   it('splits orders deterministically when items require mixed cold-chain fleet and ambient inventory', () => {
     const orderItems = [
       { productId: 'P001', quantity: 100 }, // Only available at W01, W02, W07
-      { productId: 'P002', quantity: 15 }   // Vaccine: requires W04 or W07
+      { productId: 'P002', quantity: 15 } // Vaccine: requires W04 or W07
     ]
 
     // W04 has P002 (40) but 0 P001.
@@ -132,14 +152,14 @@ describe('FulfillmentEngine Unit Tests', () => {
     assert.equal(offPeakPlan.shipments[0].warehouseId, 'W01')
     assert.equal(peakPlan.shipments[0].warehouseId, 'W01')
     // Morning peak at W01 is ~50 mins vs off-peak ~10 mins
-    assert.ok(peakPlan.shipments[0].estimatedDurationMinutes > offPeakPlan.shipments[0].estimatedDurationMinutes)
+    assert.ok(
+      peakPlan.shipments[0].estimatedDurationMinutes >
+        offPeakPlan.shipments[0].estimatedDurationMinutes
+    )
   })
 
   it('throws ValidationError for empty order items or non-positive quantities', () => {
-    assert.throws(
-      () => engine.evaluate([], mockProducts, mockWarehouses),
-      ValidationError
-    )
+    assert.throws(() => engine.evaluate([], mockProducts, mockWarehouses), ValidationError)
 
     assert.throws(
       () => engine.evaluate([{ productId: 'P001', quantity: -10 }], mockProducts, mockWarehouses),
@@ -149,7 +169,12 @@ describe('FulfillmentEngine Unit Tests', () => {
 
   it('throws ValidationError with field detail for unknown product IDs', () => {
     assert.throws(
-      () => engine.evaluate([{ productId: 'P999_UNKNOWN', quantity: 10 }], mockProducts, mockWarehouses),
+      () =>
+        engine.evaluate(
+          [{ productId: 'P999_UNKNOWN', quantity: 10 }],
+          mockProducts,
+          mockWarehouses
+        ),
       ValidationError
     )
   })

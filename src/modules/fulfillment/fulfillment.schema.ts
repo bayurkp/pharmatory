@@ -1,4 +1,7 @@
-import { buildByJsonSuccessSchema, buildByJsonErrorSchema } from '../../shared/utils/by-json.util.js'
+import {
+  buildByJsonSuccessSchema,
+  buildByJsonErrorSchema
+} from '../../shared/utils/by-json.util.js'
 
 export const fulfillOrderBodySchema = {
   type: 'object',
@@ -19,7 +22,8 @@ export const fulfillOrderBodySchema = {
     },
     orderTime: {
       type: 'string',
-      description: 'Optional dispatch timestamp or day/time string (e.g. "Mon, 08:00" or ISO-8601) to evaluate rush-hour traffic heuristics.',
+      description:
+        'Optional dispatch timestamp or day/time string (e.g. "Mon, 08:00" or ISO-8601) to evaluate rush-hour traffic heuristics.',
       example: 'Mon, 08:00'
     },
     customerLocation: {
@@ -95,10 +99,14 @@ export const fulfillOrderResponseDataSchema = {
 export const fulfillOrderSchema = {
   tags: ['Order Fulfillment'],
   summary: 'Evaluate warehouse selection and order fulfillment plan',
-  description: 'Deterministic fulfillment engine evaluating stock availability, cold-chain delivery compliance (refrigerated fleet), road distance, and empirical traffic congestion patterns. Generates a transparent decision rationale and ByJSON v2.0 response.',
+  description:
+    'Deterministic fulfillment engine evaluating stock availability, cold-chain delivery compliance (refrigerated fleet), road distance, and empirical traffic congestion patterns. Generates a transparent decision rationale and ByJSON v2.0 response.',
   body: fulfillOrderBodySchema,
   response: {
-    200: buildByJsonSuccessSchema(fulfillOrderResponseDataSchema, 'Fulfillment plan generated successfully'),
+    200: buildByJsonSuccessSchema(
+      fulfillOrderResponseDataSchema,
+      'Fulfillment plan generated successfully'
+    ),
     400: buildByJsonErrorSchema('Bad request or inventory deficit'),
     422: buildByJsonErrorSchema('Schema validation error'),
     500: buildByJsonErrorSchema('Internal server error')

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+public/css/
+public/js/alpine.min.js
+data/
+*.db
+*.db-*
+*.csv
+package-lock.json

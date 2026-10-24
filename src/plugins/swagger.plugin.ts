@@ -9,7 +9,8 @@ const swaggerPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
       openapi: '3.1.0',
       info: {
         title: 'Pharmatory Fulfillment & Logistics Engine API',
-        description: 'Production-grade medical warehouse selection and order fulfillment engine adhering strictly to ByJSON Specification v2.0, cold-chain regulatory compliance, and historical traffic analytics.',
+        description:
+          'Production-grade medical warehouse selection and order fulfillment engine adhering strictly to ByJSON Specification v2.0, cold-chain regulatory compliance, and historical traffic analytics.',
         version: '1.0.0',
         contact: {
           name: 'Pharmatory Logistics Engineering Team',
@@ -17,10 +18,19 @@ const swaggerPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
         }
       },
       tags: [
-        { name: 'Order Fulfillment', description: 'Deterministic warehouse selection and order splitting solver' },
+        {
+          name: 'Order Fulfillment',
+          description: 'Deterministic warehouse selection and order splitting solver'
+        },
         { name: 'Products', description: 'Pharmaceutical and medical catalog management' },
-        { name: 'Warehouses', description: 'Regional facility registry and live inventory balances' },
-        { name: 'Traffic Analytics', description: 'Empirical delivery duration models and congestion analytics' }
+        {
+          name: 'Warehouses',
+          description: 'Regional facility registry and live inventory balances'
+        },
+        {
+          name: 'Traffic Analytics',
+          description: 'Empirical delivery duration models and congestion analytics'
+        }
       ]
     }
   })

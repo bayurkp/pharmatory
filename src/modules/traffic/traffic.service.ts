@@ -68,7 +68,10 @@ export class TrafficService {
       if (isHeader) {
         isHeader = false
         // Skip header row if it contains column names
-        if (line.toLowerCase().includes('delivery id') || line.toLowerCase().includes('warehouse')) {
+        if (
+          line.toLowerCase().includes('delivery id') ||
+          line.toLowerCase().includes('warehouse')
+        ) {
           continue
         }
       }
@@ -88,7 +91,15 @@ export class TrafficService {
         const dayTime = matches[2].trim()
         const duration = parseInt(matches[3].trim(), 10)
         const rawNotes = matches[4] ? matches[4].trim() : undefined
-        const notes = (rawNotes && rawNotes !== "-" && rawNotes !== "\u2013" && rawNotes !== "\u2014" && !rawNotes.includes("\uFFFD") && rawNotes.length > 0) ? rawNotes : undefined
+        const notes =
+          rawNotes &&
+          rawNotes !== '-' &&
+          rawNotes !== '\u2013' &&
+          rawNotes !== '\u2014' &&
+          !rawNotes.includes('\uFFFD') &&
+          rawNotes.length > 0
+            ? rawNotes
+            : undefined
 
         // Parse Day and Time: "Mon, 08:00"
         const [dayPart, timePart] = dayTime.split(',').map((s) => s.trim())
@@ -136,12 +147,12 @@ export class TrafficService {
       const congested = durations.filter((d) => d > median)
       const offPeak = durations.filter((d) => d <= median)
 
-      const congestedAvg = congested.length > 0
-        ? Math.round(congested.reduce((a, b) => a + b, 0) / congested.length)
-        : avg
-      const offPeakAvg = offPeak.length > 0
-        ? Math.round(offPeak.reduce((a, b) => a + b, 0) / offPeak.length)
-        : min
+      const congestedAvg =
+        congested.length > 0
+          ? Math.round(congested.reduce((a, b) => a + b, 0) / congested.length)
+          : avg
+      const offPeakAvg =
+        offPeak.length > 0 ? Math.round(offPeak.reduce((a, b) => a + b, 0) / offPeak.length) : min
 
       this.statsByWarehouse.set(wId, {
         warehouseId: wId,
@@ -205,15 +216,20 @@ export class TrafficService {
 
     // 1. Check exact or close match from empirical records
     const exactRecord = this.records.find(
-      (r) => r.warehouseId === warehouseId && r.dayOfWeek.toLowerCase() === day.toLowerCase() && Math.abs(r.hour - hour) <= 1
+      (r) =>
+        r.warehouseId === warehouseId &&
+        r.dayOfWeek.toLowerCase() === day.toLowerCase() &&
+        Math.abs(r.hour - hour) <= 1
     )
 
     if (exactRecord) {
       const isPeak = exactRecord.actualDurationMinutes > (stats ? stats.averageDurationMinutes : 40)
-      const isWeekend = ['Fri', 'Sat', 'Sun'].includes(day) && (warehouseId === 'W05' || warehouseId === 'W06')
-      const factor = stats && stats.offPeakAvgMinutes > 0
-        ? Number((exactRecord.actualDurationMinutes / stats.offPeakAvgMinutes).toFixed(2))
-        : 1.0
+      const isWeekend =
+        ['Fri', 'Sat', 'Sun'].includes(day) && (warehouseId === 'W05' || warehouseId === 'W06')
+      const factor =
+        stats && stats.offPeakAvgMinutes > 0
+          ? Number((exactRecord.actualDurationMinutes / stats.offPeakAvgMinutes).toFixed(2))
+          : 1.0
 
       return {
         warehouseId,
@@ -228,13 +244,13 @@ export class TrafficService {
     }
 
     // 2. Fallback heuristic rules based on historical patterns
-    const isMorningRush = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].includes(day) && hour >= 7 && hour <= 9
-    const isEveningRush = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].includes(day) && hour >= 16 && hour <= 19
-    const isWeekendMalang = (warehouseId === 'W05' || warehouseId === 'W06') && (
-      (day === 'Fri' && hour >= 13) ||
-      day === 'Sat' ||
-      (day === 'Sun' && hour >= 14)
-    )
+    const isMorningRush =
+      ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].includes(day) && hour >= 7 && hour <= 9
+    const isEveningRush =
+      ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].includes(day) && hour >= 16 && hour <= 19
+    const isWeekendMalang =
+      (warehouseId === 'W05' || warehouseId === 'W06') &&
+      ((day === 'Fri' && hour >= 13) || day === 'Sat' || (day === 'Sun' && hour >= 14))
 
     if (isWeekendMalang) {
       const dur = stats ? stats.maxDurationMinutes : 180

@@ -1,8 +1,19 @@
-import { buildByJsonSuccessSchema, buildByJsonErrorSchema } from '../../shared/utils/by-json.util.js'
+import {
+  buildByJsonSuccessSchema,
+  buildByJsonErrorSchema
+} from '../../shared/utils/by-json.util.js'
 
 export const warehouseItemSchema = {
   type: 'object',
-  required: ['id', 'name', 'location', 'distanceKm', 'storageType', 'fleetType', 'fullColdChainCapable'],
+  required: [
+    'id',
+    'name',
+    'location',
+    'distanceKm',
+    'storageType',
+    'fleetType',
+    'fullColdChainCapable'
+  ],
   properties: {
     id: { type: 'string', example: 'W04' },
     name: { type: 'string', example: 'Gresik Cold Chain Express' },
@@ -35,22 +46,29 @@ export const warehouseItemSchema = {
 export const getWarehousesSchema = {
   tags: ['Warehouses'],
   summary: 'Retrieve all regional warehouses',
-  description: 'Returns the 8 regional medical warehouses across East Java with location, storage capabilities, vehicle fleet types, and real-time inventory balances.',
+  description:
+    'Returns the 8 regional medical warehouses across East Java with location, storage capabilities, vehicle fleet types, and real-time inventory balances.',
   querystring: {
     type: 'object',
     properties: {
       city: { type: 'string', description: 'Filter warehouses by city (e.g. Surabaya, Malang)' },
       location: { type: 'string', description: 'Alternative alias for city' },
-      coldChain: { type: 'boolean', description: 'Filter warehouses by full cold-chain capability (true/false)' },
+      coldChain: {
+        type: 'boolean',
+        description: 'Filter warehouses by full cold-chain capability (true/false)'
+      },
       cold_chain: { type: 'boolean', description: 'Alternative snake_case alias' },
       fullColdChainCapable: { type: 'boolean', description: 'Legacy verbose alias' }
     }
   },
   response: {
-    200: buildByJsonSuccessSchema({
-      type: 'array',
-      items: warehouseItemSchema
-    }, 'Warehouses list successfully retrieved'),
+    200: buildByJsonSuccessSchema(
+      {
+        type: 'array',
+        items: warehouseItemSchema
+      },
+      'Warehouses list successfully retrieved'
+    ),
     500: buildByJsonErrorSchema('Internal server error')
   }
 }

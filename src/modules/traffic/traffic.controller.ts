@@ -30,7 +30,11 @@ export class TrafficController {
 
     // Verify CSV extension or mimetype
     const filename = fileData.filename || ''
-    if (!filename.toLowerCase().endsWith('.csv') && fileData.mimetype !== 'text/csv' && fileData.mimetype !== 'application/vnd.ms-excel') {
+    if (
+      !filename.toLowerCase().endsWith('.csv') &&
+      fileData.mimetype !== 'text/csv' &&
+      fileData.mimetype !== 'application/vnd.ms-excel'
+    ) {
       throw new AppError('File must be a valid CSV document.', 422, 'unsupported_file_type', [
         { field: 'file', code: 'unsupported_file_type', message: 'Only .csv files are permitted.' }
       ])
@@ -46,21 +50,31 @@ export class TrafficController {
     // Process entirely in memory (zero file storage)
     const result = this.trafficService.loadFromBuffer(buffer)
 
-    return reply.status(200).send(byJsonSuccess({
-      filename: fileData.filename,
-      processedRecords: result.recordCount,
-      summary: result.stats
-    }, request.id as string))
+    return reply.status(200).send(
+      byJsonSuccess(
+        {
+          filename: fileData.filename,
+          processedRecords: result.recordCount,
+          summary: result.stats
+        },
+        request.id as string
+      )
+    )
   }
 
   resetTraffic = async (request: FastifyRequest, reply: FastifyReply) => {
     await this.trafficService.resetToDefault()
     const summary = this.trafficService.getAllStats()
     const records = this.trafficService.getAllRecords()
-    return reply.status(200).send(byJsonSuccess({
-      message: 'Traffic dataset reset to default historical benchmark.',
-      summary,
-      recordCount: records.length
-    }, request.id as string))
+    return reply.status(200).send(
+      byJsonSuccess(
+        {
+          message: 'Traffic dataset reset to default historical benchmark.',
+          summary,
+          recordCount: records.length
+        },
+        request.id as string
+      )
+    )
   }
 }

@@ -47,13 +47,12 @@ const errorHandlerPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) 
           requestId
         )
       }
-      if (error.code === 'FST_ERR_CTP_INVALID_MEDIA_TYPE' || error.code === 'FST_ERR_CTP_BODY_TOO_LARGE') {
+      if (
+        error.code === 'FST_ERR_CTP_INVALID_MEDIA_TYPE' ||
+        error.code === 'FST_ERR_CTP_BODY_TOO_LARGE'
+      ) {
         reply.status(422)
-        return byJsonError(
-          'unsupported_file_type',
-          error.message,
-          requestId
-        )
+        return byJsonError('unsupported_file_type', error.message, requestId)
       }
       if (error.statusCode === 400) {
         reply.status(400)
@@ -68,18 +67,14 @@ const errorHandlerPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) 
     // 3. Custom Domain Application Errors
     if (error instanceof AppError) {
       reply.status(error.statusCode)
-      return byJsonError(
-        error.code,
-        error.message,
-        requestId,
-        error.details
-      )
+      return byJsonError(error.code, error.message, requestId, error.details)
     }
 
     // 4. Generic HTTP & Internal Errors
-    const statusCode = 'statusCode' in error && typeof error.statusCode === 'number' && error.statusCode >= 400
-      ? error.statusCode
-      : 500
+    const statusCode =
+      'statusCode' in error && typeof error.statusCode === 'number' && error.statusCode >= 400
+        ? error.statusCode
+        : 500
 
     let errorCode = 'internal_error'
     if (statusCode === 400) errorCode = 'bad_request'

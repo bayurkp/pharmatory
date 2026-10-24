@@ -45,19 +45,28 @@ export async function buildApp(opts: FastifyServerOptions = {}): Promise<Fastify
   await app.register(staticPlugin)
 
   // 3. Health check route conforming to ByJSON v2.0
-  app.get('/api/health', {
-    schema: {
-      tags: ['Health'],
-      summary: 'System health check',
-      description: 'Checks operational readiness of the Pharmatory engine.'
+  app.get(
+    '/api/health',
+    {
+      schema: {
+        tags: ['Health'],
+        summary: 'System health check',
+        description: 'Checks operational readiness of the Pharmatory engine.'
+      }
+    },
+    async (request, reply) => {
+      return reply.status(200).send(
+        byJsonSuccess(
+          {
+            status: 'healthy',
+            service: 'pharmatory-fulfillment-engine',
+            timestamp: new Date().toISOString()
+          },
+          request.id as string
+        )
+      )
     }
-  }, async (request, reply) => {
-    return reply.status(200).send(byJsonSuccess({
-      status: 'healthy',
-      service: 'pharmatory-fulfillment-engine',
-      timestamp: new Date().toISOString()
-    }, request.id as string))
-  })
+  )
 
   // 4. Register feature domain modules under /api/v1 prefix
   await app.register(productRoutes, { prefix: '/api/v1/products' })

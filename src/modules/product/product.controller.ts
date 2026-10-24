@@ -17,10 +17,14 @@ export class ProductController {
     reply: FastifyReply
   ) => {
     const { category } = request.query
-    const rawVal = request.query.coldChain ?? request.query.cold_chain ?? request.query.coldChainRequired
-    const isColdChain = rawVal !== undefined
-      ? (typeof rawVal === 'boolean' ? rawVal : rawVal === 'true' || rawVal === '1')
-      : undefined
+    const rawVal =
+      request.query.coldChain ?? request.query.cold_chain ?? request.query.coldChainRequired
+    const isColdChain =
+      rawVal !== undefined
+        ? typeof rawVal === 'boolean'
+          ? rawVal
+          : rawVal === 'true' || rawVal === '1'
+        : undefined
 
     const products = this.productService.getAllProducts({
       category,

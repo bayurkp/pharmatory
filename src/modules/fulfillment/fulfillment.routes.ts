@@ -12,7 +12,11 @@ export async function fulfillmentRoutes(fastify: FastifyInstance): Promise<void>
   const productRepository = new ProductRepository(db)
   const warehouseRepository = new WarehouseRepository(db)
   const trafficService = getTrafficService()
-  const fulfillmentService = new FulfillmentService(productRepository, warehouseRepository, trafficService)
+  const fulfillmentService = new FulfillmentService(
+    productRepository,
+    warehouseRepository,
+    trafficService
+  )
   const fulfillmentController = new FulfillmentController(fulfillmentService)
 
   // 1. Process Endpoint conforming to ByJSON v2.0 Section 3.2: POST /{subsystem}/{verb}

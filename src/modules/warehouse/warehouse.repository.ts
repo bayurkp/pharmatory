@@ -11,18 +11,23 @@ export class WarehouseRepository {
   constructor(private readonly db: Database.Database) {}
 
   findAll(): Warehouse[] {
-    const rows = this.db.prepare('SELECT * FROM warehouses ORDER BY distance_km ASC').all() as RawWarehouseRow[]
+    const rows = this.db
+      .prepare('SELECT * FROM warehouses ORDER BY distance_km ASC')
+      .all() as RawWarehouseRow[]
     return rows.map(mapWarehouseRow)
   }
 
   findById(id: string): Warehouse | null {
-    const row = this.db.prepare('SELECT * FROM warehouses WHERE id = ?').get(id) as RawWarehouseRow | undefined
+    const row = this.db.prepare('SELECT * FROM warehouses WHERE id = ?').get(id) as
+      RawWarehouseRow | undefined
     return row ? mapWarehouseRow(row) : null
   }
 
   findAllWithInventories(): Warehouse[] {
     const warehouses = this.findAll()
-    const stockRows = this.db.prepare(`
+    const stockRows = this.db
+      .prepare(
+        `
       SELECT 
         ws.warehouse_id,
         ws.product_id,
@@ -32,9 +37,14 @@ export class WarehouseRepository {
         ws.quantity
       FROM warehouse_stocks ws
       JOIN products p ON ws.product_id = p.id
-    `).all() as RawWarehouseStockRow[]
+    `
+      )
+      .all() as RawWarehouseStockRow[]
 
-    const stockMap: Record<string, { stocks: Record<string, number>; inventory: WarehouseStockItem[] }> = {}
+    const stockMap: Record<
+      string,
+      { stocks: Record<string, number>; inventory: WarehouseStockItem[] }
+    > = {}
 
     for (const row of stockRows) {
       if (!stockMap[row.warehouse_id]) {

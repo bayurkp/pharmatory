@@ -15,10 +15,12 @@
 ### Task 1: Domain Engine Unit Test Suite
 
 **Files:**
+
 - Test: `tests/unit/fulfillment.test.ts`
 - Engine: `src/modules/fulfillment/fulfillment.engine.ts`
 
 **Verification Points:**
+
 - [x] **Step 1: Single warehouse proximity selection**
   - Verify that when stock is abundant across warehouses, the engine selects the closest facility (`W01 Surabaya Central Depot`, 5 km).
 - [x] **Step 2: Cold-chain fleet disqualification invariant**
@@ -37,11 +39,13 @@
 ### Task 2: Fastify HTTP Lifecycle & ByJSON v2.0 Integration Tests
 
 **Files:**
+
 - Test: `tests/integration/api.test.ts`
 - App: `src/app.ts`
 - Plugins: `src/plugins/error-handler.plugin.ts`, `src/plugins/swagger.plugin.ts`
 
 **Verification Points:**
+
 - [x] **Step 1: System health check (`GET /api/health`)**
   - Verify HTTP 200 and standard 4-key ByJSON v2.0 envelope (`success`, `data`, `error`, `meta`).
   - Verify valid UUID v4 `requestId` generation.
@@ -61,10 +65,12 @@
 ### Task 3: Error Handling & AJV Keyword Conformance Tests
 
 **Files:**
+
 - Plugin: `src/plugins/error-handler.plugin.ts`
 - Test: `tests/integration/api.test.ts`
 
 **Verification Points:**
+
 - [x] **Step 1: AJV Schema validation failure (HTTP 422)**
   - Pass invalid payload (`quantity = 0`) to `POST /api/v1/orders/fulfill`.
   - Assert `statusCode === 422`.
@@ -81,11 +87,13 @@
 ### Task 4: In-Memory CSV Processing & Security Boundary Tests
 
 **Files:**
+
 - Service: `src/modules/traffic/traffic.service.ts`
 - Routes: `src/modules/traffic/traffic.routes.ts`
 - Test: `tests/integration/api.test.ts`
 
 **Verification Points:**
+
 - [x] **Step 1: In-memory multipart CSV upload**
   - Upload raw CSV data via multipart form-data.
   - Verify HTTP 200 and traffic model recalibration in memory.
@@ -99,11 +107,13 @@
 ### Task 5: Query Parameter Casing & Ergonomics Verification
 
 **Files:**
+
 - Controller: `src/modules/product/product.controller.ts`
 - Controller: `src/modules/warehouse/warehouse.controller.ts`
 - Test: `tests/integration/api.test.ts`
 
 **Verification Points:**
+
 - [x] **Step 1: Primary `camelCase` query parameter support**
   - Test `GET /api/v1/products?coldChain=true`.
   - Test `GET /api/v1/warehouses?coldChain=true`.
@@ -116,10 +126,10 @@
 
 ## Performance Budget & Execution Verification
 
-| Metric | Budget | Measured | Status |
-| :--- | :--- | :--- | :--- |
-| **Total Test Count** | $\ge 20$ | 21 | Pass |
-| **Execution Duration** | $< 2.0\text{s}$ | $\sim 1.3\text{s}$ | Pass |
-| **External Test Dependencies** | 0 | 0 (native `node:test`) | Pass |
-| **Disk I/O During Tests** | 0 | 0 (in-memory SQLite & streams) | Pass |
-| **TypeScript Compilation Errors** | 0 | 0 (`tsc` clean) | Pass |
+| Metric                            | Budget          | Measured                       | Status |
+| :-------------------------------- | :-------------- | :----------------------------- | :----- |
+| **Total Test Count**              | $\ge 20$        | 21                             | Pass   |
+| **Execution Duration**            | $< 2.0\text{s}$ | $\sim 1.3\text{s}$             | Pass   |
+| **External Test Dependencies**    | 0               | 0 (native `node:test`)         | Pass   |
+| **Disk I/O During Tests**         | 0               | 0 (in-memory SQLite & streams) | Pass   |
+| **TypeScript Compilation Errors** | 0               | 0 (`tsc` clean)                | Pass   |

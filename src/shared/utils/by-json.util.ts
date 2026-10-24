@@ -55,7 +55,10 @@ export function byJsonError(
   }
 }
 
-export function buildByJsonSuccessSchema(dataSchema: Record<string, unknown>, description = 'Successful operation') {
+export function buildByJsonSuccessSchema(
+  dataSchema: Record<string, unknown>,
+  description = 'Successful operation'
+) {
   return {
     description,
     type: 'object',

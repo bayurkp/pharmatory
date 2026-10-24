@@ -45,6 +45,7 @@
 **Pharmatory** is a deterministic warehouse selection and order fulfillment engine designed for a regional medical and pharmaceutical distribution network across East Java (Surabaya, Sidoarjo, Gresik, Pasuruan, Malang, Jember).
 
 When orders containing multiple medical and pharmaceutical products are placed by healthcare facilities, the engine evaluates:
+
 1. **Stock Availability**: Live inventory across 8 regional storage facilities.
 2. **Cold Chain Integrity**: Biological vaccines strictly require both refrigerated warehouse storage ($2^\circ\text{C}-8^\circ\text{C}$) and active refrigerated delivery vehicles to prevent irreversible product degradation.
 3. **Logistics Optimization**: Single-warehouse consolidation is prioritized to minimize freight overhead. A deterministic split-order solver activates whenever inventory or fleet constraints mandate multi-hub dispatch.
@@ -64,10 +65,10 @@ Every response contains exactly four root keys:
 
 ```typescript
 export interface ApiResponse<T> {
-  success: boolean;       // Explicit discriminator (true on 2xx, false on 4xx/5xx)
-  data: T | null;         // Populated on success; strictly null on error
-  error: ApiError | null; // Populated on error; strictly null on success
-  meta: ApiMeta;          // Request context: requestId (UUID) and timestamp (ISO 8601)
+  success: boolean // Explicit discriminator (true on 2xx, false on 4xx/5xx)
+  data: T | null // Populated on success; strictly null on error
+  error: ApiError | null // Populated on error; strictly null on success
+  meta: ApiMeta // Request context: requestId (UUID) and timestamp (ISO 8601)
 }
 ```
 
@@ -163,8 +164,9 @@ The codebase follows a **Clean Feature-Driven Modular Architecture** inspired by
 pharmatory/
 ├── public/                              # Zero-build frontend presentation
 │   ├── css/styles.css                   # Compiled Tailwind + DaisyUI
+│   ├── js/app.js                        # Modular Alpine.js client component
 │   ├── js/alpine.min.js                 # Vendored Alpine.js runtime
-│   └── index.html                       # Minimalist management dashboard
+│   └── index.html                       # Semantic management dashboard markup
 ├── src/
 │   ├── app.ts                           # Application factory (Fastify instance & plugins)
 │   ├── server.ts                        # Entry point bootstrapper (TCP listener)
@@ -180,6 +182,9 @@ pharmatory/
 ├── tests/
 │   ├── unit/fulfillment.test.ts         # Deterministic domain logic unit tests
 │   └── integration/api.test.ts          # End-to-end Fastify inject() API tests
+├── .editorconfig                        # Cross-IDE indentation & formatting
+├── .prettierrc                          # Prettier code formatting rules
+├── eslint.config.js                     # ESLint v9 Flat Config + typescript-eslint
 ├── package.json
 └── tsconfig.json
 ```
@@ -188,28 +193,30 @@ pharmatory/
 
 ## API Specification & Endpoints
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/v1/orders/fulfill` | Evaluates warehouse selection, cold chain compliance, and generates fulfillment plan. |
-| `GET` | `/api/v1/products` | Lists pharmaceutical and medical supplies. Supports `?category` and `?coldChainRequired`. |
-| `GET` | `/api/v1/warehouses` | Lists 8 regional warehouses. Supports `?location` and `?fullColdChainCapable`. |
-| `GET` | `/api/v1/traffic/patterns`| Returns aggregated delivery duration statistics and active trip records. |
-| `GET` | `/api/v1/traffic/summary` | Read-only aggregate metrics alias conforming to ByJSON Section 6.2. |
-| `POST` | `/api/v1/traffic/upload` | Processes custom delivery CSV in memory (zero disk storage). |
-| `POST` | `/api/v1/traffic/reset` | Resets in-memory traffic models back to benchmark records. |
-| `GET` | `/api/health` | Health check endpoint returning system status in ByJSON format. |
-| `GET` | `/docs/v1` | Interactive Scalar API Documentation portal. |
-| `GET` | `/docs/v1/openapi.json` | Raw OpenAPI 3.1 JSON specification. |
+| Method | Endpoint                   | Description                                                                               |
+| :----- | :------------------------- | :---------------------------------------------------------------------------------------- |
+| `POST` | `/api/v1/orders/fulfill`   | Evaluates warehouse selection, cold chain compliance, and generates fulfillment plan.     |
+| `GET`  | `/api/v1/products`         | Lists pharmaceutical and medical supplies. Supports `?category` and `?coldChainRequired`. |
+| `GET`  | `/api/v1/warehouses`       | Lists 8 regional warehouses. Supports `?location` and `?fullColdChainCapable`.            |
+| `GET`  | `/api/v1/traffic/patterns` | Returns aggregated delivery duration statistics and active trip records.                  |
+| `GET`  | `/api/v1/traffic/summary`  | Read-only aggregate metrics alias conforming to ByJSON Section 6.2.                       |
+| `POST` | `/api/v1/traffic/upload`   | Processes custom delivery CSV in memory (zero disk storage).                              |
+| `POST` | `/api/v1/traffic/reset`    | Resets in-memory traffic models back to benchmark records.                                |
+| `GET`  | `/api/health`              | Health check endpoint returning system status in ByJSON format.                           |
+| `GET`  | `/docs/v1`                 | Interactive Scalar API Documentation portal.                                              |
+| `GET`  | `/docs/v1/openapi.json`    | Raw OpenAPI 3.1 JSON specification.                                                       |
 
 ---
 
 ## Testing Strategy
 
 Pharmatory uses a **pragmatic, high-ROI testing strategy** powered by Node.js native test runner (`node:test` + `node:assert/strict`) via `tsx`:
+
 - **Domain Engine Unit Tests (`tests/unit/fulfillment.test.ts`)**: Exhaustively verifies cold-chain enforcement (disqualifying W02/W06 for vaccines), single-warehouse prioritization, deterministic split logic, and traffic penalty calculations.
 - **Fastify Injection Tests (`tests/integration/api.test.ts`)**: Tests the full HTTP lifecycle using `app.inject()` without opening network ports, verifying 200 ByJSON envelopes, query filtering, 422 AJV schema validation errors, 422 unsupported file types, and 404 handlers.
 
 Execute the test suite:
+
 ```bash
 npm test
 ```
@@ -219,30 +226,50 @@ npm test
 ## Quick Start
 
 ### Prerequisites
+
 - **Node.js**: `v20.x` or `v22.x` (LTS recommended)
 - **NPM**: `v10.x` or higher
 
 ### Installation
+
 ```bash
 npm install
 ```
 
 ### Automated Tests
+
 ```bash
 npm test
 ```
 
+### Code Quality & Linting
+
+```bash
+# Run ESLint static analysis
+npm run lint
+
+# Check formatting with Prettier
+npm run format:check
+
+# Format files automatically
+npm run format
+```
+
 ### Development Mode
+
 Runs Tailwind CSS watcher and Fastify server concurrently:
+
 ```bash
 npm run dev
 ```
 
 ### Production Build & Run
+
 ```bash
 npm run build
 npm start
 ```
+
 The server will start at `http://localhost:3000`.
 
 ---
@@ -250,6 +277,7 @@ The server will start at `http://localhost:3000`.
 ## Interactive Web Dashboard
 
 Access `http://localhost:3000` to interact with the operational dashboard:
+
 - **Order Construction Simulator**: Interactively select items, adjust quantities, choose dispatch departure times, and evaluate fulfillment decisions.
 - **Decision Inspector**: Visualizes warehouse origin, cold-chain verification status, vehicle fleet types, route distance, and human-readable decision explanations.
 - **Regional Inventory Matrix**: Live stock balances across all 8 facilities.

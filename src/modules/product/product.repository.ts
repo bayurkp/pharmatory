@@ -10,14 +10,17 @@ export class ProductRepository {
   }
 
   findById(id: string): Product | null {
-    const row = this.db.prepare('SELECT * FROM products WHERE id = ?').get(id) as RawProductRow | undefined
+    const row = this.db.prepare('SELECT * FROM products WHERE id = ?').get(id) as
+      RawProductRow | undefined
     return row ? mapProductRow(row) : null
   }
 
   findManyByIds(ids: string[]): Product[] {
     if (ids.length === 0) return []
     const placeholders = ids.map(() => '?').join(', ')
-    const rows = this.db.prepare(`SELECT * FROM products WHERE id IN (${placeholders})`).all(...ids) as RawProductRow[]
+    const rows = this.db
+      .prepare(`SELECT * FROM products WHERE id IN (${placeholders})`)
+      .all(...ids) as RawProductRow[]
     return rows.map(mapProductRow)
   }
 }

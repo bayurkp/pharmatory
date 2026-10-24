@@ -158,9 +158,7 @@ describe('Pharmatory API Integration Tests (Fastify inject)', () => {
       url: '/api/v1/fulfillments',
       payload: {
         destinationCity: 'Surabaya',
-        items: [
-          { productId: 'P001', quantity: 20 }
-        ],
+        items: [{ productId: 'P001', quantity: 20 }],
         orderTime: 'Mon, 14:00'
       }
     })

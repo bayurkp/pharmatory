@@ -9,5 +9,6 @@ export const config = {
   host: process.env.HOST || '0.0.0.0',
   env: process.env.NODE_ENV || 'development',
   dbPath: process.env.DB_PATH || path.resolve(__dirname, '../../data/pharmatory.db'),
-  csvPath: process.env.CSV_PATH || path.resolve(__dirname, '../../data/Customer_1_Historical_Data.csv')
+  csvPath:
+    process.env.CSV_PATH || path.resolve(__dirname, '../../data/Customer_1_Historical_Data.csv')
 }

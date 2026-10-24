@@ -133,7 +133,10 @@ export function byJsonError(
 /**
  * Helper to build OpenAPI 3.1 response schema wrapped in ByJSON envelope.
  */
-export function buildByJsonSuccessSchema(dataSchema: object, exampleRequestId = '8f830a6e-4e8c-4a37-b6e5-22e70df4ab75') {
+export function buildByJsonSuccessSchema(
+  dataSchema: object,
+  exampleRequestId = '8f830a6e-4e8c-4a37-b6e5-22e70df4ab75'
+) {
   return {
     type: 'object',
     required: ['success', 'data', 'error', 'meta'],
@@ -156,7 +159,10 @@ export function buildByJsonSuccessSchema(dataSchema: object, exampleRequestId = 
 /**
  * Helper to build OpenAPI 3.1 error response schema wrapped in ByJSON envelope.
  */
-export function buildByJsonErrorSchema(defaultCode = 'validation_error', defaultMessage = 'The request data is invalid.') {
+export function buildByJsonErrorSchema(
+  defaultCode = 'validation_error',
+  defaultMessage = 'The request data is invalid.'
+) {
   return {
     type: 'object',
     required: ['success', 'data', 'error', 'meta'],

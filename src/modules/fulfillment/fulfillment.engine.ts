@@ -37,20 +37,38 @@ export class FulfillmentEngine {
       const item = orderItems[i]
       if (!item.productId || typeof item.productId !== 'string') {
         throw new ValidationError(`Item at index ${i} has an invalid productId.`, [
-          { field: `items.${i}.productId`, code: 'missing_field', message: 'productId must be a valid string' }
+          {
+            field: `items.${i}.productId`,
+            code: 'missing_field',
+            message: 'productId must be a valid string'
+          }
         ])
       }
       if (!item.quantity || typeof item.quantity !== 'number' || item.quantity <= 0) {
-        throw new ValidationError(`Item at index ${i} has an invalid quantity. Must be greater than 0.`, [
-          { field: `items.${i}.quantity`, code: 'minimum_value', message: 'quantity must be a positive integer' }
-        ])
+        throw new ValidationError(
+          `Item at index ${i} has an invalid quantity. Must be greater than 0.`,
+          [
+            {
+              field: `items.${i}.quantity`,
+              code: 'minimum_value',
+              message: 'quantity must be a positive integer'
+            }
+          ]
+        )
       }
 
       const product = productMap.get(item.productId)
       if (!product) {
-        throw new ValidationError(`Product with ID '${item.productId}' does not exist in the catalog.`, [
-          { field: `items.${i}.productId`, code: 'not_found', message: `Product '${item.productId}' was not found in catalog.` }
-        ])
+        throw new ValidationError(
+          `Product with ID '${item.productId}' does not exist in the catalog.`,
+          [
+            {
+              field: `items.${i}.productId`,
+              code: 'not_found',
+              message: `Product '${item.productId}' was not found in catalog.`
+            }
+          ]
+        )
       }
 
       if (product.coldChainRequired) {
@@ -268,7 +286,8 @@ export class FulfillmentEngine {
 
       for (const [prodId, neededQty] of remainingAmbientDemands.entries()) {
         if (neededQty <= 0) continue
-        const alreadyAllocated = existingShipment?.items.find((i) => i.productId === prodId)?.quantity || 0
+        const alreadyAllocated =
+          existingShipment?.items.find((i) => i.productId === prodId)?.quantity || 0
         const available = (stocks[prodId] || 0) - alreadyAllocated
         if (available > 0) {
           const qtyToTake = Math.min(available, neededQty)
@@ -325,14 +344,23 @@ export class FulfillmentEngine {
 
     // Calculate aggregated metrics
     const totalDistanceKm = shipments.reduce((sum, s) => sum + s.distanceKm, 0)
-    const maxEstimatedDurationMinutes = Math.max(...shipments.map((s) => s.estimatedDurationMinutes))
+    const maxEstimatedDurationMinutes = Math.max(
+      ...shipments.map((s) => s.estimatedDurationMinutes)
+    )
 
-    let splitReason = 'No single warehouse possesses both sufficient inventory and required cold-chain delivery fleet.'
+    let splitReason =
+      'No single warehouse possesses both sufficient inventory and required cold-chain delivery fleet.'
     if (orderRequiresColdChain) {
-      splitReason = 'Cold-chain items (vaccines) require specialized refrigerated transport vans (W04/W07/W08). Since nearby general depots (e.g. W01) lack vaccine inventory and refrigerated fleet, order was split deterministically.'
+      splitReason =
+        'Cold-chain items (vaccines) require specialized refrigerated transport vans (W04/W07/W08). Since nearby general depots (e.g. W01) lack vaccine inventory and refrigerated fleet, order was split deterministically.'
     }
 
-    const whSummaries = shipments.map((s) => `${s.warehouseId} (${s.items.map((i) => `${i.productName} x${i.quantity}`).join(', ')}; ${s.distanceKm}km, ~${s.estimatedDurationMinutes}m)`).join(' + ')
+    const whSummaries = shipments
+      .map(
+        (s) =>
+          `${s.warehouseId} (${s.items.map((i) => `${i.productName} x${i.quantity}`).join(', ')}; ${s.distanceKm}km, ~${s.estimatedDurationMinutes}m)`
+      )
+      .join(' + ')
 
     const explanation = `Split-Order Fulfillment Activated: ${splitReason} Dispatched across ${shipments.length} facilities: ${whSummaries}. Total route distance: ${totalDistanceKm} km; longest delivery leg: ${maxEstimatedDurationMinutes} minutes.`
 

@@ -7,7 +7,9 @@ async function bootstrap(): Promise<void> {
   try {
     await app.listen({ port: config.port, host: config.host })
     app.log.info(`Pharmatory Fulfillment Engine listening on http://${config.host}:${config.port}`)
-    app.log.info(`Scalar API Documentation available at http://${config.host}:${config.port}/docs/v1`)
+    app.log.info(
+      `Scalar API Documentation available at http://${config.host}:${config.port}/docs/v1`
+    )
   } catch (err) {
     app.log.error(err)
     process.exit(1)

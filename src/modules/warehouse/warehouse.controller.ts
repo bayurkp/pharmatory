@@ -18,10 +18,14 @@ export class WarehouseController {
     reply: FastifyReply
   ) => {
     const location = request.query.city ?? request.query.location
-    const rawVal = request.query.coldChain ?? request.query.cold_chain ?? request.query.fullColdChainCapable
-    const isColdFleet = rawVal !== undefined
-      ? (typeof rawVal === 'boolean' ? rawVal : rawVal === 'true' || rawVal === '1')
-      : undefined
+    const rawVal =
+      request.query.coldChain ?? request.query.cold_chain ?? request.query.fullColdChainCapable
+    const isColdFleet =
+      rawVal !== undefined
+        ? typeof rawVal === 'boolean'
+          ? rawVal
+          : rawVal === 'true' || rawVal === '1'
+        : undefined
 
     const warehouses = this.warehouseService.getAllWarehouses({
       location,
