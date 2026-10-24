@@ -10,5 +10,5 @@ export const config = {
   env: process.env.NODE_ENV || 'development',
   dbPath: process.env.DB_PATH || path.resolve(__dirname, '../../data/pharmatory.db'),
   csvPath:
-    process.env.CSV_PATH || path.resolve(__dirname, '../../data/Customer_1_Historical_Data.csv')
+    process.env.CSV_PATH || path.resolve(__dirname, '../../data/delivery_history.csv')
 }
