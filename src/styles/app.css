@@ -54,6 +54,7 @@ pre {
 
 /* Crisp Active Indicator Bar for Navigation Tabs */
 .tab-active-indicator {
+  display: block;
   position: absolute;
   left: 0;
   right: 0;

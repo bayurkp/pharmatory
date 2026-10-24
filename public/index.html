@@ -139,7 +139,8 @@
           </svg>
           <span>Fulfillment Simulator</span>
           <span
-            class="absolute inset-x-0 -bottom-px h-0.5 bg-teal-600 rounded-t"
+            class="tab-active-indicator"
+            style="display: block; height: 2px; background-color: #0d9488"
             x-show="activeTab === 'simulator'"
           ></span>
         </button>
@@ -156,7 +157,8 @@
             x-text="warehouses.length || 8"
           ></span>
           <span
-            class="absolute inset-x-0 -bottom-px h-0.5 bg-teal-600 rounded-t"
+            class="tab-active-indicator"
+            style="display: block; height: 2px; background-color: #0d9488"
             x-show="activeTab === 'warehouses'"
           ></span>
         </button>
@@ -173,7 +175,8 @@
             x-text="products.length || 5"
           ></span>
           <span
-            class="absolute inset-x-0 -bottom-px h-0.5 bg-teal-600 rounded-t"
+            class="tab-active-indicator"
+            style="display: block; height: 2px; background-color: #0d9488"
             x-show="activeTab === 'products'"
           ></span>
         </button>
@@ -190,7 +193,8 @@
             x-text="trafficRecords.length ? trafficRecords.length + ' Trips' : '38 Trips'"
           ></span>
           <span
-            class="absolute inset-x-0 -bottom-px h-0.5 bg-teal-600 rounded-t"
+            class="tab-active-indicator"
+            style="display: block; height: 2px; background-color: #0d9488"
             x-show="activeTab === 'traffic'"
           ></span>
         </button>
