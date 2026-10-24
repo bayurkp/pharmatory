@@ -334,7 +334,7 @@
                           ></span>
                         </div>
                         <div class="flex items-center gap-1 sm:gap-1.5 shrink-0 ml-1.5">
-                          <template x-if="getProduct(item.productId)?.coldChainRequired">
+                          <template x-if="getProduct(item.productId)?.requiresColdChain">
                             <span
                               class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-teal-50 text-teal-700 border border-teal-200"
                             >
@@ -342,7 +342,7 @@
                               <span class="sm:hidden">Cold</span>
                             </span>
                           </template>
-                          <template x-if="!getProduct(item.productId)?.coldChainRequired">
+                          <template x-if="!getProduct(item.productId)?.requiresColdChain">
                             <span
                               class="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200"
                             >
@@ -415,8 +415,8 @@
                               <template x-if="!isProductSelected(p.id, index)">
                                 <span
                                   class="px-1.5 py-0.5 rounded text-[10px] font-medium border"
-                                  :class="p.coldChainRequired ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-500 border-slate-200'"
-                                  x-text="p.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
+                                  :class="p.requiresColdChain ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-500 border-slate-200'"
+                                  x-text="p.requiresColdChain ? 'Cold (2-8°C)' : 'Ambient'"
                                 ></span>
                               </template>
                               <span
@@ -644,8 +644,8 @@
                         <div class="flex items-center gap-2 text-xs">
                           <span
                             class="px-2 py-0.5 rounded text-[11px] font-medium border"
-                            :class="s.fullColdChainCapable ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
-                            x-text="s.fleetType"
+                            :class="s.isColdChainCapable ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
+                            x-text="formatFleet(s.fleetType)"
                           ></span>
                           <span
                             class="text-slate-500 whitespace-nowrap text-xs"
@@ -699,13 +699,13 @@
                                 ></td>
                                 <td
                                   class="py-2 text-slate-500 whitespace-nowrap"
-                                  x-text="item.category"
+                                  x-text="formatCategory(item.category)"
                                 ></td>
                                 <td class="py-2 whitespace-nowrap">
                                   <span
                                     class="px-2 py-0.5 rounded text-[11px] font-medium border"
-                                    :class="item.coldChainRequired ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
-                                    x-text="item.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
+                                    :class="item.requiresColdChain ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
+                                    x-text="item.requiresColdChain ? 'Cold (2-8°C)' : 'Ambient'"
                                   ></span>
                                 </td>
                                 <td
@@ -907,17 +907,17 @@
                   ></td>
                   <td
                     class="py-2.5 px-2 text-slate-600 whitespace-nowrap"
-                    x-text="w.storageType"
+                    x-text="formatStorage(w.storageType)"
                   ></td>
                   <td
                     class="py-2.5 px-2 text-slate-600 whitespace-nowrap"
-                    x-text="w.fleetType"
+                    x-text="formatFleet(w.fleetType)"
                   ></td>
                   <td class="py-2.5 px-2 whitespace-nowrap">
                     <span
                       class="px-2 py-0.5 rounded text-[11px] font-medium border"
-                      :class="w.fullColdChainCapable ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-500 border-slate-200'"
-                      x-text="w.fullColdChainCapable ? 'Refrigerated Fleet' : 'Standard Fleet'"
+                      :class="w.isColdChainCapable ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-500 border-slate-200'"
+                      x-text="w.isColdChainCapable ? 'Refrigerated Fleet' : 'Standard Fleet'"
                     ></span>
                   </td>
                   <td class="py-2.5 px-2 whitespace-nowrap">
@@ -977,12 +977,15 @@
                     class="py-2.5 px-2 font-semibold text-slate-900 whitespace-nowrap"
                     x-text="p.name"
                   ></td>
-                  <td class="py-2.5 px-2 text-slate-600 whitespace-nowrap" x-text="p.category"></td>
+                  <td
+                    class="py-2.5 px-2 text-slate-600 whitespace-nowrap"
+                    x-text="formatCategory(p.category)"
+                  ></td>
                   <td class="py-2.5 px-2 whitespace-nowrap">
                     <span
                       class="px-2 py-0.5 rounded text-[11px] font-medium border"
-                      :class="p.coldChainRequired ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-600 border-slate-200'"
-                      x-text="p.coldChainRequired ? 'Cold Chain (2°C - 8°C)' : 'Ambient Storage'"
+                      :class="p.requiresColdChain ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-600 border-slate-200'"
+                      x-text="p.requiresColdChain ? 'Cold Chain (2°C - 8°C)' : 'Ambient Storage'"
                     ></span>
                   </td>
                   <td

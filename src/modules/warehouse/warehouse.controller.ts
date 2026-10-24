@@ -5,6 +5,8 @@ import { byJsonSuccess } from '../../shared/utils/by-json.util.js'
 interface GetWarehousesQuery {
   city?: string
   location?: string
+  isColdChainCapable?: boolean | string
+  is_cold_chain_capable?: boolean | string
   coldChain?: boolean | string
   cold_chain?: boolean | string
   fullColdChainCapable?: boolean | string
@@ -19,7 +21,11 @@ export class WarehouseController {
   ) => {
     const location = request.query.city ?? request.query.location
     const rawVal =
-      request.query.coldChain ?? request.query.cold_chain ?? request.query.fullColdChainCapable
+      request.query.isColdChainCapable ??
+      request.query.is_cold_chain_capable ??
+      request.query.coldChain ??
+      request.query.cold_chain ??
+      request.query.fullColdChainCapable
     const isColdFleet =
       rawVal !== undefined
         ? typeof rawVal === 'boolean'
@@ -29,7 +35,7 @@ export class WarehouseController {
 
     const warehouses = this.warehouseService.getAllWarehouses({
       location,
-      fullColdChainCapable: isColdFleet
+      isColdChainCapable: isColdFleet
     })
 
     return reply.status(200).send(byJsonSuccess(warehouses, request.id as string))

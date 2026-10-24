@@ -51,9 +51,9 @@ export const fulfillOrderResponseDataSchema = {
           warehouseName: { type: 'string' },
           location: { type: 'string' },
           distanceKm: { type: 'number' },
-          storageType: { type: 'string' },
-          fleetType: { type: 'string' },
-          fullColdChainCapable: { type: 'boolean' },
+          storageType: { type: 'string', enum: ['ambient', 'refrigerated'] },
+          fleetType: { type: 'string', enum: ['standard', 'refrigerated'] },
+          isColdChainCapable: { type: 'boolean' },
           estimatedDurationMinutes: { type: 'number' },
           trafficDetails: {
             type: 'object',
@@ -73,8 +73,11 @@ export const fulfillOrderResponseDataSchema = {
               properties: {
                 productId: { type: 'string' },
                 productName: { type: 'string' },
-                category: { type: 'string' },
-                coldChainRequired: { type: 'boolean' },
+                category: {
+                  type: 'string',
+                  enum: ['medical_supplies', 'pharmaceutical']
+                },
+                requiresColdChain: { type: 'boolean' },
                 quantity: { type: 'integer' }
               }
             }

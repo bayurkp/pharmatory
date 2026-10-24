@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3'
+import { ProductCategory } from '../product/product.types.js'
 import {
   Warehouse,
   RawWarehouseRow,
@@ -33,7 +34,7 @@ export class WarehouseRepository {
         ws.product_id,
         p.name AS product_name,
         p.category,
-        p.cold_chain_required,
+        p.requires_cold_chain,
         ws.quantity
       FROM warehouse_stocks ws
       JOIN products p ON ws.product_id = p.id
@@ -54,8 +55,8 @@ export class WarehouseRepository {
       stockMap[row.warehouse_id].inventory.push({
         productId: row.product_id,
         productName: row.product_name,
-        category: row.category,
-        coldChainRequired: Boolean(row.cold_chain_required),
+        category: row.category as ProductCategory,
+        requiresColdChain: Boolean(row.requires_cold_chain),
         quantity: row.quantity
       })
     }

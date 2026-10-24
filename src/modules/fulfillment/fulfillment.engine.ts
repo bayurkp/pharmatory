@@ -82,7 +82,7 @@ export class FulfillmentEngine {
 
     for (const [productId, quantity] of mergedQuantities.entries()) {
       const product = productMap.get(productId)!
-      if (product.coldChainRequired) {
+      if (product.requiresColdChain) {
         orderRequiresColdChain = true
       }
       itemDetails.push({ product, quantity })
@@ -100,7 +100,7 @@ export class FulfillmentEngine {
     for (const warehouse of warehouses) {
       // Check cold-chain compliance:
       // If order contains cold-chain products, warehouse must be full cold chain capable (refrigerated storage + refrigerated vans)
-      if (orderRequiresColdChain && !warehouse.fullColdChainCapable) {
+      if (orderRequiresColdChain && !warehouse.isColdChainCapable) {
         continue
       }
 
@@ -143,7 +143,7 @@ export class FulfillmentEngine {
         productId: it.product.id,
         productName: it.product.name,
         category: it.product.category,
-        coldChainRequired: it.product.coldChainRequired,
+        requiresColdChain: it.product.requiresColdChain,
         quantity: it.quantity
       }))
 
@@ -154,7 +154,7 @@ export class FulfillmentEngine {
         distanceKm: selectedWh.distanceKm,
         storageType: selectedWh.storageType,
         fleetType: selectedWh.fleetType,
-        fullColdChainCapable: selectedWh.fullColdChainCapable,
+        isColdChainCapable: selectedWh.isColdChainCapable,
         estimatedDurationMinutes: traffic.estimatedDurationMinutes,
         trafficDetails: traffic,
         items: shipmentItems
@@ -185,14 +185,14 @@ export class FulfillmentEngine {
 
     // 3. Fallback: Deterministic Multi-Warehouse Split Solver
     // Segregate items into cold chain items vs ambient items
-    const coldItems = itemDetails.filter((it) => it.product.coldChainRequired)
-    const ambientItems = itemDetails.filter((it) => !it.product.coldChainRequired)
+    const coldItems = itemDetails.filter((it) => it.product.requiresColdChain)
+    const ambientItems = itemDetails.filter((it) => !it.product.requiresColdChain)
 
     const shipments: FulfillmentShipment[] = []
 
     // 3a. Allocate cold-chain items strictly to warehouses with refrigerated vans (W04, W07, W08)
     const coldWarehouses = warehouses
-      .filter((w) => w.fullColdChainCapable)
+      .filter((w) => w.isColdChainCapable)
       .sort((a, b) => a.distanceKm - b.distanceKm)
 
     const remainingColdDemands = new Map<string, number>()
@@ -215,7 +215,7 @@ export class FulfillmentEngine {
             productId: prod.id,
             productName: prod.name,
             category: prod.category,
-            coldChainRequired: true,
+            requiresColdChain: true,
             quantity: qtyToTake
           })
           remainingColdDemands.set(prodId, neededQty - qtyToTake)
@@ -231,7 +231,7 @@ export class FulfillmentEngine {
           distanceKm: wh.distanceKm,
           storageType: wh.storageType,
           fleetType: wh.fleetType,
-          fullColdChainCapable: true,
+          isColdChainCapable: true,
           estimatedDurationMinutes: traffic.estimatedDurationMinutes,
           trafficDetails: traffic,
           items: itemsToTakeFromWh
@@ -280,7 +280,7 @@ export class FulfillmentEngine {
             productId: prod.id,
             productName: prod.name,
             category: prod.category,
-            coldChainRequired: false,
+            requiresColdChain: false,
             quantity: qtyToTake
           })
           remainingAmbientDemands.set(prodId, neededQty - qtyToTake)
@@ -308,7 +308,7 @@ export class FulfillmentEngine {
             productId: prod.id,
             productName: prod.name,
             category: prod.category,
-            coldChainRequired: false,
+            requiresColdChain: false,
             quantity: qtyToTake
           })
           remainingAmbientDemands.set(prodId, neededQty - qtyToTake)
@@ -327,7 +327,7 @@ export class FulfillmentEngine {
             distanceKm: wh.distanceKm,
             storageType: wh.storageType,
             fleetType: wh.fleetType,
-            fullColdChainCapable: wh.fullColdChainCapable,
+            isColdChainCapable: wh.isColdChainCapable,
             estimatedDurationMinutes: traffic.estimatedDurationMinutes,
             trafficDetails: traffic,
             items: itemsToTakeFromWh

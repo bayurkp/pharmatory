@@ -184,13 +184,28 @@ function createPharmatoryComponent() {
       )
     },
 
+    formatStorage(type) {
+      if (!type) return 'Unknown'
+      return type === 'refrigerated' ? 'Refrigerated Unit' : 'Ambient Storage'
+    },
+
+    formatFleet(type) {
+      if (!type) return 'Unknown'
+      return type === 'refrigerated' ? 'Refrigerated Fleet' : 'Standard Fleet'
+    },
+
+    formatCategory(cat) {
+      if (!cat) return ''
+      return cat === 'pharmaceutical' ? 'Pharmaceutical' : 'Medical Supplies'
+    },
+
     getTotalStock(productId) {
       const product = this.getProduct(productId)
       if (!product || !this.warehouses.length) return 0
 
       // For cold chain vaccines, count only warehouses with active refrigerated fleet (W04, W07, W08)
-      const qualifiedWh = product.coldChainRequired
-        ? this.warehouses.filter((w) => w.fullColdChainCapable)
+      const qualifiedWh = product.requiresColdChain
+        ? this.warehouses.filter((w) => w.isColdChainCapable)
         : this.warehouses
 
       return qualifiedWh.reduce((sum, w) => sum + (w.stocks?.[productId] || 0), 0)

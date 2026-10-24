@@ -5,7 +5,11 @@ import { NotFoundError } from '../../shared/errors/app-error.js'
 export class WarehouseService {
   constructor(private readonly warehouseRepo: WarehouseRepository) {}
 
-  getAllWarehouses(filters?: { location?: string; fullColdChainCapable?: boolean }): Warehouse[] {
+  getAllWarehouses(filters?: {
+    location?: string
+    isColdChainCapable?: boolean
+    fullColdChainCapable?: boolean
+  }): Warehouse[] {
     let warehouses = this.warehouseRepo.findAllWithInventories()
 
     if (filters?.location) {
@@ -13,8 +17,9 @@ export class WarehouseService {
       warehouses = warehouses.filter((w) => w.location.toLowerCase() === loc)
     }
 
-    if (typeof filters?.fullColdChainCapable === 'boolean') {
-      warehouses = warehouses.filter((w) => w.fullColdChainCapable === filters.fullColdChainCapable)
+    const capable = filters?.isColdChainCapable ?? filters?.fullColdChainCapable
+    if (typeof capable === 'boolean') {
+      warehouses = warehouses.filter((w) => w.isColdChainCapable === capable)
     }
 
     return warehouses

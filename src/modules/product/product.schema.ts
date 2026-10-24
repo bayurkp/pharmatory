@@ -5,12 +5,16 @@ import {
 
 export const productItemSchema = {
   type: 'object',
-  required: ['id', 'name', 'category', 'coldChainRequired'],
+  required: ['id', 'name', 'category', 'requiresColdChain'],
   properties: {
     id: { type: 'string', example: 'P001' },
     name: { type: 'string', example: 'Surgical Gloves (Box of 100)' },
-    category: { type: 'string', example: 'Medical Supplies' },
-    coldChainRequired: { type: 'boolean', example: false },
+    category: {
+      type: 'string',
+      enum: ['medical_supplies', 'pharmaceutical'],
+      example: 'medical_supplies'
+    },
+    requiresColdChain: { type: 'boolean', example: false },
     description: {
       type: 'string',
       nullable: true,
@@ -23,17 +27,28 @@ export const getProductsSchema = {
   tags: ['Products'],
   summary: 'Retrieve all catalog products',
   description:
-    'Returns the complete pharmaceutical and medical product catalog, indicating cold chain storage requirements.',
+    'Returns the complete pharmaceutical and medical product catalog with normalized category enums and cold chain predicate.',
   querystring: {
     type: 'object',
     properties: {
-      category: { type: 'string', description: 'Filter products by category' },
-      coldChain: {
+      category: {
+        type: 'string',
+        enum: ['medical_supplies', 'pharmaceutical'],
+        description: 'Filter products by category'
+      },
+      requiresColdChain: {
         type: 'boolean',
         description: 'Filter products by cold chain requirement (true/false)'
       },
-      cold_chain: { type: 'boolean', description: 'Alternative snake_case alias' },
-      coldChainRequired: { type: 'boolean', description: 'Legacy verbose alias' }
+      requires_cold_chain: {
+        type: 'boolean',
+        description: 'Filter products by cold chain requirement (snake_case alias)'
+      },
+      coldChain: {
+        type: 'boolean',
+        description: 'Convenience query parameter alias'
+      },
+      cold_chain: { type: 'boolean', description: 'Convenience query parameter snake_case alias' }
     }
   },
   response: {

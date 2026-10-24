@@ -11,30 +11,35 @@ describe('FulfillmentEngine Unit Tests', () => {
   let engine: FulfillmentEngine
 
   const mockProducts: Product[] = [
-    { id: 'P001', name: 'Surgical Gloves', category: 'Medical Supplies', coldChainRequired: false },
+    {
+      id: 'P001',
+      name: 'Surgical Gloves',
+      category: 'medical_supplies',
+      requiresColdChain: false
+    },
     {
       id: 'P002',
       name: 'Vaccine — Hepatitis B',
-      category: 'Pharmaceutical',
-      coldChainRequired: true
+      category: 'pharmaceutical',
+      requiresColdChain: true
     },
     {
       id: 'P003',
       name: 'Disposable Syringe',
-      category: 'Medical Supplies',
-      coldChainRequired: false
+      category: 'medical_supplies',
+      requiresColdChain: false
     },
     {
       id: 'P004',
       name: 'Vaccine — Tetanus Toxoid',
-      category: 'Pharmaceutical',
-      coldChainRequired: true
+      category: 'pharmaceutical',
+      requiresColdChain: true
     },
     {
       id: 'P005',
       name: 'Paracetamol Tablets',
-      category: 'Pharmaceutical',
-      coldChainRequired: false
+      category: 'pharmaceutical',
+      requiresColdChain: false
     }
   ]
 
@@ -44,9 +49,9 @@ describe('FulfillmentEngine Unit Tests', () => {
       name: 'Surabaya Central Depot',
       location: 'Surabaya',
       distanceKm: 5.0,
-      storageType: 'General Storage',
-      fleetType: 'Standard Vehicles',
-      fullColdChainCapable: false,
+      storageType: 'ambient',
+      fleetType: 'standard',
+      isColdChainCapable: false,
       stocks: { P001: 200, P003: 500, P005: 300 }
     },
     {
@@ -54,9 +59,9 @@ describe('FulfillmentEngine Unit Tests', () => {
       name: 'Surabaya Cold Logistics',
       location: 'Surabaya',
       distanceKm: 12.0,
-      storageType: 'Refrigerated Unit',
-      fleetType: 'Standard Vehicles',
-      fullColdChainCapable: false, // Storage only, disqualified for vaccine delivery!
+      storageType: 'refrigerated',
+      fleetType: 'standard',
+      isColdChainCapable: false, // Storage only, disqualified for vaccine delivery!
       stocks: { P001: 50, P002: 30, P004: 20 }
     },
     {
@@ -64,9 +69,9 @@ describe('FulfillmentEngine Unit Tests', () => {
       name: 'Gresik Cold Chain Express',
       location: 'Gresik',
       distanceKm: 30.0,
-      storageType: 'Refrigerated Unit',
-      fleetType: 'Refrigerated Vans',
-      fullColdChainCapable: true,
+      storageType: 'refrigerated',
+      fleetType: 'refrigerated',
+      isColdChainCapable: true,
       stocks: { P002: 40, P004: 25, P005: 100 }
     },
     {
@@ -74,9 +79,9 @@ describe('FulfillmentEngine Unit Tests', () => {
       name: 'Pasuruan Pharma Hub',
       location: 'Pasuruan',
       distanceKm: 45.0,
-      storageType: 'Refrigerated Unit',
-      fleetType: 'Refrigerated Vans',
-      fullColdChainCapable: true,
+      storageType: 'refrigerated',
+      fleetType: 'refrigerated',
+      isColdChainCapable: true,
       stocks: { P001: 150, P002: 8, P004: 10 }
     }
   ]
@@ -116,8 +121,8 @@ describe('FulfillmentEngine Unit Tests', () => {
     // W04 is 30km with refrigerated vans. The engine must select W04!
     assert.equal(plan.shipments[0].warehouseId, 'W04')
     assert.equal(plan.coldChainCompliance, 'verified')
-    assert.equal(plan.shipments[0].fullColdChainCapable, true)
-    assert.equal(plan.shipments[0].fleetType, 'Refrigerated Vans')
+    assert.equal(plan.shipments[0].isColdChainCapable, true)
+    assert.equal(plan.shipments[0].fleetType, 'refrigerated')
   })
 
   it('splits orders deterministically when items require mixed cold-chain fleet and ambient inventory', () => {
@@ -139,8 +144,8 @@ describe('FulfillmentEngine Unit Tests', () => {
     // Verify vaccine is dispatched from cold-chain facility
     const vaccineShipment = plan.shipments.find((s) => s.items.some((i) => i.productId === 'P002'))
     assert.ok(vaccineShipment)
-    assert.equal(vaccineShipment?.fullColdChainCapable, true)
-    assert.equal(vaccineShipment?.fleetType, 'Refrigerated Vans')
+    assert.equal(vaccineShipment?.isColdChainCapable, true)
+    assert.equal(vaccineShipment?.fleetType, 'refrigerated')
   })
 
   it('adjusts duration dynamically based on peak traffic heuristics', () => {

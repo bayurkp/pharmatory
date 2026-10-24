@@ -45,20 +45,21 @@ describe('Pharmatory API Integration Tests (Fastify inject)', () => {
 
     const hepB = json.data.find((p: { id: string }) => p.id === 'P002')
     assert.ok(hepB)
-    assert.equal(hepB.coldChainRequired, true)
+    assert.equal(hepB.requiresColdChain, true)
+    assert.equal(hepB.category, 'pharmaceutical')
   })
 
-  it('GET /api/v1/products?coldChainRequired=true - filters by query parameter', async () => {
+  it('GET /api/v1/products?requiresColdChain=true - filters by query parameter', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: '/api/v1/products?coldChainRequired=true'
+      url: '/api/v1/products?requiresColdChain=true'
     })
 
     assert.equal(response.statusCode, 200)
     const json = JSON.parse(response.payload)
     assert.equal(json.success, true)
     assert.equal(json.data.length, 2)
-    assert.ok(json.data.every((p: { coldChainRequired: boolean }) => p.coldChainRequired === true))
+    assert.ok(json.data.every((p: { requiresColdChain: boolean }) => p.requiresColdChain === true))
   })
 
   it('GET /api/v1/products?coldChain=true - filters by concise camelCase parameter', async () => {
@@ -99,8 +100,9 @@ describe('Pharmatory API Integration Tests (Fastify inject)', () => {
 
     const w04 = json.data.find((w: { id: string }) => w.id === 'W04')
     assert.ok(w04)
-    assert.equal(w04.fullColdChainCapable, true)
-    assert.equal(w04.fleetType, 'Refrigerated Vans')
+    assert.equal(w04.isColdChainCapable, true)
+    assert.equal(w04.fleetType, 'refrigerated')
+    assert.equal(w04.storageType, 'refrigerated')
   })
 
   it('GET /api/v1/warehouses?location=Surabaya - filters warehouses by location', async () => {

@@ -8,7 +8,7 @@ export function up(db: Database.Database): void {
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       category TEXT NOT NULL,
-      cold_chain_required INTEGER NOT NULL DEFAULT 0,
+      requires_cold_chain INTEGER NOT NULL DEFAULT 0,
       description TEXT
     );
 
@@ -19,7 +19,7 @@ export function up(db: Database.Database): void {
       distance_km REAL NOT NULL,
       storage_type TEXT NOT NULL,
       fleet_type TEXT NOT NULL,
-      full_cold_chain_capable INTEGER NOT NULL DEFAULT 0
+      is_cold_chain_capable INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS warehouse_stocks (

@@ -5,16 +5,25 @@ import { NotFoundError } from '../../shared/errors/app-error.js'
 export class ProductService {
   constructor(private readonly productRepo: ProductRepository) {}
 
-  getAllProducts(filters?: { category?: string; coldChainRequired?: boolean }): Product[] {
+  getAllProducts(filters?: {
+    category?: string
+    requiresColdChain?: boolean
+    coldChainRequired?: boolean
+  }): Product[] {
     let products = this.productRepo.findAll()
 
     if (filters?.category) {
-      const cat = filters.category.toLowerCase()
-      products = products.filter((p) => p.category.toLowerCase() === cat)
+      const cat = filters.category.toLowerCase().replace(/\s+/g, '_')
+      products = products.filter(
+        (p) =>
+          p.category.toLowerCase() === cat ||
+          p.category.toLowerCase() === filters.category!.toLowerCase()
+      )
     }
 
-    if (typeof filters?.coldChainRequired === 'boolean') {
-      products = products.filter((p) => p.coldChainRequired === filters.coldChainRequired)
+    const coldChain = filters?.requiresColdChain ?? filters?.coldChainRequired
+    if (typeof coldChain === 'boolean') {
+      products = products.filter((p) => p.requiresColdChain === coldChain)
     }
 
     return products

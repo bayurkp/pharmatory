@@ -1,4 +1,6 @@
 import { TrafficEstimation } from '../traffic/traffic.types.js'
+import { ProductCategory } from '../product/product.types.js'
+import { StorageType, FleetType } from '../warehouse/warehouse.types.js'
 
 export interface OrderItem {
   productId: string
@@ -14,8 +16,8 @@ export interface FulfillOrderRequest {
 export interface FulfillmentShipmentItem {
   productId: string
   productName: string
-  category: string
-  coldChainRequired: boolean
+  category: ProductCategory
+  requiresColdChain: boolean
   quantity: number
 }
 
@@ -24,9 +26,9 @@ export interface FulfillmentShipment {
   warehouseName: string
   location: string
   distanceKm: number
-  storageType: string
-  fleetType: string
-  fullColdChainCapable: boolean
+  storageType: StorageType
+  fleetType: FleetType
+  isColdChainCapable: boolean
   estimatedDurationMinutes: number
   trafficDetails: TrafficEstimation
   items: FulfillmentShipmentItem[]

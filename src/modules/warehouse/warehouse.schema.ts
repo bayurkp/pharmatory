@@ -12,16 +12,24 @@ export const warehouseItemSchema = {
     'distanceKm',
     'storageType',
     'fleetType',
-    'fullColdChainCapable'
+    'isColdChainCapable'
   ],
   properties: {
     id: { type: 'string', example: 'W04' },
     name: { type: 'string', example: 'Gresik Cold Chain Express' },
     location: { type: 'string', example: 'Gresik' },
     distanceKm: { type: 'number', example: 30.0 },
-    storageType: { type: 'string', example: 'Refrigerated Unit' },
-    fleetType: { type: 'string', example: 'Refrigerated Vans' },
-    fullColdChainCapable: { type: 'boolean', example: true },
+    storageType: {
+      type: 'string',
+      enum: ['ambient', 'refrigerated'],
+      example: 'refrigerated'
+    },
+    fleetType: {
+      type: 'string',
+      enum: ['standard', 'refrigerated'],
+      example: 'refrigerated'
+    },
+    isColdChainCapable: { type: 'boolean', example: true },
     stocks: {
       type: 'object',
       additionalProperties: { type: 'integer' },
@@ -34,8 +42,11 @@ export const warehouseItemSchema = {
         properties: {
           productId: { type: 'string' },
           productName: { type: 'string' },
-          category: { type: 'string' },
-          coldChainRequired: { type: 'boolean' },
+          category: {
+            type: 'string',
+            enum: ['medical_supplies', 'pharmaceutical']
+          },
+          requiresColdChain: { type: 'boolean' },
           quantity: { type: 'integer' }
         }
       }
@@ -47,18 +58,25 @@ export const getWarehousesSchema = {
   tags: ['Warehouses'],
   summary: 'Retrieve all regional warehouses',
   description:
-    'Returns the 8 regional medical warehouses across East Java with location, storage capabilities, vehicle fleet types, and real-time inventory balances.',
+    'Returns the 8 regional medical warehouses across East Java with normalized storage/fleet enums and cold chain predicate.',
   querystring: {
     type: 'object',
     properties: {
       city: { type: 'string', description: 'Filter warehouses by city (e.g. Surabaya, Malang)' },
       location: { type: 'string', description: 'Alternative alias for city' },
-      coldChain: {
+      isColdChainCapable: {
         type: 'boolean',
         description: 'Filter warehouses by full cold-chain capability (true/false)'
       },
-      cold_chain: { type: 'boolean', description: 'Alternative snake_case alias' },
-      fullColdChainCapable: { type: 'boolean', description: 'Legacy verbose alias' }
+      is_cold_chain_capable: {
+        type: 'boolean',
+        description: 'Filter warehouses by full cold-chain capability (snake_case alias)'
+      },
+      coldChain: {
+        type: 'boolean',
+        description: 'Convenience query parameter alias'
+      },
+      cold_chain: { type: 'boolean', description: 'Convenience query parameter snake_case alias' }
     }
   },
   response: {
