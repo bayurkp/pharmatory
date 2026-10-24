@@ -6,6 +6,7 @@ import {
   TrafficEstimation
 } from './traffic.types.js'
 import { BadRequestError } from '../../shared/errors/app-error.js'
+import { DEFAULT_HISTORICAL_CSV } from './traffic.benchmark.js'
 
 export class TrafficService {
   private records: HistoricalDeliveryRecord[] = []
@@ -20,6 +21,9 @@ export class TrafficService {
     if (fs.existsSync(this.csvPath)) {
       const content = fs.readFileSync(this.csvPath, 'utf-8')
       this.records = this.parseCsvString(content)
+      this.computeStats()
+    } else {
+      this.records = this.parseCsvString(DEFAULT_HISTORICAL_CSV)
       this.computeStats()
     }
 
@@ -53,7 +57,7 @@ export class TrafficService {
   }
 
   parseCsvString(csvText: string): HistoricalDeliveryRecord[] {
-    const lines = csvText.split(/\r?\n/)
+    const lines = csvText.split(/\r\n|\r|\n/)
     const parsedRecords: HistoricalDeliveryRecord[] = []
 
     let isHeader = true
@@ -83,7 +87,8 @@ export class TrafficService {
         const warehouseId = matches[1].trim()
         const dayTime = matches[2].trim()
         const duration = parseInt(matches[3].trim(), 10)
-        const notes = matches[4] ? matches[4].trim() : undefined
+        const rawNotes = matches[4] ? matches[4].trim() : undefined
+        const notes = (rawNotes && rawNotes !== "-" && rawNotes !== "\u2013" && rawNotes !== "\u2014" && !rawNotes.includes("\uFFFD") && rawNotes.length > 0) ? rawNotes : undefined
 
         // Parse Day and Time: "Mon, 08:00"
         const [dayPart, timePart] = dayTime.split(',').map((s) => s.trim())
