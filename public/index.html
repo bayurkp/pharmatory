@@ -3,28 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pharmatory - Fulfillment Engine</title>
+    <title>Pharmatory - Medical Fulfillment Engine</title>
     <link rel="stylesheet" href="/css/styles.css" />
     <script defer src="/js/app.js"></script>
     <script defer src="/js/alpine.min.js"></script>
   </head>
   <body
-    class="min-h-screen bg-base-200 text-base-content antialiased flex flex-col font-sans"
+    class="min-h-screen bg-base-100 text-base-content antialiased flex flex-col font-sans"
     x-data="pharmatoryApp()"
   >
-    <!-- Minimalist Navbar -->
+    <!-- Minimalist Top Navbar -->
     <header
-      class="navbar bg-base-100 shadow-sm border-b border-base-300 sticky top-0 z-50 px-4 lg:px-8 h-14 min-h-14"
+      class="border-b border-base-200 sticky top-0 z-40 bg-base-100/90 backdrop-blur-md px-4 lg:px-8 h-14 flex items-center justify-between"
     >
-      <div class="flex-1 items-center gap-2.5">
+      <div class="flex items-center gap-3">
         <div
           class="w-8 h-8 rounded-lg bg-primary text-primary-content flex items-center justify-center font-bold shadow-xs"
         >
           <svg
-            class="w-5 h-5"
+            class="w-4 h-4"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
+            stroke-width="2.2"
             viewBox="0 0 24 24"
           >
             <path
@@ -36,16 +36,20 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="font-bold text-base tracking-tight">Pharmatory</span>
-          <span class="badge badge-xs badge-primary font-mono">v1.0</span>
-          <span class="badge badge-xs badge-ghost font-mono">ByJSON</span>
+          <span class="badge badge-xs badge-primary font-mono font-medium">v1.0</span>
+          <span class="badge badge-xs badge-ghost font-mono">ByJSON v2.0</span>
         </div>
       </div>
 
-      <!-- Actions -->
-      <div class="flex-none items-center gap-1.5">
-        <a href="/docs/v1" target="_blank" class="btn btn-xs btn-ghost gap-1 font-medium">
+      <!-- Action Links & Theme -->
+      <div class="flex items-center gap-2">
+        <a
+          href="/docs/v1"
+          target="_blank"
+          class="btn btn-xs btn-ghost gap-1 font-medium text-base-content/70 hover:text-primary"
+        >
           <svg
-            class="w-3.5 h-3.5 text-primary"
+            class="w-3.5 h-3.5"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -63,10 +67,10 @@
         <a
           href="/docs/v1/openapi.json"
           target="_blank"
-          class="btn btn-xs btn-outline gap-1 font-medium"
+          class="btn btn-xs btn-ghost gap-1 font-medium text-base-content/70 hover:text-secondary"
         >
           <svg
-            class="w-3.5 h-3.5 text-secondary"
+            class="w-3.5 h-3.5"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -85,15 +89,20 @@
         <div
           class="dropdown dropdown-end"
           x-data="{
-        theme: 'corporate',
-        themes: ['corporate', 'emerald', 'light', 'dark', 'business'],
-        changeTheme(t) {
-          this.theme = t;
-          document.documentElement.setAttribute('data-theme', t);
-        }
-      }"
+          theme: 'corporate',
+          themes: ['corporate', 'emerald', 'light', 'dark', 'business'],
+          changeTheme(t) {
+            this.theme = t;
+            document.documentElement.setAttribute('data-theme', t);
+          }
+        }"
         >
-          <div tabindex="0" role="button" class="btn btn-xs btn-square btn-ghost" title="Theme">
+          <div
+            tabindex="0"
+            role="button"
+            class="btn btn-xs btn-square btn-ghost text-base-content/60"
+            title="Theme"
+          >
             <svg
               class="w-3.5 h-3.5"
               fill="none"
@@ -110,7 +119,7 @@
           </div>
           <ul
             tabindex="0"
-            class="dropdown-content menu bg-base-100 rounded-box z-20 w-32 p-1 shadow-lg border border-base-300 text-xs"
+            class="dropdown-content menu bg-base-100 rounded-box z-30 w-32 p-1 shadow-lg border border-base-200 text-xs"
           >
             <template x-for="t in themes" :key="t">
               <li>
@@ -127,61 +136,18 @@
       </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="container mx-auto px-4 lg:px-8 py-5 max-w-7xl flex-1 space-y-5">
-      <!-- Minimalist Stats -->
-      <div class="stats stats-horizontal shadow-xs bg-base-100 border border-base-300 w-full py-1">
-        <div class="stat py-2 px-4">
-          <div class="stat-title text-2xs uppercase tracking-wider font-semibold">Warehouses</div>
-          <div
-            class="stat-value text-primary text-xl font-bold mt-0.5"
-            x-text="warehouses.length || 8"
-          >
-            8
-          </div>
-          <div class="stat-desc text-2xs">Regional facilities</div>
-        </div>
-
-        <div class="stat py-2 px-4">
-          <div class="stat-title text-2xs uppercase tracking-wider font-semibold">Products</div>
-          <div
-            class="stat-value text-secondary text-xl font-bold mt-0.5"
-            x-text="products.length || 5"
-          >
-            5
-          </div>
-          <div class="stat-desc text-2xs">SKU catalog</div>
-        </div>
-
-        <div class="stat py-2 px-4">
-          <div class="stat-title text-2xs uppercase tracking-wider font-semibold">Cold Chain</div>
-          <div class="stat-value text-accent text-xl font-bold mt-0.5">3 Fleets</div>
-          <div class="stat-desc text-2xs">W04, W07, W08</div>
-        </div>
-
-        <div class="stat py-2 px-4">
-          <div class="stat-title text-2xs uppercase tracking-wider font-semibold">
-            Traffic Dataset
-          </div>
-          <div
-            class="stat-value text-info text-xl font-bold mt-0.5"
-            x-text="trafficRecords.length + ' Trips'"
-          >
-            38 Trips
-          </div>
-          <div class="stat-desc text-2xs">In-memory model</div>
-        </div>
-      </div>
-
-      <!-- Minimalist Tabs -->
-      <div class="tabs tabs-box bg-base-100 p-1 border border-base-300">
+    <!-- Clean Navigation Bar (Tabs & System Metrics) -->
+    <nav
+      class="border-b border-base-200 px-4 lg:px-8 bg-base-100 flex flex-wrap items-center justify-between gap-4"
+    >
+      <div class="flex items-center gap-1 -mb-px">
         <button
-          class="tab tab-sm font-medium gap-1.5"
-          :class="{ 'tab-active': activeTab === 'simulator' }"
           @click="activeTab = 'simulator'"
+          :class="activeTab === 'simulator' ? 'border-primary text-primary font-semibold' : 'border-transparent text-base-content/60 hover:text-base-content font-medium'"
+          class="py-3 px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5"
         >
           <svg
-            class="w-3.5 h-3.5"
+            class="w-4 h-4"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -193,192 +159,217 @@
               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
             ></path>
           </svg>
-          Fulfillment
+          <span>Fulfillment Simulator</span>
         </button>
+
         <button
-          class="tab tab-sm font-medium gap-1.5"
-          :class="{ 'tab-active': activeTab === 'warehouses' }"
           @click="activeTab = 'warehouses'"
+          :class="activeTab === 'warehouses' ? 'border-primary text-primary font-semibold' : 'border-transparent text-base-content/60 hover:text-base-content font-medium'"
+          class="py-3 px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5"
         >
-          <svg
-            class="w-3.5 h-3.5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"
-            ></path>
-          </svg>
-          Warehouses
+          <span>Warehouses</span>
+          <span
+            class="badge badge-2xs badge-ghost font-mono"
+            x-text="warehouses.length || 8"
+          ></span>
         </button>
+
         <button
-          class="tab tab-sm font-medium gap-1.5"
-          :class="{ 'tab-active': activeTab === 'products' }"
           @click="activeTab = 'products'"
+          :class="activeTab === 'products' ? 'border-primary text-primary font-semibold' : 'border-transparent text-base-content/60 hover:text-base-content font-medium'"
+          class="py-3 px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5"
         >
-          <svg
-            class="w-3.5 h-3.5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-            ></path>
-          </svg>
-          Products
+          <span>Products</span>
+          <span class="badge badge-2xs badge-ghost font-mono" x-text="products.length || 5"></span>
         </button>
+
         <button
-          class="tab tab-sm font-medium gap-1.5"
-          :class="{ 'tab-active': activeTab === 'traffic' }"
           @click="activeTab = 'traffic'"
+          :class="activeTab === 'traffic' ? 'border-primary text-primary font-semibold' : 'border-transparent text-base-content/60 hover:text-base-content font-medium'"
+          class="py-3 px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5"
         >
-          <svg
-            class="w-3.5 h-3.5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-            ></path>
-          </svg>
-          Traffic & CSV
+          <span>Traffic & Datasets</span>
+          <span
+            class="badge badge-2xs badge-ghost font-mono"
+            x-text="trafficRecords.length ? trafficRecords.length + ' Trips' : '38 Trips'"
+          ></span>
         </button>
       </div>
 
-      <!-- TAB 1: FULFILLMENT -->
-      <section x-show="activeTab === 'simulator'" class="space-y-5">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <!-- Left: Form Controls -->
-          <div class="lg:col-span-5 space-y-4">
-            <div class="card bg-base-100 border border-base-300 shadow-xs">
-              <div class="card-body p-4 space-y-3.5">
-                <div class="flex items-center justify-between border-b border-base-200 pb-2.5">
-                  <h2 class="card-title text-sm font-bold flex items-center gap-1.5">
-                    <svg
-                      class="w-4 h-4 text-primary"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                      ></path>
-                    </svg>
-                    New Order
-                  </h2>
-                  <span
-                    class="badge badge-xs font-mono"
-                    x-text="orderItems.length + ' item(s)'"
-                  ></span>
-                </div>
+      <!-- Live Network Summary Pill -->
+      <div class="hidden sm:flex items-center gap-3 text-2xs text-base-content/60 font-mono py-2">
+        <span class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+          8 Regional Hubs
+        </span>
+        <span>·</span>
+        <span>3 Cold Fleets (W04, W07, W08)</span>
+        <span>·</span>
+        <span>East Java Single/Split Solver</span>
+      </div>
+    </nav>
 
-                <!-- Presets -->
-                <div class="space-y-1">
-                  <label
-                    class="text-2xs font-semibold text-base-content/60 uppercase tracking-wider"
-                    >Presets:</label
+    <!-- Main Content Workspace -->
+    <main class="container mx-auto px-4 lg:px-8 py-6 max-w-7xl flex-1">
+      <!-- ========================================== -->
+      <!-- TAB 1: FULFILLMENT SIMULATOR (FLAT LAYOUT) -->
+      <!-- ========================================== -->
+      <section x-show="activeTab === 'simulator'">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Left Column: Order Inputs (Clean, Unboxed) -->
+          <div class="lg:col-span-5 space-y-5">
+            <div>
+              <h2 class="text-sm font-bold uppercase tracking-wider text-base-content/70">
+                Order Configuration
+              </h2>
+              <p class="text-xs text-base-content/50 mt-0.5">
+                Select medical supplies and schedule to simulate fulfillment dispatch.
+              </p>
+            </div>
+
+            <!-- Presets Segmented Buttons -->
+            <div class="space-y-1.5">
+              <label class="text-2xs font-semibold text-base-content/60 uppercase tracking-wider"
+                >Quick Presets</label
+              >
+              <div
+                class="grid grid-cols-3 gap-1 p-1 bg-base-200/50 rounded-lg border border-base-200"
+              >
+                <button
+                  type="button"
+                  @click="loadPreset('ambient')"
+                  :class="activePreset === 'ambient' ? 'bg-base-100 shadow-xs font-semibold text-primary' : 'text-base-content/70 hover:text-base-content font-medium'"
+                  class="py-1.5 px-2 rounded-md text-xs transition-all text-center truncate"
+                >
+                  Ambient (W01)
+                </button>
+                <button
+                  type="button"
+                  @click="loadPreset('vaccine')"
+                  :class="activePreset === 'vaccine' ? 'bg-base-100 shadow-xs font-semibold text-primary' : 'text-base-content/70 hover:text-base-content font-medium'"
+                  class="py-1.5 px-2 rounded-md text-xs transition-all text-center truncate"
+                >
+                  Vaccine (W04)
+                </button>
+                <button
+                  type="button"
+                  @click="loadPreset('split')"
+                  :class="activePreset === 'split' ? 'bg-base-100 shadow-xs font-semibold text-primary' : 'text-base-content/70 hover:text-base-content font-medium'"
+                  class="py-1.5 px-2 rounded-md text-xs transition-all text-center truncate"
+                >
+                  Split Order
+                </button>
+              </div>
+            </div>
+
+            <!-- Schedule Selector -->
+            <div class="space-y-1.5">
+              <div
+                class="flex items-center justify-between text-2xs font-semibold text-base-content/60 uppercase tracking-wider"
+              >
+                <span>Dispatch Schedule</span>
+                <span class="font-mono text-primary font-bold" x-text="orderTime"></span>
+              </div>
+              <div class="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  @click="orderTime = 'Mon, 08:00'; onOrderChange()"
+                  :class="orderTime === 'Mon, 08:00' ? 'border-primary bg-primary/5 text-primary font-semibold' : 'border-base-200 hover:border-base-300 text-base-content/70'"
+                  class="p-2 rounded-lg border text-left text-xs transition-colors"
+                >
+                  <div class="font-medium">Mon 08:00</div>
+                  <div class="text-2xs opacity-70">Weekday Rush Peak</div>
+                </button>
+                <button
+                  type="button"
+                  @click="orderTime = 'Mon, 14:00'; onOrderChange()"
+                  :class="orderTime === 'Mon, 14:00' ? 'border-primary bg-primary/5 text-primary font-semibold' : 'border-base-200 hover:border-base-300 text-base-content/70'"
+                  class="p-2 rounded-lg border text-left text-xs transition-colors"
+                >
+                  <div class="font-medium">Mon 14:00</div>
+                  <div class="text-2xs opacity-70">Standard Hours</div>
+                </button>
+                <button
+                  type="button"
+                  @click="orderTime = 'Fri, 17:00'; onOrderChange()"
+                  :class="orderTime === 'Fri, 17:00' ? 'border-primary bg-primary/5 text-primary font-semibold' : 'border-base-200 hover:border-base-300 text-base-content/70'"
+                  class="p-2 rounded-lg border text-left text-xs transition-colors"
+                >
+                  <div class="font-medium">Fri 17:00</div>
+                  <div class="text-2xs opacity-70">Evening Commute</div>
+                </button>
+                <button
+                  type="button"
+                  @click="orderTime = 'Sat, 08:00'; onOrderChange()"
+                  :class="orderTime === 'Sat, 08:00' ? 'border-primary bg-primary/5 text-primary font-semibold' : 'border-base-200 hover:border-base-300 text-base-content/70'"
+                  class="p-2 rounded-lg border text-left text-xs transition-colors"
+                >
+                  <div class="font-medium">Sat 08:00</div>
+                  <div class="text-2xs opacity-70">Malang Weekend Route</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Products List (Clean, Flat Rows) -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="text-2xs font-semibold text-base-content/60 uppercase tracking-wider">
+                  Order Items (<span x-text="orderItems.length"></span>)
+                </label>
+                <button
+                  type="button"
+                  @click="addOrderItem()"
+                  class="btn btn-ghost btn-xs text-primary font-medium gap-1 px-1.5"
+                >
+                  <svg
+                    class="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
                   >
-                  <div class="grid grid-cols-3 gap-1">
-                    <button
-                      type="button"
-                      @click="loadPreset('ambient')"
-                      class="btn btn-2xs btn-outline font-normal"
-                    >
-                      Ambient (W01)
-                    </button>
-                    <button
-                      type="button"
-                      @click="loadPreset('vaccine')"
-                      class="btn btn-2xs btn-outline font-normal"
-                    >
-                      Vaccine (W04)
-                    </button>
-                    <button
-                      type="button"
-                      @click="loadPreset('split')"
-                      class="btn btn-2xs btn-outline font-normal"
-                    >
-                      Split Order
-                    </button>
-                  </div>
-                </div>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                  <span>Add Product</span>
+                </button>
+              </div>
 
-                <!-- Schedule -->
-                <div class="space-y-1">
-                  <div
-                    class="flex items-center justify-between text-2xs font-semibold text-base-content/60 uppercase tracking-wider"
-                  >
-                    <span>Schedule:</span>
-                    <span
-                      class="font-mono text-primary font-bold lowercase"
-                      x-text="orderTime"
-                    ></span>
-                  </div>
-                  <div class="grid grid-cols-2 gap-1 text-2xs">
+              <div class="space-y-2">
+                <template x-for="(item, index) in orderItems" :key="index">
+                  <div class="flex items-center gap-2">
+                    <div class="flex-1">
+                      <select
+                        class="select select-sm select-bordered w-full text-xs font-medium"
+                        x-model="item.productId"
+                        @change="onOrderChange()"
+                      >
+                        <template x-for="p in products" :key="p.id">
+                          <option
+                            :value="p.id"
+                            x-text="p.id + ' — ' + p.name + (p.coldChainRequired ? ' [Cold 2-8°C]' : '')"
+                          ></option>
+                        </template>
+                      </select>
+                    </div>
+                    <div class="w-20">
+                      <input
+                        type="number"
+                        min="1"
+                        class="input input-sm input-bordered w-full text-center font-mono font-semibold text-xs"
+                        x-model.number="item.quantity"
+                        @input="onOrderChange()"
+                        placeholder="Qty"
+                      />
+                    </div>
                     <button
                       type="button"
-                      @click="orderTime = 'Mon, 08:00'"
-                      :class="{ 'btn-primary': orderTime === 'Mon, 08:00', 'btn-ghost border-base-300': orderTime !== 'Mon, 08:00' }"
-                      class="btn btn-2xs justify-start"
-                    >
-                      Mon 08:00 (Rush)
-                    </button>
-                    <button
-                      type="button"
-                      @click="orderTime = 'Mon, 14:00'"
-                      :class="{ 'btn-primary': orderTime === 'Mon, 14:00', 'btn-ghost border-base-300': orderTime !== 'Mon, 14:00' }"
-                      class="btn btn-2xs justify-start"
-                    >
-                      Mon 14:00 (Standard)
-                    </button>
-                    <button
-                      type="button"
-                      @click="orderTime = 'Fri, 17:00'"
-                      :class="{ 'btn-primary': orderTime === 'Fri, 17:00', 'btn-ghost border-base-300': orderTime !== 'Fri, 17:00' }"
-                      class="btn btn-2xs justify-start"
-                    >
-                      Fri 17:00 (Peak)
-                    </button>
-                    <button
-                      type="button"
-                      @click="orderTime = 'Sat, 08:00'"
-                      :class="{ 'btn-primary': orderTime === 'Sat, 08:00', 'btn-ghost border-base-300': orderTime !== 'Sat, 08:00' }"
-                      class="btn btn-2xs justify-start"
-                    >
-                      Sat 08:00 (Weekend)
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Items -->
-                <div class="space-y-1.5">
-                  <div class="flex items-center justify-between">
-                    <span
-                      class="text-2xs font-semibold text-base-content/60 uppercase tracking-wider"
-                      >Items:</span
-                    >
-                    <button
-                      type="button"
-                      @click="addOrderItem()"
-                      class="btn btn-2xs btn-ghost text-primary gap-0.5"
+                      @click="removeOrderItem(index)"
+                      :disabled="orderItems.length <= 1"
+                      class="btn btn-sm btn-ghost btn-square text-base-content/30 hover:text-error transition-colors"
+                      title="Remove product"
                     >
                       <svg
-                        class="w-3 h-3"
+                        class="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         stroke-width="2"
@@ -387,129 +378,246 @@
                         <path
                           stroke-linecap="round"
                           stroke-linejoin="round"
-                          d="M12 4v16m8-8H4"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                         ></path>
                       </svg>
-                      Add Item
                     </button>
                   </div>
-
-                  <div class="space-y-1.5 max-h-64 overflow-y-auto pr-0.5">
-                    <template x-for="(item, index) in orderItems" :key="index">
-                      <div
-                        class="flex items-center gap-1.5 p-1.5 rounded-md bg-base-200/50 border border-base-300"
-                      >
-                        <div class="flex-1">
-                          <select
-                            class="select select-2xs select-bordered w-full font-medium"
-                            x-model="item.productId"
-                          >
-                            <template x-for="p in products" :key="p.id">
-                              <option
-                                :value="p.id"
-                                x-text="p.id + ' — ' + p.name + (p.coldChainRequired ? ' [Cold]' : '')"
-                              ></option>
-                            </template>
-                          </select>
-                        </div>
-                        <div class="w-16">
-                          <input
-                            type="number"
-                            min="1"
-                            class="input input-2xs input-bordered w-full text-center font-mono font-semibold"
-                            x-model.number="item.quantity"
-                            placeholder="Qty"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          @click="removeOrderItem(index)"
-                          :disabled="orderItems.length <= 1"
-                          class="btn btn-2xs btn-square btn-ghost text-error"
-                          title="Remove"
-                        >
-                          <svg
-                            class="w-3.5 h-3.5"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                            ></path>
-                          </svg>
-                        </button>
-                      </div>
-                    </template>
-                  </div>
-                </div>
-
-                <!-- Button -->
-                <div class="pt-1">
-                  <button
-                    type="button"
-                    @click="submitFulfillment()"
-                    :disabled="loading"
-                    class="btn btn-sm btn-primary w-full shadow-xs gap-1.5 font-semibold"
-                  >
-                    <span x-show="loading" class="loading loading-spinner loading-xs"></span>
-                    <svg
-                      x-show="!loading"
-                      class="w-3.5 h-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      ></path>
-                    </svg>
-                    <span>Fulfill Order</span>
-                  </button>
-                </div>
+                </template>
               </div>
             </div>
-          </div>
 
-          <!-- Right: Results Output -->
-          <div class="lg:col-span-7 space-y-4">
-            <!-- Empty State -->
-            <div
-              x-show="!result && !error"
-              class="card bg-base-100 border border-base-300 shadow-xs p-8 text-center"
-            >
-              <div
-                class="w-12 h-12 rounded-full bg-base-200 text-base-content/40 mx-auto flex items-center justify-center mb-2.5"
+            <!-- Submit Action Button -->
+            <div class="pt-2">
+              <button
+                type="button"
+                @click="submitFulfillment()"
+                :disabled="loading"
+                class="btn btn-primary w-full gap-2 font-semibold shadow-xs"
               >
+                <span x-show="loading" class="loading loading-spinner loading-xs"></span>
                 <svg
-                  class="w-6 h-6"
+                  x-show="!loading"
+                  class="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1.5"
+                  stroke-width="2"
                   viewBox="0 0 24 24"
                 >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
                   ></path>
                 </svg>
+                <span>Calculate Fulfillment</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Decision Results (Clean, Flat, Minimalist) -->
+          <div class="lg:col-span-7 lg:border-l lg:border-base-200 lg:pl-8 space-y-5">
+            <!-- Active Output State -->
+            <div x-show="result" class="space-y-5">
+              <!-- Header & Badges Row -->
+              <div
+                class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-base-200"
+              >
+                <div class="flex items-center gap-2">
+                  <span
+                    class="badge badge-sm font-bold uppercase tracking-wider"
+                    :class="result?.strategy === 'single_warehouse' ? 'badge-success text-success-content' : 'badge-warning text-warning-content'"
+                    x-text="result?.strategy === 'single_warehouse' ? 'Single Origin Dispatch' : 'Split Warehouse Dispatch'"
+                  ></span>
+                  <span
+                    class="badge badge-sm font-semibold"
+                    :class="result?.coldChainCompliance === 'verified' ? 'badge-info text-info-content' : 'badge-ghost text-base-content/70'"
+                    x-text="result?.coldChainCompliance === 'verified' ? 'Cold-Chain Certified (2°C - 8°C)' : 'Ambient Logistics'"
+                  ></span>
+                </div>
+                <span
+                  class="text-2xs text-base-content/40 font-mono"
+                  x-text="'ID: ' + meta?.requestId?.substring(0, 8)"
+                ></span>
               </div>
-              <h3 class="text-sm font-bold">No Active Order</h3>
-              <p class="text-xs text-base-content/60 max-w-xs mx-auto mt-0.5">
-                Configure order items on the left and click "Fulfill Order" to evaluate warehouse
-                selection.
-              </p>
+
+              <!-- Order Summary Context & Unsaved Changes Alert -->
+              <div class="flex items-center justify-between text-xs">
+                <div class="text-base-content/60 font-medium">
+                  Evaluation for:
+                  <span
+                    class="text-base-content font-semibold"
+                    x-text="lastEvaluatedSummary"
+                  ></span>
+                </div>
+                <span
+                  x-show="isDirty"
+                  class="badge badge-warning badge-xs font-semibold animate-pulse"
+                >
+                  Input Modified · Click Calculate
+                </span>
+              </div>
+
+              <!-- Sleek Metric Highlights (Flat, Bordered Row, No Box Cards) -->
+              <div
+                class="grid grid-cols-3 divide-x divide-base-200 py-3 border-y border-base-200 text-center"
+              >
+                <div class="px-2">
+                  <div class="text-2xs font-semibold uppercase tracking-wider text-base-content/50">
+                    Shipments
+                  </div>
+                  <div
+                    class="text-2xl font-bold font-mono mt-0.5"
+                    x-text="result?.totalShipments"
+                  ></div>
+                </div>
+                <div class="px-2">
+                  <div class="text-2xs font-semibold uppercase tracking-wider text-base-content/50">
+                    Total Distance
+                  </div>
+                  <div
+                    class="text-2xl font-bold font-mono mt-0.5"
+                    x-text="result?.totalDistanceKm + ' km'"
+                  ></div>
+                </div>
+                <div class="px-2">
+                  <div class="text-2xs font-semibold uppercase tracking-wider text-base-content/50">
+                    Est. Duration
+                  </div>
+                  <div
+                    class="text-2xl font-bold font-mono text-primary mt-0.5"
+                    x-text="result?.maxEstimatedDurationMinutes + ' min'"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Decision Rationale (Clean Minimalist Quote Callout) -->
+              <div class="border-l-3 border-primary/70 pl-3.5 py-0.5 space-y-1">
+                <div class="text-2xs font-bold uppercase tracking-wider text-primary">
+                  Engine Decision Rationale
+                </div>
+                <p
+                  class="text-xs text-base-content/80 leading-relaxed font-normal"
+                  x-text="result?.explanation"
+                ></p>
+              </div>
+
+              <!-- Shipments & Products Details -->
+              <div class="space-y-4 pt-1">
+                <div class="text-2xs font-bold uppercase tracking-wider text-base-content/50">
+                  Dispatch Plan Breakdown
+                </div>
+
+                <div class="space-y-4">
+                  <template x-for="(s, sIdx) in result?.shipments" :key="sIdx">
+                    <div class="border border-base-200 rounded-lg p-4 space-y-3">
+                      <!-- Shipment Origin Bar -->
+                      <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                          <span
+                            class="font-bold text-sm"
+                            x-text="s.warehouseId + ' · ' + s.warehouseName"
+                          ></span>
+                          <span class="badge badge-xs font-mono" x-text="s.location"></span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-xs">
+                          <span
+                            class="badge badge-xs font-semibold"
+                            :class="s.fullColdChainCapable ? 'badge-info' : 'badge-ghost'"
+                            x-text="s.fleetType"
+                          ></span>
+                          <span
+                            class="font-mono text-base-content/60"
+                            x-text="s.distanceKm + ' km'"
+                          ></span>
+                          <span class="text-base-content/30">·</span>
+                          <span
+                            class="font-mono font-semibold text-primary"
+                            x-text="'~' + s.estimatedDurationMinutes + ' min'"
+                          ></span>
+                        </div>
+                      </div>
+
+                      <!-- Traffic Heuristic Note -->
+                      <div class="text-2xs text-base-content/60 italic flex items-center gap-1.5">
+                        <svg
+                          class="w-3.5 h-3.5 text-base-content/40 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          ></path>
+                        </svg>
+                        <span x-text="s.trafficDetails?.appliedRationale"></span>
+                      </div>
+
+                      <!-- Clean Table of Dispatched Items -->
+                      <div class="overflow-x-auto pt-1">
+                        <table class="table table-xs w-full">
+                          <thead>
+                            <tr class="border-b border-base-200 text-2xs text-base-content/50">
+                              <th class="font-semibold pl-0">Product Item</th>
+                              <th class="font-semibold">Category</th>
+                              <th class="font-semibold">Storage</th>
+                              <th class="font-semibold text-right pr-0">Qty</th>
+                            </tr>
+                          </thead>
+                          <tbody class="divide-y divide-base-100 text-xs">
+                            <template x-for="item in s.items" :key="item.productId">
+                              <tr>
+                                <td
+                                  class="font-medium pl-0"
+                                  x-text="item.productId + ' ' + item.productName"
+                                ></td>
+                                <td class="text-base-content/70" x-text="item.category"></td>
+                                <td>
+                                  <span
+                                    class="badge badge-2xs font-medium"
+                                    :class="item.coldChainRequired ? 'badge-info text-info-content' : 'badge-ghost'"
+                                    x-text="item.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
+                                  ></span>
+                                </td>
+                                <td
+                                  class="text-right font-mono font-bold pr-0"
+                                  x-text="item.quantity"
+                                ></td>
+                              </tr>
+                            </template>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Collapsible Raw JSON Envelope -->
+              <div class="pt-2 border-t border-base-200">
+                <button
+                  type="button"
+                  @click="showRawJson = !showRawJson"
+                  class="text-2xs text-base-content/50 hover:text-base-content font-mono flex items-center gap-1 transition-colors"
+                >
+                  <span
+                    x-text="showRawJson ? 'Hide Raw ByJSON Response ↑' : 'View Raw ByJSON Response ↓'"
+                  ></span>
+                </button>
+                <div x-show="showRawJson" class="mt-2">
+                  <pre
+                    class="p-3 bg-base-200/50 border border-base-200 rounded-lg font-mono text-2xs overflow-x-auto max-h-56 leading-normal"
+                    x-text="JSON.stringify({ success: true, data: result, error: null, meta }, null, 2)"
+                  ></pre>
+                </div>
+              </div>
             </div>
 
-            <!-- Error Alert -->
-            <div x-show="error" class="alert alert-error shadow-xs text-xs py-2">
+            <!-- Error Notification -->
+            <div x-show="error" class="alert alert-error text-xs py-2.5 rounded-lg">
               <svg
                 class="w-4 h-4 flex-shrink-0"
                 fill="none"
@@ -524,9 +632,12 @@
                 ></path>
               </svg>
               <div class="flex-1">
-                <span class="font-bold block" x-text="error?.message || 'Error occurred'"></span>
+                <span
+                  class="font-bold block"
+                  x-text="error?.message || 'Error evaluating order'"
+                ></span>
                 <template x-if="error?.details">
-                  <ul class="list-disc list-inside mt-0.5 space-y-0.5 text-2xs">
+                  <ul class="list-disc list-inside mt-1 space-y-0.5 text-2xs opacity-90">
                     <template x-for="d in error.details" :key="d.code">
                       <li x-text="d.field + ': ' + d.message"></li>
                     </template>
@@ -535,529 +646,281 @@
               </div>
             </div>
 
-            <!-- Result Decision Card -->
-            <div x-show="result" class="space-y-3.5">
-              <div class="card bg-base-100 border border-base-300 shadow-xs">
-                <div class="card-body p-4 space-y-3.5">
-                  <div
-                    class="flex flex-wrap items-center justify-between gap-2 border-b border-base-200 pb-2.5"
-                  >
-                    <div class="flex items-center gap-1.5">
-                      <span
-                        class="badge badge-sm font-bold uppercase tracking-wider"
-                        :class="result?.strategy === 'single_warehouse' ? 'badge-success text-success-content' : 'badge-warning text-warning-content'"
-                        x-text="result?.strategy === 'single_warehouse' ? 'Single Origin' : 'Split Order'"
-                      >
-                      </span>
-                      <span
-                        class="badge badge-xs font-semibold"
-                        :class="result?.coldChainCompliance === 'verified' ? 'badge-accent' : 'badge-ghost'"
-                        x-text="result?.coldChainCompliance === 'verified' ? 'Cold Chain' : 'Ambient'"
-                      >
-                      </span>
-                    </div>
-                    <div
-                      class="text-2xs text-base-content/50 font-mono"
-                      x-text="'ID: ' + meta?.requestId?.substring(0, 8)"
-                    ></div>
-                  </div>
-
-                  <!-- Minimalist Metrics Grid -->
-                  <div class="grid grid-cols-3 gap-1.5 text-center">
-                    <div class="p-2 rounded-md bg-base-200/50 border border-base-300">
-                      <div
-                        class="text-2xs text-base-content/60 uppercase tracking-wider font-semibold"
-                      >
-                        Shipments
-                      </div>
-                      <div class="text-lg font-bold mt-0.5" x-text="result?.totalShipments"></div>
-                    </div>
-                    <div class="p-2 rounded-md bg-base-200/50 border border-base-300">
-                      <div
-                        class="text-2xs text-base-content/60 uppercase tracking-wider font-semibold"
-                      >
-                        Distance
-                      </div>
-                      <div
-                        class="text-lg font-bold mt-0.5"
-                        x-text="result?.totalDistanceKm + ' km'"
-                      ></div>
-                    </div>
-                    <div class="p-2 rounded-md bg-base-200/50 border border-base-300">
-                      <div
-                        class="text-2xs text-base-content/60 uppercase tracking-wider font-semibold"
-                      >
-                        Duration
-                      </div>
-                      <div
-                        class="text-lg font-bold mt-0.5 text-primary"
-                        x-text="result?.maxEstimatedDurationMinutes + ' min'"
-                      ></div>
-                    </div>
-                  </div>
-
-                  <!-- Decision Rationale -->
-                  <div class="p-3 rounded-md bg-primary/5 border border-primary/20 space-y-0.5">
-                    <div
-                      class="text-2xs font-bold text-primary flex items-center gap-1 uppercase tracking-wider"
-                    >
-                      <svg
-                        class="w-3.5 h-3.5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        ></path>
-                      </svg>
-                      Decision Rationale
-                    </div>
-                    <p
-                      class="text-xs text-base-content/80 leading-relaxed"
-                      x-text="result?.explanation"
-                    ></p>
-                  </div>
-
-                  <!-- Shipments List -->
-                  <div class="space-y-2 pt-1">
-                    <div class="text-2xs font-bold uppercase tracking-wider text-base-content/60">
-                      Shipments:
-                    </div>
-                    <div class="space-y-2">
-                      <template x-for="(s, sIdx) in result?.shipments" :key="sIdx">
-                        <div class="p-3 rounded-md border border-base-300 bg-base-200/30 space-y-2">
-                          <div class="flex flex-wrap items-center justify-between gap-1.5">
-                            <div class="flex items-center gap-1.5">
-                              <span
-                                class="font-bold text-xs"
-                                x-text="s.warehouseId + ' · ' + s.warehouseName"
-                              ></span>
-                              <span class="badge badge-2xs font-mono" x-text="s.location"></span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                              <span
-                                class="badge badge-xs"
-                                :class="s.fullColdChainCapable ? 'badge-accent' : 'badge-ghost'"
-                                x-text="s.fleetType"
-                              ></span>
-                              <span
-                                class="badge badge-xs badge-outline font-mono"
-                                x-text="s.distanceKm + ' km'"
-                              ></span>
-                              <span
-                                class="badge badge-xs badge-primary font-mono"
-                                x-text="'~' + s.estimatedDurationMinutes + 'm'"
-                              ></span>
-                            </div>
-                          </div>
-
-                          <!-- Traffic note -->
-                          <div class="text-2xs text-base-content/70 italic flex items-center gap-1">
-                            <svg
-                              class="w-3 h-3 text-base-content/40 flex-shrink-0"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                              ></path>
-                            </svg>
-                            <span x-text="s.trafficDetails?.appliedRationale"></span>
-                          </div>
-
-                          <!-- Items Table -->
-                          <div class="overflow-x-auto">
-                            <table class="table table-2xs table-zebra w-full">
-                              <thead>
-                                <tr class="text-base-content/60">
-                                  <th>Item</th>
-                                  <th>Category</th>
-                                  <th>Storage</th>
-                                  <th class="text-right">Qty</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <template x-for="item in s.items" :key="item.productId">
-                                  <tr>
-                                    <td
-                                      class="font-semibold"
-                                      x-text="item.productId + ' ' + item.productName"
-                                    ></td>
-                                    <td x-text="item.category"></td>
-                                    <td>
-                                      <span
-                                        class="badge badge-2xs"
-                                        :class="item.coldChainRequired ? 'badge-accent' : 'badge-ghost'"
-                                        x-text="item.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
-                                      ></span>
-                                    </td>
-                                    <td
-                                      class="text-right font-mono font-bold"
-                                      x-text="item.quantity"
-                                    ></td>
-                                  </tr>
-                                </template>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </template>
-                    </div>
-                  </div>
-
-                  <!-- Raw JSON Collapse -->
-                  <div
-                    class="collapse collapse-arrow bg-base-200 border border-base-300 rounded-md text-2xs"
-                  >
-                    <input type="checkbox" />
-                    <div
-                      class="collapse-title font-mono font-bold text-base-content/60 py-1 min-h-0"
-                    >
-                      Raw ByJSON Response
-                    </div>
-                    <div class="collapse-content">
-                      <pre
-                        class="p-2.5 bg-base-300 rounded font-mono text-2xs overflow-x-auto max-h-48"
-                        x-text="JSON.stringify({ success: true, data: result, error: null, meta }, null, 2)"
-                      ></pre>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 2: WAREHOUSES -->
-      <section
-        x-show="activeTab === 'warehouses'"
-        class="card bg-base-100 border border-base-300 shadow-xs"
-      >
-        <div class="card-body p-4 space-y-3">
-          <div
-            class="flex flex-wrap items-center justify-between gap-2 border-b border-base-200 pb-2.5"
-          >
-            <div>
-              <h2 class="card-title text-sm font-bold">Warehouses</h2>
-              <p class="text-2xs text-base-content/60">Facilities and inventory matrix</p>
-            </div>
-            <span class="badge badge-xs badge-outline">SQLite</span>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="table table-xs table-zebra w-full">
-              <thead>
-                <tr class="text-2xs text-base-content/60">
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Location</th>
-                  <th>Distance</th>
-                  <th>Storage</th>
-                  <th>Fleet</th>
-                  <th>Cold Fleet</th>
-                  <th>Stock</th>
-                </tr>
-              </thead>
-              <tbody class="text-xs">
-                <template x-for="w in warehouses" :key="w.id">
-                  <tr>
-                    <td class="font-mono font-bold text-primary" x-text="w.id"></td>
-                    <td class="font-semibold" x-text="w.name"></td>
-                    <td x-text="w.location"></td>
-                    <td class="font-mono" x-text="w.distanceKm + ' km'"></td>
-                    <td x-text="w.storageType"></td>
-                    <td x-text="w.fleetType"></td>
-                    <td>
-                      <span
-                        class="badge badge-2xs font-semibold"
-                        :class="w.fullColdChainCapable ? 'badge-accent' : 'badge-ghost'"
-                        x-text="w.fullColdChainCapable ? 'Qualified' : 'Disqualified'"
-                      ></span>
-                    </td>
-                    <td>
-                      <div class="flex flex-wrap gap-1">
-                        <template x-for="(qty, pid) in w.stocks" :key="pid">
-                          <span
-                            class="badge badge-2xs badge-outline font-mono"
-                            x-text="pid + ': ' + qty"
-                          ></span>
-                        </template>
-                      </div>
-                    </td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 3: PRODUCTS -->
-      <section
-        x-show="activeTab === 'products'"
-        class="card bg-base-100 border border-base-300 shadow-xs"
-      >
-        <div class="card-body p-4 space-y-3">
-          <div
-            class="flex flex-wrap items-center justify-between gap-2 border-b border-base-200 pb-2.5"
-          >
-            <div>
-              <h2 class="card-title text-sm font-bold">Products</h2>
-              <p class="text-2xs text-base-content/60">Medical and pharmaceutical catalog</p>
-            </div>
-            <span class="badge badge-xs badge-outline">Catalog</span>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="table table-xs table-zebra w-full">
-              <thead>
-                <tr class="text-2xs text-base-content/60">
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Storage</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody class="text-xs">
-                <template x-for="p in products" :key="p.id">
-                  <tr>
-                    <td class="font-mono font-bold text-secondary" x-text="p.id"></td>
-                    <td class="font-semibold" x-text="p.name"></td>
-                    <td x-text="p.category"></td>
-                    <td>
-                      <span
-                        class="badge badge-2xs font-semibold"
-                        :class="p.coldChainRequired ? 'badge-accent' : 'badge-ghost'"
-                        x-text="p.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
-                      ></span>
-                    </td>
-                    <td class="text-base-content/70" x-text="p.description || '-'"></td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 4: TRAFFIC & CSV -->
-      <section x-show="activeTab === 'traffic'" class="space-y-4">
-        <!-- Upload Card -->
-        <div class="card bg-base-100 border border-base-300 shadow-xs">
-          <div class="card-body p-4 space-y-3">
+            <!-- Empty State -->
             <div
-              class="flex flex-wrap items-center justify-between gap-2 border-b border-base-200 pb-2"
+              x-show="!result && !error && !loading"
+              class="py-16 text-center text-base-content/40 space-y-2"
             >
-              <div>
-                <h2 class="card-title text-sm font-bold flex items-center gap-1.5">
-                  <svg
-                    class="w-4 h-4 text-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                    ></path>
-                  </svg>
-                  Upload Traffic CSV
-                </h2>
-                <p class="text-2xs text-base-content/60">
-                  In-memory processing without disk storage
-                </p>
-              </div>
-              <span class="badge badge-2xs badge-secondary font-mono">In-Memory</span>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2">
-              <div class="flex-1 min-w-[240px]">
-                <input
-                  type="file"
-                  accept=".csv"
-                  @change="handleFileChange($event)"
-                  class="file-input file-input-bordered file-input-xs w-full font-mono text-xs"
-                />
-              </div>
-              <button
-                type="button"
-                @click="uploadCsv()"
-                :disabled="!selectedFile || uploadLoading"
-                class="btn btn-xs btn-primary gap-1"
-              >
-                <span x-show="uploadLoading" class="loading loading-spinner loading-xs"></span>
-                <svg
-                  x-show="!uploadLoading"
-                  class="w-3.5 h-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  ></path>
-                </svg>
-                <span>Upload</span>
-              </button>
-              <button
-                type="button"
-                @click="resetTraffic()"
-                :disabled="uploadLoading"
-                class="btn btn-xs btn-outline gap-1"
-              >
-                <svg
-                  class="w-3.5 h-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  ></path>
-                </svg>
-                <span>Reset</span>
-              </button>
-            </div>
-
-            <!-- Feedback Banners -->
-            <div x-show="uploadSuccessMessage" class="alert alert-success shadow-xs text-xs py-1.5">
               <svg
-                class="w-3.5 h-3.5 flex-shrink-0"
+                class="w-10 h-10 mx-auto"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
-              </svg>
-              <span x-text="uploadSuccessMessage"></span>
-            </div>
-
-            <div x-show="uploadErrorMessage" class="alert alert-error shadow-xs text-xs py-1.5">
-              <svg
-                class="w-3.5 h-3.5 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1.5"
                 viewBox="0 0 24 24"
               >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 ></path>
               </svg>
-              <span x-text="uploadErrorMessage"></span>
+              <div class="text-sm font-semibold">Ready to Calculate</div>
+              <p class="text-xs max-w-sm mx-auto">
+                Select a preset or customize quantities on the left, then click Calculate
+                Fulfillment.
+              </p>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Traffic Profiles Card -->
-        <div class="card bg-base-100 border border-base-300 shadow-xs">
-          <div class="card-body p-4 space-y-3">
-            <div
-              class="flex flex-wrap items-center justify-between gap-2 border-b border-base-200 pb-2"
-            >
-              <div>
-                <h2 class="card-title text-sm font-bold">Traffic Profiles</h2>
-                <p class="text-2xs text-base-content/60">Route duration benchmarks</p>
-              </div>
-              <span
-                class="badge badge-xs font-mono"
-                x-text="trafficRecords.length + ' Trips'"
-              ></span>
-            </div>
+      <!-- ========================================== -->
+      <!-- TAB 2: WAREHOUSES DIRECTORY (CLEAN TABLE)  -->
+      <!-- ========================================== -->
+      <section x-show="activeTab === 'warehouses'" class="space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-base-200">
+          <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-base-content/70">
+              Regional Facilities Network
+            </h2>
+            <p class="text-xs text-base-content/50 mt-0.5">
+              8 distribution centers across East Java with real inventory levels.
+            </p>
+          </div>
+          <span class="badge badge-sm badge-outline font-mono">SQLite Persistent Store</span>
+        </div>
 
-            <!-- Cards -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <template x-for="s in trafficSummary" :key="s.warehouseId">
-                <div class="p-2.5 rounded-md border border-base-300 bg-base-200/30 space-y-0.5">
-                  <div class="flex items-center justify-between">
-                    <span class="font-bold text-xs text-primary" x-text="s.warehouseId"></span>
+        <div class="overflow-x-auto">
+          <table class="table table-sm w-full">
+            <thead>
+              <tr
+                class="border-b border-base-200 text-2xs text-base-content/50 uppercase tracking-wider"
+              >
+                <th class="font-semibold">ID</th>
+                <th class="font-semibold">Facility Name</th>
+                <th class="font-semibold">City / Location</th>
+                <th class="font-semibold">Distance</th>
+                <th class="font-semibold">Storage Type</th>
+                <th class="font-semibold">Vehicle Fleet</th>
+                <th class="font-semibold">Cold Chain Fleet</th>
+                <th class="font-semibold">Live Stock Levels</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-base-200 text-xs">
+              <template x-for="w in warehouses" :key="w.id">
+                <tr class="hover:bg-base-200/30 transition-colors">
+                  <td class="font-mono font-bold text-primary" x-text="w.id"></td>
+                  <td class="font-semibold" x-text="w.name"></td>
+                  <td x-text="w.location"></td>
+                  <td class="font-mono text-base-content/70" x-text="w.distanceKm + ' km'"></td>
+                  <td x-text="w.storageType"></td>
+                  <td x-text="w.fleetType"></td>
+                  <td>
                     <span
-                      class="text-2xs text-base-content/50 font-mono"
-                      x-text="s.sampleCount + ' trips'"
+                      class="badge badge-xs font-semibold"
+                      :class="w.fullColdChainCapable ? 'badge-info text-info-content' : 'badge-ghost'"
+                      x-text="w.fullColdChainCapable ? 'Refrigerated Fleet' : 'Standard Fleet'"
                     ></span>
-                  </div>
-                  <div class="text-2xs flex items-center justify-between pt-0.5">
-                    <span class="text-base-content/60">Base:</span>
-                    <span
-                      class="font-bold font-mono"
-                      x-text="s.averageDurationMinutes + 'm'"
-                    ></span>
-                  </div>
-                  <div class="text-2xs flex items-center justify-between text-warning">
-                    <span>Peak:</span>
-                    <span class="font-bold font-mono" x-text="s.congestedAvgMinutes + 'm'"></span>
-                  </div>
-                  <div class="text-2xs flex items-center justify-between text-success">
-                    <span>Off-Peak:</span>
-                    <span class="font-bold font-mono" x-text="s.offPeakAvgMinutes + 'm'"></span>
-                  </div>
-                </div>
+                  </td>
+                  <td>
+                    <div class="flex flex-wrap gap-1 font-mono text-2xs">
+                      <template x-for="(qty, pid) in w.stocks" :key="pid">
+                        <span
+                          class="px-1.5 py-0.5 rounded bg-base-200/70 border border-base-200"
+                          x-text="pid + ': ' + qty"
+                        ></span>
+                      </template>
+                    </div>
+                  </td>
+                </tr>
               </template>
-            </div>
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-            <!-- Table -->
-            <div class="pt-2 border-t border-base-200">
-              <div class="text-2xs font-bold uppercase tracking-wider text-base-content/60 mb-1.5">
-                Historical Trips:
-              </div>
-              <div class="overflow-x-auto max-h-56 overflow-y-auto">
-                <table class="table table-2xs table-zebra w-full">
-                  <thead>
-                    <tr class="text-2xs text-base-content/60">
-                      <th>ID</th>
-                      <th>Warehouse</th>
-                      <th>Schedule</th>
-                      <th>Duration</th>
-                      <th>Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-2xs font-mono">
-                    <template x-for="rec in trafficRecords" :key="rec.deliveryId">
-                      <tr>
-                        <td class="font-semibold text-primary" x-text="rec.deliveryId"></td>
-                        <td x-text="rec.warehouseId"></td>
-                        <td x-text="rec.dayOfWeek + ', ' + rec.timeString"></td>
-                        <td class="font-bold" x-text="rec.actualDurationMinutes + 'm'"></td>
-                        <td class="font-sans text-base-content/60" x-text="rec.notes || '-'"></td>
-                      </tr>
-                    </template>
-                  </tbody>
-                </table>
-              </div>
+      <!-- ========================================== -->
+      <!-- TAB 3: PRODUCTS CATALOG (CLEAN TABLE)      -->
+      <!-- ========================================== -->
+      <section x-show="activeTab === 'products'" class="space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-base-200">
+          <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-base-content/70">
+              Medical & Pharmaceutical Catalog
+            </h2>
+            <p class="text-xs text-base-content/50 mt-0.5">
+              Pharmaceutical supplies with mandatory cold-chain classification.
+            </p>
+          </div>
+          <span class="badge badge-sm badge-outline font-mono">ByJSON Compliant Catalog</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="table table-sm w-full">
+            <thead>
+              <tr
+                class="border-b border-base-200 text-2xs text-base-content/50 uppercase tracking-wider"
+              >
+                <th class="font-semibold">SKU ID</th>
+                <th class="font-semibold">Product Name</th>
+                <th class="font-semibold">Category</th>
+                <th class="font-semibold">Temperature Requirement</th>
+                <th class="font-semibold">Clinical Specification</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-base-200 text-xs">
+              <template x-for="p in products" :key="p.id">
+                <tr class="hover:bg-base-200/30 transition-colors">
+                  <td class="font-mono font-bold text-secondary" x-text="p.id"></td>
+                  <td class="font-semibold" x-text="p.name"></td>
+                  <td x-text="p.category"></td>
+                  <td>
+                    <span
+                      class="badge badge-xs font-semibold"
+                      :class="p.coldChainRequired ? 'badge-info text-info-content' : 'badge-ghost'"
+                      x-text="p.coldChainRequired ? 'Cold Chain (2°C - 8°C)' : 'Ambient Storage'"
+                    ></span>
+                  </td>
+                  <td class="text-base-content/60" x-text="p.description || '-'"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 4: TRAFFIC & CSV ANALYTICS (CLEAN)     -->
+      <!-- ========================================== -->
+      <section x-show="activeTab === 'traffic'" class="space-y-6">
+        <!-- Upload Bar -->
+        <div class="p-4 border border-base-200 rounded-lg space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-sm font-bold">Historical Delivery CSV Processing</h2>
+              <p class="text-xs text-base-content/50">
+                Upload custom delivery data processed strictly in-memory (zero disk writes).
+              </p>
             </div>
+            <span class="badge badge-xs badge-info font-mono">In-Memory Engine</span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 pt-1">
+            <div class="flex-1 min-w-[240px]">
+              <input
+                type="file"
+                accept=".csv"
+                @change="handleFileChange($event)"
+                class="file-input file-input-sm file-input-bordered w-full font-mono text-xs"
+              />
+            </div>
+            <button
+              type="button"
+              @click="uploadCsv()"
+              :disabled="!selectedFile || uploadLoading"
+              class="btn btn-sm btn-primary gap-1 font-semibold"
+            >
+              <span x-show="uploadLoading" class="loading loading-spinner loading-xs"></span>
+              <span>Upload CSV</span>
+            </button>
+            <button
+              type="button"
+              @click="resetTraffic()"
+              :disabled="uploadLoading"
+              class="btn btn-sm btn-ghost border border-base-200 gap-1 font-medium"
+            >
+              <span>Reset Benchmark</span>
+            </button>
+          </div>
+
+          <!-- Banners -->
+          <div x-show="uploadSuccessMessage" class="alert alert-success text-xs py-2 rounded-md">
+            <span x-text="uploadSuccessMessage"></span>
+          </div>
+          <div x-show="uploadErrorMessage" class="alert alert-error text-xs py-2 rounded-md">
+            <span x-text="uploadErrorMessage"></span>
+          </div>
+        </div>
+
+        <!-- Traffic Warehouse Profiles -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-base-content/60">
+              Route Duration Profiles
+            </h3>
+            <span
+              class="text-2xs font-mono text-base-content/40"
+              x-text="trafficRecords.length + ' Total Sample Trips'"
+            ></span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <template x-for="s in trafficSummary" :key="s.warehouseId">
+              <div
+                class="p-3 rounded-lg border border-base-200 hover:border-base-300 transition-colors space-y-1"
+              >
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-xs text-primary" x-text="s.warehouseId"></span>
+                  <span
+                    class="text-2xs font-mono text-base-content/40"
+                    x-text="s.sampleCount + ' trips'"
+                  ></span>
+                </div>
+                <div class="text-xs flex items-center justify-between pt-1">
+                  <span class="text-base-content/50">Base:</span>
+                  <span class="font-mono font-bold" x-text="s.averageDurationMinutes + 'm'"></span>
+                </div>
+                <div class="text-xs flex items-center justify-between text-warning font-medium">
+                  <span>Rush Peak:</span>
+                  <span class="font-mono font-bold" x-text="s.congestedAvgMinutes + 'm'"></span>
+                </div>
+                <div class="text-xs flex items-center justify-between text-success font-medium">
+                  <span>Off-Peak:</span>
+                  <span class="font-mono font-bold" x-text="s.offPeakAvgMinutes + 'm'"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Historical Trips Log Table -->
+        <div class="space-y-2 pt-2">
+          <div class="text-xs font-bold uppercase tracking-wider text-base-content/60">
+            Sample Historical Delivery Logs
+          </div>
+          <div class="overflow-x-auto max-h-64 overflow-y-auto border border-base-200 rounded-lg">
+            <table class="table table-xs w-full">
+              <thead class="sticky top-0 bg-base-100 border-b border-base-200">
+                <tr class="text-2xs text-base-content/50">
+                  <th class="font-semibold">Delivery ID</th>
+                  <th class="font-semibold">Warehouse</th>
+                  <th class="font-semibold">Scheduled Day & Time</th>
+                  <th class="font-semibold">Recorded Duration</th>
+                  <th class="font-semibold">Corridor Notes</th>
+                </tr>
+              </thead>
+              <tbody class="text-xs font-mono divide-y divide-base-100">
+                <template x-for="rec in trafficRecords" :key="rec.deliveryId">
+                  <tr class="hover:bg-base-200/20">
+                    <td class="font-semibold text-primary" x-text="rec.deliveryId"></td>
+                    <td x-text="rec.warehouseId"></td>
+                    <td x-text="rec.dayOfWeek + ', ' + rec.timeString"></td>
+                    <td class="font-bold" x-text="rec.actualDurationMinutes + ' min'"></td>
+                    <td class="font-sans text-base-content/60" x-text="rec.notes || '-'"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
     </main>
 
-    <!-- Minimalist Footer -->
+    <!-- Minimalist Clean Footer -->
     <footer
-      class="footer footer-center p-3 bg-base-100 text-base-content/50 border-t border-base-300 text-2xs"
+      class="border-t border-base-200 py-3 text-center text-2xs text-base-content/40 font-mono"
     >
-      <div>
-        <p>Pharmatory · Fastify · ByJSON v2.0 · SQLite · Alpine.js · DaisyUI · Tailwind</p>
-      </div>
+      Pharmatory · Fastify LTS · TypeScript · SQLite · ByJSON v2.0 · Alpine.js · Tailwind
     </footer>
   </body>
 </html>

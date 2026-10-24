@@ -34,10 +34,16 @@ const ORDER_PRESETS = {
 function createPharmatoryComponent() {
   return {
     activeTab: 'simulator',
+    activePreset: 'ambient',
+    lastEvaluatedSummary: '',
+    isDirty: false,
+    showRawJson: false,
+
     products: [],
     warehouses: [],
     trafficSummary: [],
     trafficRecords: [],
+
     orderItems: [
       { productId: 'P001', quantity: 50 },
       { productId: 'P003', quantity: 100 }
@@ -56,6 +62,8 @@ function createPharmatoryComponent() {
 
     async init() {
       await Promise.all([this.fetchProducts(), this.fetchWarehouses(), this.fetchTraffic()])
+      // Initial fulfillment evaluation so the page immediately displays live results
+      await this.submitFulfillment()
     },
 
     // ─── Data Fetching ──────────────────────────────────────────
@@ -127,6 +135,9 @@ function createPharmatoryComponent() {
         if (json.success) {
           this.uploadSuccessMessage = `Parsed ${json.data.processedRecords} records from '${json.data.filename}' into memory.`
           await this.fetchTraffic()
+          if (this.result) {
+            await this.submitFulfillment()
+          }
         } else {
           this.uploadErrorMessage = json.error?.message || 'Upload failed.'
         }
@@ -148,6 +159,9 @@ function createPharmatoryComponent() {
         if (json.success) {
           this.uploadSuccessMessage = 'Traffic model reset to benchmark dataset.'
           await this.fetchTraffic()
+          if (this.result) {
+            await this.submitFulfillment()
+          }
         }
       } catch (err) {
         this.uploadErrorMessage = err.message || 'Reset failed.'
@@ -158,31 +172,38 @@ function createPharmatoryComponent() {
 
     // ─── Order & Simulator Management ───────────────────────────
 
+    onOrderChange() {
+      this.activePreset = null
+      this.isDirty = true
+    },
+
     addOrderItem() {
       const firstProd = this.products[0]?.id || 'P001'
       this.orderItems.push({ productId: firstProd, quantity: 20 })
+      this.onOrderChange()
     },
 
     removeOrderItem(index) {
       if (this.orderItems.length > 1) {
         this.orderItems.splice(index, 1)
+        this.onOrderChange()
       }
     },
 
-    loadPreset(type) {
+    async loadPreset(type) {
+      this.activePreset = type
       const preset = ORDER_PRESETS[type]
       if (preset) {
         this.orderItems = preset.items.map((item) => ({ ...item }))
         this.orderTime = preset.time
       }
-      this.result = null
-      this.error = null
+      this.isDirty = false
+      await this.submitFulfillment()
     },
 
     async submitFulfillment() {
       this.loading = true
       this.error = null
-      this.result = null
 
       try {
         const payload = {
@@ -204,6 +225,15 @@ function createPharmatoryComponent() {
         if (json.success) {
           this.result = json.data
           this.meta = json.meta
+          this.isDirty = false
+
+          // Generate human readable summary of evaluated order
+          const summaryParts = this.orderItems.map((it) => {
+            const p = this.products.find((prod) => prod.id === it.productId)
+            const label = p ? p.name.split(' (')[0] : it.productId
+            return `${it.quantity}x ${label}`
+          })
+          this.lastEvaluatedSummary = `${summaryParts.join(' + ')} · ${this.orderTime}`
         } else {
           this.error = json.error
         }
