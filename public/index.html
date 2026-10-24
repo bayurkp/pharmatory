@@ -1,24 +1,56 @@
 <!doctype html>
-<html lang="en" data-theme="corporate">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pharmatory - Medical Fulfillment Engine</title>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/css/styles.css" />
     <script defer src="/js/app.js"></script>
     <script defer src="/js/alpine.min.js"></script>
+    <style>
+      :root {
+        font-family:
+          'Inter',
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+      }
+      body {
+        font-family:
+          'Inter',
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+      }
+      .font-mono {
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      }
+    </style>
   </head>
   <body
-    class="min-h-screen bg-base-100 text-base-content antialiased flex flex-col font-sans"
+    class="min-h-screen bg-slate-50 text-slate-800 antialiased flex flex-col"
     x-data="pharmatoryApp()"
   >
-    <!-- Minimalist Top Navbar -->
+    <!-- Minimalist Top Navbar (Teal Pharma Theme) -->
     <header
-      class="border-b border-base-200 sticky top-0 z-40 bg-base-100/90 backdrop-blur-md px-4 lg:px-8 h-14 flex items-center justify-between"
+      class="border-b border-slate-200 sticky top-0 z-40 bg-white/95 backdrop-blur-md px-4 lg:px-8 h-14 flex items-center justify-between"
     >
       <div class="flex items-center gap-3">
         <div
-          class="w-8 h-8 rounded-lg bg-primary text-primary-content flex items-center justify-center font-bold shadow-xs"
+          class="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center font-bold shadow-xs"
         >
           <svg
             class="w-4 h-4"
@@ -35,21 +67,27 @@
           </svg>
         </div>
         <div class="flex items-center gap-2">
-          <span class="font-bold text-base tracking-tight">Pharmatory</span>
-          <span class="badge badge-xs badge-primary font-mono font-medium">v1.0</span>
-          <span class="badge badge-xs badge-ghost font-mono">ByJSON v2.0</span>
+          <span class="font-bold text-base tracking-tight text-slate-900">Pharmatory</span>
+          <span
+            class="px-1.5 py-0.5 rounded text-2xs font-semibold bg-teal-50 text-teal-700 border border-teal-200"
+            >Pharma Engine</span
+          >
+          <span
+            class="px-1.5 py-0.5 rounded text-2xs font-mono bg-slate-100 text-slate-600 border border-slate-200"
+            >ByJSON v2.0</span
+          >
         </div>
       </div>
 
-      <!-- Action Links & Theme -->
-      <div class="flex items-center gap-2">
+      <!-- Action Links & Docs -->
+      <div class="flex items-center gap-3 text-xs">
         <a
           href="/docs/v1"
           target="_blank"
-          class="btn btn-xs btn-ghost gap-1 font-medium text-base-content/70 hover:text-primary"
+          class="flex items-center gap-1 font-medium text-slate-600 hover:text-teal-600 transition-colors"
         >
           <svg
-            class="w-3.5 h-3.5"
+            class="w-3.5 h-3.5 text-teal-600"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -61,16 +99,16 @@
               d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
             ></path>
           </svg>
-          <span>Docs</span>
+          <span>API Docs</span>
         </a>
 
         <a
           href="/docs/v1/openapi.json"
           target="_blank"
-          class="btn btn-xs btn-ghost gap-1 font-medium text-base-content/70 hover:text-secondary"
+          class="flex items-center gap-1 font-medium text-slate-600 hover:text-teal-600 transition-colors"
         >
           <svg
-            class="w-3.5 h-3.5"
+            class="w-3.5 h-3.5 text-slate-500"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -82,68 +120,19 @@
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             ></path>
           </svg>
-          <span>OpenAPI</span>
+          <span>OpenAPI Spec</span>
         </a>
-
-        <!-- Theme Selector -->
-        <div
-          class="dropdown dropdown-end"
-          x-data="{
-          theme: 'corporate',
-          themes: ['corporate', 'emerald', 'light', 'dark', 'business'],
-          changeTheme(t) {
-            this.theme = t;
-            document.documentElement.setAttribute('data-theme', t);
-          }
-        }"
-        >
-          <div
-            tabindex="0"
-            role="button"
-            class="btn btn-xs btn-square btn-ghost text-base-content/60"
-            title="Theme"
-          >
-            <svg
-              class="w-3.5 h-3.5"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M7 21a4 4 0 01-4-4 4 4 0 014-4c1.1 0 2.1.4 2.8 1.2.7.8 1.2 1.8 1.2 2.8a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-              ></path>
-            </svg>
-          </div>
-          <ul
-            tabindex="0"
-            class="dropdown-content menu bg-base-100 rounded-box z-30 w-32 p-1 shadow-lg border border-base-200 text-xs"
-          >
-            <template x-for="t in themes" :key="t">
-              <li>
-                <button
-                  @click="changeTheme(t)"
-                  :class="{ 'active font-bold': theme === t }"
-                  class="capitalize"
-                  x-text="t"
-                ></button>
-              </li>
-            </template>
-          </ul>
-        </div>
       </div>
     </header>
 
-    <!-- Clean Navigation Bar (Tabs & System Metrics) -->
+    <!-- Clean Navigation Strip (Tabs & Summary Indicators) -->
     <nav
-      class="border-b border-base-200 px-4 lg:px-8 bg-base-100 flex flex-wrap items-center justify-between gap-4"
+      class="border-b border-slate-200 px-4 lg:px-8 bg-white flex flex-wrap items-center justify-between gap-4"
     >
       <div class="flex items-center gap-1 -mb-px">
         <button
           @click="activeTab = 'simulator'"
-          :class="activeTab === 'simulator' ? 'border-primary text-primary font-semibold' : 'border-transparent text-base-content/60 hover:text-base-content font-medium'"
+          :class="activeTab === 'simulator' ? 'border-teal-600 text-teal-700 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-800 font-medium'"
           class="py-3 px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5"
         >
           <svg
@@ -164,81 +153,86 @@
 
         <button
           @click="activeTab = 'warehouses'"
-          :class="activeTab === 'warehouses' ? 'border-primary text-primary font-semibold' : 'border-transparent text-base-content/60 hover:text-base-content font-medium'"
+          :class="activeTab === 'warehouses' ? 'border-teal-600 text-teal-700 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-800 font-medium'"
           class="py-3 px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5"
         >
           <span>Warehouses</span>
           <span
-            class="badge badge-2xs badge-ghost font-mono"
+            class="px-1.5 py-0.2 rounded-full text-2xs font-mono bg-slate-100 text-slate-600"
             x-text="warehouses.length || 8"
           ></span>
         </button>
 
         <button
           @click="activeTab = 'products'"
-          :class="activeTab === 'products' ? 'border-primary text-primary font-semibold' : 'border-transparent text-base-content/60 hover:text-base-content font-medium'"
+          :class="activeTab === 'products' ? 'border-teal-600 text-teal-700 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-800 font-medium'"
           class="py-3 px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5"
         >
           <span>Products</span>
-          <span class="badge badge-2xs badge-ghost font-mono" x-text="products.length || 5"></span>
+          <span
+            class="px-1.5 py-0.2 rounded-full text-2xs font-mono bg-slate-100 text-slate-600"
+            x-text="products.length || 5"
+          ></span>
         </button>
 
         <button
           @click="activeTab = 'traffic'"
-          :class="activeTab === 'traffic' ? 'border-primary text-primary font-semibold' : 'border-transparent text-base-content/60 hover:text-base-content font-medium'"
+          :class="activeTab === 'traffic' ? 'border-teal-600 text-teal-700 font-semibold' : 'border-transparent text-slate-500 hover:text-slate-800 font-medium'"
           class="py-3 px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5"
         >
           <span>Traffic & Datasets</span>
           <span
-            class="badge badge-2xs badge-ghost font-mono"
+            class="px-1.5 py-0.2 rounded-full text-2xs font-mono bg-slate-100 text-slate-600"
             x-text="trafficRecords.length ? trafficRecords.length + ' Trips' : '38 Trips'"
           ></span>
         </button>
       </div>
 
-      <!-- Live Network Summary Pill -->
-      <div class="hidden sm:flex items-center gap-3 text-2xs text-base-content/60 font-mono py-2">
-        <span class="flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
-          8 Regional Hubs
+      <!-- Network Summary Bar -->
+      <div class="hidden sm:flex items-center gap-2.5 text-2xs text-slate-500 font-medium py-2">
+        <span class="flex items-center gap-1 text-teal-700 font-semibold">
+          <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+          8 Warehouses
         </span>
         <span>·</span>
         <span>3 Cold Fleets (W04, W07, W08)</span>
         <span>·</span>
-        <span>East Java Single/Split Solver</span>
+        <span>East Java Routing Engine</span>
       </div>
     </nav>
 
-    <!-- Main Content Workspace -->
+    <!-- Main Workspace Container -->
     <main class="container mx-auto px-4 lg:px-8 py-6 max-w-7xl flex-1">
-      <!-- ========================================== -->
-      <!-- TAB 1: FULFILLMENT SIMULATOR (FLAT LAYOUT) -->
-      <!-- ========================================== -->
+      <!-- ============================================== -->
+      <!-- TAB 1: FULFILLMENT SIMULATOR (CLEAN & FLAT)   -->
+      <!-- ============================================== -->
       <section x-show="activeTab === 'simulator'">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <!-- Left Column: Order Inputs (Clean, Unboxed) -->
-          <div class="lg:col-span-5 space-y-5">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <!-- Left Card: Order Configuration -->
+          <div
+            class="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-5"
+          >
             <div>
-              <h2 class="text-sm font-bold uppercase tracking-wider text-base-content/70">
+              <h2 class="text-sm font-bold uppercase tracking-wider text-teal-800">
                 Order Configuration
               </h2>
-              <p class="text-xs text-base-content/50 mt-0.5">
+              <p class="text-xs text-slate-500 mt-0.5">
                 Select medical supplies and schedule to simulate fulfillment dispatch.
               </p>
             </div>
 
             <!-- Presets Segmented Buttons -->
             <div class="space-y-1.5">
-              <label class="text-2xs font-semibold text-base-content/60 uppercase tracking-wider"
+              <label class="text-2xs font-semibold text-slate-500 uppercase tracking-wider"
                 >Quick Presets</label
               >
               <div
-                class="grid grid-cols-3 gap-1 p-1 bg-base-200/50 rounded-lg border border-base-200"
+                class="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-lg border border-slate-200/80"
               >
                 <button
                   type="button"
                   @click="loadPreset('ambient')"
-                  :class="activePreset === 'ambient' ? 'bg-base-100 shadow-xs font-semibold text-primary' : 'text-base-content/70 hover:text-base-content font-medium'"
+                  :class="activePreset === 'ambient' ? 'bg-white shadow-xs font-semibold text-teal-700 border border-slate-200' : 'text-slate-600 hover:text-slate-900 font-medium'"
                   class="py-1.5 px-2 rounded-md text-xs transition-all text-center truncate"
                 >
                   Ambient (W01)
@@ -246,7 +240,7 @@
                 <button
                   type="button"
                   @click="loadPreset('vaccine')"
-                  :class="activePreset === 'vaccine' ? 'bg-base-100 shadow-xs font-semibold text-primary' : 'text-base-content/70 hover:text-base-content font-medium'"
+                  :class="activePreset === 'vaccine' ? 'bg-white shadow-xs font-semibold text-teal-700 border border-slate-200' : 'text-slate-600 hover:text-slate-900 font-medium'"
                   class="py-1.5 px-2 rounded-md text-xs transition-all text-center truncate"
                 >
                   Vaccine (W04)
@@ -254,7 +248,7 @@
                 <button
                   type="button"
                   @click="loadPreset('split')"
-                  :class="activePreset === 'split' ? 'bg-base-100 shadow-xs font-semibold text-primary' : 'text-base-content/70 hover:text-base-content font-medium'"
+                  :class="activePreset === 'split' ? 'bg-white shadow-xs font-semibold text-teal-700 border border-slate-200' : 'text-slate-600 hover:text-slate-900 font-medium'"
                   class="py-1.5 px-2 rounded-md text-xs transition-all text-center truncate"
                 >
                   Split Order
@@ -262,70 +256,70 @@
               </div>
             </div>
 
-            <!-- Schedule Selector -->
+            <!-- Schedule Selector (Clean 2x2 Grid) -->
             <div class="space-y-1.5">
               <div
-                class="flex items-center justify-between text-2xs font-semibold text-base-content/60 uppercase tracking-wider"
+                class="flex items-center justify-between text-2xs font-semibold text-slate-500 uppercase tracking-wider"
               >
                 <span>Dispatch Schedule</span>
-                <span class="font-mono text-primary font-bold" x-text="orderTime"></span>
+                <span class="font-mono text-teal-700 font-bold" x-text="orderTime"></span>
               </div>
-              <div class="grid grid-cols-2 gap-1.5">
+              <div class="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   @click="orderTime = 'Mon, 08:00'; onOrderChange()"
-                  :class="orderTime === 'Mon, 08:00' ? 'border-primary bg-primary/5 text-primary font-semibold' : 'border-base-200 hover:border-base-300 text-base-content/70'"
-                  class="p-2 rounded-lg border text-left text-xs transition-colors"
+                  :class="orderTime === 'Mon, 08:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
+                  class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
-                  <div class="font-medium">Mon 08:00</div>
-                  <div class="text-2xs opacity-70">Weekday Rush Peak</div>
+                  <div class="font-semibold text-slate-900">Mon 08:00</div>
+                  <div class="text-2xs text-slate-500">Weekday Rush Peak</div>
                 </button>
                 <button
                   type="button"
                   @click="orderTime = 'Mon, 14:00'; onOrderChange()"
-                  :class="orderTime === 'Mon, 14:00' ? 'border-primary bg-primary/5 text-primary font-semibold' : 'border-base-200 hover:border-base-300 text-base-content/70'"
-                  class="p-2 rounded-lg border text-left text-xs transition-colors"
+                  :class="orderTime === 'Mon, 14:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
+                  class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
-                  <div class="font-medium">Mon 14:00</div>
-                  <div class="text-2xs opacity-70">Standard Hours</div>
+                  <div class="font-semibold text-slate-900">Mon 14:00</div>
+                  <div class="text-2xs text-slate-500">Standard Off-Peak</div>
                 </button>
                 <button
                   type="button"
                   @click="orderTime = 'Fri, 17:00'; onOrderChange()"
-                  :class="orderTime === 'Fri, 17:00' ? 'border-primary bg-primary/5 text-primary font-semibold' : 'border-base-200 hover:border-base-300 text-base-content/70'"
-                  class="p-2 rounded-lg border text-left text-xs transition-colors"
+                  :class="orderTime === 'Fri, 17:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
+                  class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
-                  <div class="font-medium">Fri 17:00</div>
-                  <div class="text-2xs opacity-70">Evening Commute</div>
+                  <div class="font-semibold text-slate-900">Fri 17:00</div>
+                  <div class="text-2xs text-slate-500">Evening Peak Hour</div>
                 </button>
                 <button
                   type="button"
                   @click="orderTime = 'Sat, 08:00'; onOrderChange()"
-                  :class="orderTime === 'Sat, 08:00' ? 'border-primary bg-primary/5 text-primary font-semibold' : 'border-base-200 hover:border-base-300 text-base-content/70'"
-                  class="p-2 rounded-lg border text-left text-xs transition-colors"
+                  :class="orderTime === 'Sat, 08:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
+                  class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
-                  <div class="font-medium">Sat 08:00</div>
-                  <div class="text-2xs opacity-70">Malang Weekend Route</div>
+                  <div class="font-semibold text-slate-900">Sat 08:00</div>
+                  <div class="text-2xs text-slate-500">Malang Weekend Route</div>
                 </button>
               </div>
             </div>
 
-            <!-- Products List (Clean, Flat Rows) -->
+            <!-- Order Items List (Clean, Flat, Roomy) -->
             <div class="space-y-2">
               <div class="flex items-center justify-between">
-                <label class="text-2xs font-semibold text-base-content/60 uppercase tracking-wider">
+                <label class="text-2xs font-semibold text-slate-500 uppercase tracking-wider">
                   Order Items (<span x-text="orderItems.length"></span>)
                 </label>
                 <button
                   type="button"
                   @click="addOrderItem()"
-                  class="btn btn-ghost btn-xs text-primary font-medium gap-1 px-1.5"
+                  class="text-xs font-semibold text-teal-700 hover:text-teal-800 flex items-center gap-1 transition-colors"
                 >
                   <svg
                     class="w-3.5 h-3.5"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    stroke-width="2.5"
                     viewBox="0 0 24 24"
                   >
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
@@ -337,9 +331,9 @@
               <div class="space-y-2">
                 <template x-for="(item, index) in orderItems" :key="index">
                   <div class="flex items-center gap-2">
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0">
                       <select
-                        class="select select-sm select-bordered w-full text-xs font-medium"
+                        class="w-full text-xs font-medium rounded-lg border border-slate-300 bg-white py-2 px-3 text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600"
                         x-model="item.productId"
                         @change="onOrderChange()"
                       >
@@ -355,7 +349,7 @@
                       <input
                         type="number"
                         min="1"
-                        class="input input-sm input-bordered w-full text-center font-mono font-semibold text-xs"
+                        class="w-full text-xs text-center font-mono font-semibold rounded-lg border border-slate-300 bg-white py-2 px-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600"
                         x-model.number="item.quantity"
                         @input="onOrderChange()"
                         placeholder="Qty"
@@ -365,7 +359,7 @@
                       type="button"
                       @click="removeOrderItem(index)"
                       :disabled="orderItems.length <= 1"
-                      class="btn btn-sm btn-ghost btn-square text-base-content/30 hover:text-error transition-colors"
+                      class="p-2 text-slate-400 hover:text-rose-600 disabled:opacity-30 transition-colors"
                       title="Remove product"
                     >
                       <svg
@@ -387,13 +381,13 @@
               </div>
             </div>
 
-            <!-- Submit Action Button -->
+            <!-- Submit Fulfillment Button -->
             <div class="pt-2">
               <button
                 type="button"
                 @click="submitFulfillment()"
                 :disabled="loading"
-                class="btn btn-primary w-full gap-2 font-semibold shadow-xs"
+                class="w-full py-2.5 px-4 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-colors shadow-xs disabled:opacity-60 cursor-pointer"
               >
                 <span x-show="loading" class="loading loading-spinner loading-xs"></span>
                 <svg
@@ -415,133 +409,150 @@
             </div>
           </div>
 
-          <!-- Right Column: Decision Results (Clean, Flat, Minimalist) -->
-          <div class="lg:col-span-7 lg:border-l lg:border-base-200 lg:pl-8 space-y-5">
-            <!-- Active Output State -->
+          <!-- Right Card: Decision Engine Output -->
+          <div
+            class="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-5"
+          >
+            <!-- Active Result State -->
             <div x-show="result" class="space-y-5">
-              <!-- Header & Badges Row -->
+              <!-- Status Badges & Request ID -->
               <div
-                class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-base-200"
+                class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-200"
               >
                 <div class="flex items-center gap-2">
                   <span
-                    class="badge badge-sm font-bold uppercase tracking-wider"
-                    :class="result?.strategy === 'single_warehouse' ? 'badge-success text-success-content' : 'badge-warning text-warning-content'"
+                    class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider border"
+                    :class="result?.strategy === 'single_warehouse' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-amber-50 text-amber-800 border-amber-300'"
                     x-text="result?.strategy === 'single_warehouse' ? 'Single Origin Dispatch' : 'Split Warehouse Dispatch'"
                   ></span>
                   <span
-                    class="badge badge-sm font-semibold"
-                    :class="result?.coldChainCompliance === 'verified' ? 'badge-info text-info-content' : 'badge-ghost text-base-content/70'"
+                    class="px-2.5 py-1 rounded-md text-xs font-semibold border"
+                    :class="result?.coldChainCompliance === 'verified' ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-50 text-slate-700 border-slate-200'"
                     x-text="result?.coldChainCompliance === 'verified' ? 'Cold-Chain Certified (2°C - 8°C)' : 'Ambient Logistics'"
                   ></span>
                 </div>
                 <span
-                  class="text-2xs text-base-content/40 font-mono"
+                  class="text-2xs text-slate-400 font-mono"
                   x-text="'ID: ' + meta?.requestId?.substring(0, 8)"
                 ></span>
               </div>
 
-              <!-- Order Summary Context & Unsaved Changes Alert -->
+              <!-- Context Order Notice & Dirty State Indicator -->
               <div class="flex items-center justify-between text-xs">
-                <div class="text-base-content/60 font-medium">
+                <div class="text-slate-500 font-medium">
                   Evaluation for:
-                  <span
-                    class="text-base-content font-semibold"
-                    x-text="lastEvaluatedSummary"
-                  ></span>
+                  <span class="text-slate-800 font-semibold" x-text="lastEvaluatedSummary"></span>
                 </div>
                 <span
                   x-show="isDirty"
-                  class="badge badge-warning badge-xs font-semibold animate-pulse"
+                  class="px-2 py-0.5 rounded text-2xs font-semibold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse"
                 >
-                  Input Modified · Click Calculate
+                  Input Changed · Click Calculate
                 </span>
               </div>
 
-              <!-- Sleek Metric Highlights (Flat, Bordered Row, No Box Cards) -->
+              <!-- Sleek Metric Highlights (Flat Row, Zero Box Nesting) -->
               <div
-                class="grid grid-cols-3 divide-x divide-base-200 py-3 border-y border-base-200 text-center"
+                class="grid grid-cols-3 divide-x divide-slate-200 py-3 border-y border-slate-200 text-center"
               >
                 <div class="px-2">
-                  <div class="text-2xs font-semibold uppercase tracking-wider text-base-content/50">
+                  <div class="text-2xs font-semibold uppercase tracking-wider text-slate-400">
                     Shipments
                   </div>
                   <div
-                    class="text-2xl font-bold font-mono mt-0.5"
+                    class="text-2xl font-bold font-mono text-slate-900 mt-0.5"
                     x-text="result?.totalShipments"
                   ></div>
                 </div>
                 <div class="px-2">
-                  <div class="text-2xs font-semibold uppercase tracking-wider text-base-content/50">
+                  <div class="text-2xs font-semibold uppercase tracking-wider text-slate-400">
                     Total Distance
                   </div>
                   <div
-                    class="text-2xl font-bold font-mono mt-0.5"
+                    class="text-2xl font-bold font-mono text-slate-900 mt-0.5"
                     x-text="result?.totalDistanceKm + ' km'"
                   ></div>
                 </div>
                 <div class="px-2">
-                  <div class="text-2xs font-semibold uppercase tracking-wider text-base-content/50">
+                  <div class="text-2xs font-semibold uppercase tracking-wider text-slate-400">
                     Est. Duration
                   </div>
                   <div
-                    class="text-2xl font-bold font-mono text-primary mt-0.5"
+                    class="text-2xl font-bold font-mono text-teal-600 mt-0.5"
                     x-text="result?.maxEstimatedDurationMinutes + ' min'"
                   ></div>
                 </div>
               </div>
 
               <!-- Decision Rationale (Clean Minimalist Quote Callout) -->
-              <div class="border-l-3 border-primary/70 pl-3.5 py-0.5 space-y-1">
-                <div class="text-2xs font-bold uppercase tracking-wider text-primary">
-                  Engine Decision Rationale
+              <div class="border-l-3 border-teal-600 bg-teal-50/40 p-3.5 rounded-r-lg space-y-1">
+                <div
+                  class="text-2xs font-bold uppercase tracking-wider text-teal-800 flex items-center gap-1.5"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-teal-600"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span>Engine Decision Rationale</span>
                 </div>
                 <p
-                  class="text-xs text-base-content/80 leading-relaxed font-normal"
+                  class="text-xs text-slate-700 leading-relaxed font-normal"
                   x-text="result?.explanation"
                 ></p>
               </div>
 
-              <!-- Shipments & Products Details -->
+              <!-- Shipments Breakdown Section -->
               <div class="space-y-4 pt-1">
-                <div class="text-2xs font-bold uppercase tracking-wider text-base-content/50">
+                <div class="text-2xs font-bold uppercase tracking-wider text-slate-400">
                   Dispatch Plan Breakdown
                 </div>
 
                 <div class="space-y-4">
                   <template x-for="(s, sIdx) in result?.shipments" :key="sIdx">
-                    <div class="border border-base-200 rounded-lg p-4 space-y-3">
+                    <div class="border border-slate-200 rounded-lg p-4 space-y-3">
                       <!-- Shipment Origin Bar -->
                       <div class="flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
                           <span
-                            class="font-bold text-sm"
+                            class="font-bold text-sm text-slate-900"
                             x-text="s.warehouseId + ' · ' + s.warehouseName"
                           ></span>
-                          <span class="badge badge-xs font-mono" x-text="s.location"></span>
-                        </div>
-                        <div class="flex items-center gap-1.5 text-xs">
                           <span
-                            class="badge badge-xs font-semibold"
-                            :class="s.fullColdChainCapable ? 'badge-info' : 'badge-ghost'"
+                            class="px-1.5 py-0.5 rounded text-2xs font-mono bg-slate-100 text-slate-600"
+                            x-text="s.location"
+                          ></span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                          <span
+                            class="px-2 py-0.5 rounded text-2xs font-semibold border"
+                            :class="s.fullColdChainCapable ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-600 border-slate-200'"
                             x-text="s.fleetType"
                           ></span>
                           <span
-                            class="font-mono text-base-content/60"
+                            class="font-mono text-slate-500"
                             x-text="s.distanceKm + ' km'"
                           ></span>
-                          <span class="text-base-content/30">·</span>
+                          <span class="text-slate-300">·</span>
                           <span
-                            class="font-mono font-semibold text-primary"
+                            class="font-mono font-bold text-teal-700"
                             x-text="'~' + s.estimatedDurationMinutes + ' min'"
                           ></span>
                         </div>
                       </div>
 
                       <!-- Traffic Heuristic Note -->
-                      <div class="text-2xs text-base-content/60 italic flex items-center gap-1.5">
+                      <div class="text-2xs text-slate-500 italic flex items-center gap-1.5">
                         <svg
-                          class="w-3.5 h-3.5 text-base-content/40 flex-shrink-0"
+                          class="w-3.5 h-3.5 text-slate-400 flex-shrink-0"
                           fill="none"
                           stroke="currentColor"
                           stroke-width="2"
@@ -558,32 +569,32 @@
 
                       <!-- Clean Table of Dispatched Items -->
                       <div class="overflow-x-auto pt-1">
-                        <table class="table table-xs w-full">
+                        <table class="w-full text-xs">
                           <thead>
-                            <tr class="border-b border-base-200 text-2xs text-base-content/50">
-                              <th class="font-semibold pl-0">Product Item</th>
-                              <th class="font-semibold">Category</th>
-                              <th class="font-semibold">Storage</th>
-                              <th class="font-semibold text-right pr-0">Qty</th>
+                            <tr class="border-b border-slate-200 text-2xs text-slate-400 text-left">
+                              <th class="font-semibold py-1.5">Product Item</th>
+                              <th class="font-semibold py-1.5">Category</th>
+                              <th class="font-semibold py-1.5">Storage</th>
+                              <th class="font-semibold py-1.5 text-right">Qty</th>
                             </tr>
                           </thead>
-                          <tbody class="divide-y divide-base-100 text-xs">
+                          <tbody class="divide-y divide-slate-100">
                             <template x-for="item in s.items" :key="item.productId">
                               <tr>
                                 <td
-                                  class="font-medium pl-0"
+                                  class="font-medium py-2 text-slate-900"
                                   x-text="item.productId + ' ' + item.productName"
                                 ></td>
-                                <td class="text-base-content/70" x-text="item.category"></td>
-                                <td>
+                                <td class="py-2 text-slate-500" x-text="item.category"></td>
+                                <td class="py-2">
                                   <span
-                                    class="badge badge-2xs font-medium"
-                                    :class="item.coldChainRequired ? 'badge-info text-info-content' : 'badge-ghost'"
+                                    class="px-2 py-0.5 rounded text-2xs font-medium border"
+                                    :class="item.coldChainRequired ? 'bg-teal-50 text-teal-800 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
                                     x-text="item.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
                                   ></span>
                                 </td>
                                 <td
-                                  class="text-right font-mono font-bold pr-0"
+                                  class="py-2 text-right font-mono font-bold text-slate-900"
                                   x-text="item.quantity"
                                 ></td>
                               </tr>
@@ -596,63 +607,63 @@
                 </div>
               </div>
 
-              <!-- Collapsible Raw JSON Envelope -->
-              <div class="pt-2 border-t border-base-200">
+              <!-- Collapsible Raw JSON Response -->
+              <div class="pt-2 border-t border-slate-200">
                 <button
                   type="button"
                   @click="showRawJson = !showRawJson"
-                  class="text-2xs text-base-content/50 hover:text-base-content font-mono flex items-center gap-1 transition-colors"
+                  class="text-2xs text-slate-400 hover:text-slate-700 font-mono flex items-center gap-1 transition-colors"
                 >
                   <span
-                    x-text="showRawJson ? 'Hide Raw ByJSON Response ↑' : 'View Raw ByJSON Response ↓'"
+                    x-text="showRawJson ? 'Hide Raw ByJSON Payload ↑' : 'View Raw ByJSON Payload ↓'"
                   ></span>
                 </button>
                 <div x-show="showRawJson" class="mt-2">
                   <pre
-                    class="p-3 bg-base-200/50 border border-base-200 rounded-lg font-mono text-2xs overflow-x-auto max-h-56 leading-normal"
+                    class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-2xs overflow-x-auto max-h-56 leading-normal"
                     x-text="JSON.stringify({ success: true, data: result, error: null, meta }, null, 2)"
                   ></pre>
                 </div>
               </div>
             </div>
 
-            <!-- Error Notification -->
-            <div x-show="error" class="alert alert-error text-xs py-2.5 rounded-lg">
-              <svg
-                class="w-4 h-4 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                ></path>
-              </svg>
-              <div class="flex-1">
-                <span
-                  class="font-bold block"
-                  x-text="error?.message || 'Error evaluating order'"
-                ></span>
-                <template x-if="error?.details">
-                  <ul class="list-disc list-inside mt-1 space-y-0.5 text-2xs opacity-90">
-                    <template x-for="d in error.details" :key="d.code">
-                      <li x-text="d.field + ': ' + d.message"></li>
-                    </template>
-                  </ul>
-                </template>
+            <!-- Error Notice -->
+            <div
+              x-show="error"
+              class="p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-800"
+            >
+              <div class="font-bold flex items-center gap-1.5">
+                <svg
+                  class="w-4 h-4 text-rose-600 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  ></path>
+                </svg>
+                <span x-text="error?.message || 'Error calculating order'"></span>
               </div>
+              <template x-if="error?.details">
+                <ul class="list-disc list-inside mt-1.5 space-y-0.5 text-2xs opacity-90 pl-5">
+                  <template x-for="d in error.details" :key="d.code">
+                    <li x-text="d.field + ': ' + d.message"></li>
+                  </template>
+                </ul>
+              </template>
             </div>
 
             <!-- Empty State -->
             <div
               x-show="!result && !error && !loading"
-              class="py-16 text-center text-base-content/40 space-y-2"
+              class="py-16 text-center text-slate-400 space-y-2"
             >
               <svg
-                class="w-10 h-10 mx-auto"
+                class="w-10 h-10 mx-auto text-slate-300"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="1.5"
@@ -664,7 +675,7 @@
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 ></path>
               </svg>
-              <div class="text-sm font-semibold">Ready to Calculate</div>
+              <div class="text-sm font-semibold text-slate-600">Ready to Calculate</div>
               <p class="text-xs max-w-sm mx-auto">
                 Select a preset or customize quantities on the left, then click Calculate
                 Fulfillment.
@@ -674,59 +685,65 @@
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 2: WAREHOUSES DIRECTORY (CLEAN TABLE)  -->
-      <!-- ========================================== -->
-      <section x-show="activeTab === 'warehouses'" class="space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-base-200">
+      <!-- ============================================== -->
+      <!-- TAB 2: WAREHOUSES DIRECTORY (CLEAN CARD)      -->
+      <!-- ============================================== -->
+      <section
+        x-show="activeTab === 'warehouses'"
+        class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4"
+      >
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
           <div>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-base-content/70">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-teal-800">
               Regional Facilities Network
             </h2>
-            <p class="text-xs text-base-content/50 mt-0.5">
-              8 distribution centers across East Java with real inventory levels.
+            <p class="text-xs text-slate-500 mt-0.5">
+              8 distribution centers across East Java with live inventory levels.
             </p>
           </div>
-          <span class="badge badge-sm badge-outline font-mono">SQLite Persistent Store</span>
+          <span
+            class="px-2 py-0.5 rounded text-2xs font-mono bg-slate-100 text-slate-600 border border-slate-200"
+            >SQLite Persistent</span
+          >
         </div>
 
         <div class="overflow-x-auto">
-          <table class="table table-sm w-full">
+          <table class="w-full text-xs">
             <thead>
               <tr
-                class="border-b border-base-200 text-2xs text-base-content/50 uppercase tracking-wider"
+                class="border-b border-slate-200 text-2xs text-slate-400 uppercase tracking-wider text-left"
               >
-                <th class="font-semibold">ID</th>
-                <th class="font-semibold">Facility Name</th>
-                <th class="font-semibold">City / Location</th>
-                <th class="font-semibold">Distance</th>
-                <th class="font-semibold">Storage Type</th>
-                <th class="font-semibold">Vehicle Fleet</th>
-                <th class="font-semibold">Cold Chain Fleet</th>
-                <th class="font-semibold">Live Stock Levels</th>
+                <th class="py-2 font-semibold">ID</th>
+                <th class="py-2 font-semibold">Facility Name</th>
+                <th class="py-2 font-semibold">City / Location</th>
+                <th class="py-2 font-semibold">Distance</th>
+                <th class="py-2 font-semibold">Storage Type</th>
+                <th class="py-2 font-semibold">Vehicle Fleet</th>
+                <th class="py-2 font-semibold">Cold Chain Fleet</th>
+                <th class="py-2 font-semibold">Live Stock Levels</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-base-200 text-xs">
+            <tbody class="divide-y divide-slate-100">
               <template x-for="w in warehouses" :key="w.id">
-                <tr class="hover:bg-base-200/30 transition-colors">
-                  <td class="font-mono font-bold text-primary" x-text="w.id"></td>
-                  <td class="font-semibold" x-text="w.name"></td>
-                  <td x-text="w.location"></td>
-                  <td class="font-mono text-base-content/70" x-text="w.distanceKm + ' km'"></td>
-                  <td x-text="w.storageType"></td>
-                  <td x-text="w.fleetType"></td>
-                  <td>
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="py-2.5 font-mono font-bold text-teal-700" x-text="w.id"></td>
+                  <td class="py-2.5 font-semibold text-slate-900" x-text="w.name"></td>
+                  <td class="py-2.5 text-slate-600" x-text="w.location"></td>
+                  <td class="py-2.5 font-mono text-slate-500" x-text="w.distanceKm + ' km'"></td>
+                  <td class="py-2.5 text-slate-600" x-text="w.storageType"></td>
+                  <td class="py-2.5 text-slate-600" x-text="w.fleetType"></td>
+                  <td class="py-2.5">
                     <span
-                      class="badge badge-xs font-semibold"
-                      :class="w.fullColdChainCapable ? 'badge-info text-info-content' : 'badge-ghost'"
+                      class="px-2 py-0.5 rounded text-2xs font-semibold border"
+                      :class="w.fullColdChainCapable ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-500 border-slate-200'"
                       x-text="w.fullColdChainCapable ? 'Refrigerated Fleet' : 'Standard Fleet'"
                     ></span>
                   </td>
-                  <td>
+                  <td class="py-2.5">
                     <div class="flex flex-wrap gap-1 font-mono text-2xs">
                       <template x-for="(qty, pid) in w.stocks" :key="pid">
                         <span
-                          class="px-1.5 py-0.5 rounded bg-base-200/70 border border-base-200"
+                          class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700"
                           x-text="pid + ': ' + qty"
                         ></span>
                       </template>
@@ -739,49 +756,55 @@
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 3: PRODUCTS CATALOG (CLEAN TABLE)      -->
-      <!-- ========================================== -->
-      <section x-show="activeTab === 'products'" class="space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-base-200">
+      <!-- ============================================== -->
+      <!-- TAB 3: PRODUCTS CATALOG (CLEAN CARD)          -->
+      <!-- ============================================== -->
+      <section
+        x-show="activeTab === 'products'"
+        class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4"
+      >
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
           <div>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-base-content/70">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-teal-800">
               Medical & Pharmaceutical Catalog
             </h2>
-            <p class="text-xs text-base-content/50 mt-0.5">
+            <p class="text-xs text-slate-500 mt-0.5">
               Pharmaceutical supplies with mandatory cold-chain classification.
             </p>
           </div>
-          <span class="badge badge-sm badge-outline font-mono">ByJSON Compliant Catalog</span>
+          <span
+            class="px-2 py-0.5 rounded text-2xs font-mono bg-slate-100 text-slate-600 border border-slate-200"
+            >ByJSON Catalog</span
+          >
         </div>
 
         <div class="overflow-x-auto">
-          <table class="table table-sm w-full">
+          <table class="w-full text-xs">
             <thead>
               <tr
-                class="border-b border-base-200 text-2xs text-base-content/50 uppercase tracking-wider"
+                class="border-b border-slate-200 text-2xs text-slate-400 uppercase tracking-wider text-left"
               >
-                <th class="font-semibold">SKU ID</th>
-                <th class="font-semibold">Product Name</th>
-                <th class="font-semibold">Category</th>
-                <th class="font-semibold">Temperature Requirement</th>
-                <th class="font-semibold">Clinical Specification</th>
+                <th class="py-2 font-semibold">SKU ID</th>
+                <th class="py-2 font-semibold">Product Name</th>
+                <th class="py-2 font-semibold">Category</th>
+                <th class="py-2 font-semibold">Temperature Requirement</th>
+                <th class="py-2 font-semibold">Clinical Specification</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-base-200 text-xs">
+            <tbody class="divide-y divide-slate-100">
               <template x-for="p in products" :key="p.id">
-                <tr class="hover:bg-base-200/30 transition-colors">
-                  <td class="font-mono font-bold text-secondary" x-text="p.id"></td>
-                  <td class="font-semibold" x-text="p.name"></td>
-                  <td x-text="p.category"></td>
-                  <td>
+                <tr class="hover:bg-slate-50/80 transition-colors">
+                  <td class="py-2.5 font-mono font-bold text-teal-700" x-text="p.id"></td>
+                  <td class="py-2.5 font-semibold text-slate-900" x-text="p.name"></td>
+                  <td class="py-2.5 text-slate-600" x-text="p.category"></td>
+                  <td class="py-2.5">
                     <span
-                      class="badge badge-xs font-semibold"
-                      :class="p.coldChainRequired ? 'badge-info text-info-content' : 'badge-ghost'"
+                      class="px-2 py-0.5 rounded text-2xs font-semibold border"
+                      :class="p.coldChainRequired ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-600 border-slate-200'"
                       x-text="p.coldChainRequired ? 'Cold Chain (2°C - 8°C)' : 'Ambient Storage'"
                     ></span>
                   </td>
-                  <td class="text-base-content/60" x-text="p.description || '-'"></td>
+                  <td class="py-2.5 text-slate-500" x-text="p.description || '-'"></td>
                 </tr>
               </template>
             </tbody>
@@ -789,36 +812,43 @@
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 4: TRAFFIC & CSV ANALYTICS (CLEAN)     -->
-      <!-- ========================================== -->
+      <!-- ============================================== -->
+      <!-- TAB 4: TRAFFIC & CSV ANALYTICS (CLEAN CARD)   -->
+      <!-- ============================================== -->
       <section x-show="activeTab === 'traffic'" class="space-y-6">
-        <!-- Upload Bar -->
-        <div class="p-4 border border-base-200 rounded-lg space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2">
+        <!-- Upload Bar Card -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4">
+          <div
+            class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3"
+          >
             <div>
-              <h2 class="text-sm font-bold">Historical Delivery CSV Processing</h2>
-              <p class="text-xs text-base-content/50">
+              <h2 class="text-sm font-bold uppercase tracking-wider text-teal-800">
+                Historical Delivery CSV Processing
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">
                 Upload custom delivery data processed strictly in-memory (zero disk writes).
               </p>
             </div>
-            <span class="badge badge-xs badge-info font-mono">In-Memory Engine</span>
+            <span
+              class="px-2 py-0.5 rounded text-2xs font-mono bg-teal-50 text-teal-800 border border-teal-200"
+              >In-Memory Engine</span
+            >
           </div>
 
-          <div class="flex flex-wrap items-center gap-2 pt-1">
-            <div class="flex-1 min-w-[240px]">
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex-1 min-w-[260px]">
               <input
                 type="file"
                 accept=".csv"
                 @change="handleFileChange($event)"
-                class="file-input file-input-sm file-input-bordered w-full font-mono text-xs"
+                class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border file:border-slate-300 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 file:cursor-pointer"
               />
             </div>
             <button
               type="button"
               @click="uploadCsv()"
               :disabled="!selectedFile || uploadLoading"
-              class="btn btn-sm btn-primary gap-1 font-semibold"
+              class="py-2 px-4 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
             >
               <span x-show="uploadLoading" class="loading loading-spinner loading-xs"></span>
               <span>Upload CSV</span>
@@ -827,54 +857,68 @@
               type="button"
               @click="resetTraffic()"
               :disabled="uploadLoading"
-              class="btn btn-sm btn-ghost border border-base-200 gap-1 font-medium"
+              class="py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-xs transition-colors cursor-pointer"
             >
               <span>Reset Benchmark</span>
             </button>
           </div>
 
-          <!-- Banners -->
-          <div x-show="uploadSuccessMessage" class="alert alert-success text-xs py-2 rounded-md">
+          <!-- Upload Status Banners -->
+          <div
+            x-show="uploadSuccessMessage"
+            class="p-3 rounded-lg bg-teal-50 border border-teal-200 text-xs text-teal-800 font-medium"
+          >
             <span x-text="uploadSuccessMessage"></span>
           </div>
-          <div x-show="uploadErrorMessage" class="alert alert-error text-xs py-2 rounded-md">
+          <div
+            x-show="uploadErrorMessage"
+            class="p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-800 font-medium"
+          >
             <span x-text="uploadErrorMessage"></span>
           </div>
         </div>
 
-        <!-- Traffic Warehouse Profiles -->
-        <div class="space-y-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-base-content/60">
-              Route Duration Profiles
-            </h3>
+        <!-- Traffic Summary Profiles Grid -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <h3 class="text-sm font-bold uppercase tracking-wider text-teal-800">
+                Route Duration Profiles
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Calculated congestion averages by warehouse corridor.
+              </p>
+            </div>
             <span
-              class="text-2xs font-mono text-base-content/40"
+              class="text-2xs font-mono text-slate-400"
               x-text="trafficRecords.length + ' Total Sample Trips'"
             ></span>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <template x-for="s in trafficSummary" :key="s.warehouseId">
               <div
-                class="p-3 rounded-lg border border-base-200 hover:border-base-300 transition-colors space-y-1"
+                class="p-3 rounded-lg border border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition-colors space-y-1"
               >
                 <div class="flex items-center justify-between">
-                  <span class="font-bold text-xs text-primary" x-text="s.warehouseId"></span>
+                  <span class="font-bold text-xs text-teal-700" x-text="s.warehouseId"></span>
                   <span
-                    class="text-2xs font-mono text-base-content/40"
+                    class="text-2xs font-mono text-slate-400"
                     x-text="s.sampleCount + ' trips'"
                   ></span>
                 </div>
                 <div class="text-xs flex items-center justify-between pt-1">
-                  <span class="text-base-content/50">Base:</span>
-                  <span class="font-mono font-bold" x-text="s.averageDurationMinutes + 'm'"></span>
+                  <span class="text-slate-500">Base:</span>
+                  <span
+                    class="font-mono font-bold text-slate-900"
+                    x-text="s.averageDurationMinutes + 'm'"
+                  ></span>
                 </div>
-                <div class="text-xs flex items-center justify-between text-warning font-medium">
+                <div class="text-xs flex items-center justify-between text-amber-600 font-medium">
                   <span>Rush Peak:</span>
                   <span class="font-mono font-bold" x-text="s.congestedAvgMinutes + 'm'"></span>
                 </div>
-                <div class="text-xs flex items-center justify-between text-success font-medium">
+                <div class="text-xs flex items-center justify-between text-emerald-600 font-medium">
                   <span>Off-Peak:</span>
                   <span class="font-mono font-bold" x-text="s.offPeakAvgMinutes + 'm'"></span>
                 </div>
@@ -884,29 +928,37 @@
         </div>
 
         <!-- Historical Trips Log Table -->
-        <div class="space-y-2 pt-2">
-          <div class="text-xs font-bold uppercase tracking-wider text-base-content/60">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-3">
+          <div class="text-sm font-bold uppercase tracking-wider text-teal-800">
             Sample Historical Delivery Logs
           </div>
-          <div class="overflow-x-auto max-h-64 overflow-y-auto border border-base-200 rounded-lg">
-            <table class="table table-xs w-full">
-              <thead class="sticky top-0 bg-base-100 border-b border-base-200">
-                <tr class="text-2xs text-base-content/50">
-                  <th class="font-semibold">Delivery ID</th>
-                  <th class="font-semibold">Warehouse</th>
-                  <th class="font-semibold">Scheduled Day & Time</th>
-                  <th class="font-semibold">Recorded Duration</th>
-                  <th class="font-semibold">Corridor Notes</th>
+          <div class="overflow-x-auto max-h-72 overflow-y-auto border border-slate-200 rounded-lg">
+            <table class="w-full text-xs">
+              <thead
+                class="sticky top-0 bg-slate-100 border-b border-slate-200 text-left text-2xs text-slate-500"
+              >
+                <tr>
+                  <th class="p-2.5 font-semibold">Delivery ID</th>
+                  <th class="p-2.5 font-semibold">Warehouse</th>
+                  <th class="p-2.5 font-semibold">Scheduled Day & Time</th>
+                  <th class="p-2.5 font-semibold">Recorded Duration</th>
+                  <th class="p-2.5 font-semibold">Corridor Notes</th>
                 </tr>
               </thead>
-              <tbody class="text-xs font-mono divide-y divide-base-100">
+              <tbody class="divide-y divide-slate-100 font-mono text-2xs">
                 <template x-for="rec in trafficRecords" :key="rec.deliveryId">
-                  <tr class="hover:bg-base-200/20">
-                    <td class="font-semibold text-primary" x-text="rec.deliveryId"></td>
-                    <td x-text="rec.warehouseId"></td>
-                    <td x-text="rec.dayOfWeek + ', ' + rec.timeString"></td>
-                    <td class="font-bold" x-text="rec.actualDurationMinutes + ' min'"></td>
-                    <td class="font-sans text-base-content/60" x-text="rec.notes || '-'"></td>
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-2.5 font-semibold text-teal-700" x-text="rec.deliveryId"></td>
+                    <td class="p-2.5 text-slate-700" x-text="rec.warehouseId"></td>
+                    <td
+                      class="p-2.5 text-slate-700"
+                      x-text="rec.dayOfWeek + ', ' + rec.timeString"
+                    ></td>
+                    <td
+                      class="p-2.5 font-bold text-slate-900"
+                      x-text="rec.actualDurationMinutes + ' min'"
+                    ></td>
+                    <td class="p-2.5 font-sans text-slate-500" x-text="rec.notes || '-'"></td>
                   </tr>
                 </template>
               </tbody>
@@ -918,9 +970,9 @@
 
     <!-- Minimalist Clean Footer -->
     <footer
-      class="border-t border-base-200 py-3 text-center text-2xs text-base-content/40 font-mono"
+      class="border-t border-slate-200 py-3 text-center text-2xs text-slate-400 font-mono bg-white"
     >
-      Pharmatory · Fastify LTS · TypeScript · SQLite · ByJSON v2.0 · Alpine.js · Tailwind
+      Pharmatory · Fastify LTS · TypeScript · SQLite · ByJSON v2.0 · Alpine.js · Tailwind CSS
     </footer>
   </body>
 </html>
