@@ -171,7 +171,13 @@ pharmatory/
 │   ├── app.ts                           # Application factory (Fastify instance & plugins)
 │   ├── server.ts                        # Entry point bootstrapper (TCP listener)
 │   ├── config/                          # Central configuration
-│   ├── db/                              # Persistence connection, schema, and seeder
+│   ├── db/                              # Persistence, migrations, seeders, and reset runners
+│   │   ├── connection.ts                # SQLite connection pool & auto-runner
+│   │   ├── migrator.ts                  # Schema migration runner (_migrations table)
+│   │   ├── seeder.ts                    # Idempotent data seeder runner
+│   │   ├── reset.ts                     # Database wipe, migration, and re-seed utility
+│   │   ├── migrations/                  # Versioned DDL migration scripts
+│   │   └── seeds/                       # Seed definitions (products, warehouses, stocks)
 │   ├── shared/                          # ByJSON types, helpers, and error classes
 │   ├── plugins/                         # Fastify infrastructure (error-handler, swagger, static, multipart)
 │   └── modules/                         # Feature domain modules
@@ -240,6 +246,21 @@ npm install
 
 ```bash
 npm test
+```
+
+### Database Migrations & Seeding (Zero-Config or CLI)
+
+The application automatically applies any pending migrations and seeds upon startup. For manual lifecycle operations, dedicated CLI scripts are provided:
+
+```bash
+# Run pending schema migrations (_migrations tracking table)
+npm run db:migrate
+
+# Seed products, warehouses, and initial inventory
+npm run db:seed
+
+# Wipe, re-migrate, and re-seed from scratch
+npm run db:reset
 ```
 
 ### Code Quality & Linting

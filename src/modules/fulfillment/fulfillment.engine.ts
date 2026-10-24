@@ -30,9 +30,7 @@ export class FulfillmentEngine {
       productMap.set(p.id, p)
     }
 
-    const itemDetails: Array<{ product: Product; quantity: number }> = []
-    let orderRequiresColdChain = false
-
+    // Validate raw order item fields first
     for (let i = 0; i < orderItems.length; i++) {
       const item = orderItems[i]
       if (!item.productId || typeof item.productId !== 'string') {
@@ -70,12 +68,24 @@ export class FulfillmentEngine {
           ]
         )
       }
+    }
 
+    // Merge duplicate order items by summing their quantities
+    const mergedQuantities = new Map<string, number>()
+    for (const item of orderItems) {
+      const current = mergedQuantities.get(item.productId) || 0
+      mergedQuantities.set(item.productId, current + item.quantity)
+    }
+
+    const itemDetails: Array<{ product: Product; quantity: number }> = []
+    let orderRequiresColdChain = false
+
+    for (const [productId, quantity] of mergedQuantities.entries()) {
+      const product = productMap.get(productId)!
       if (product.coldChainRequired) {
         orderRequiresColdChain = true
       }
-
-      itemDetails.push({ product, quantity: item.quantity })
+      itemDetails.push({ product, quantity })
     }
 
     // 2. Evaluate Single Warehouse Candidates
@@ -233,14 +243,16 @@ export class FulfillmentEngine {
     for (const [prodId, unfulfilledQty] of remainingColdDemands.entries()) {
       if (unfulfilledQty > 0) {
         const prod = productMap.get(prodId)!
+        const originalTotal = mergedQuantities.get(prodId) || unfulfilledQty
+        const availableStock = originalTotal - unfulfilledQty
         const idx = orderItems.findIndex((i) => i.productId === prodId)
         throw new ValidationError(
-          `Insufficient regional inventory for cold-chain product '${prod.name}' (${prod.id}).`,
+          `Insufficient regional inventory for cold-chain vaccine '${prod.name}' (${prod.id}).`,
           [
             {
-              field: `items.${idx}.quantity`,
+              field: `items.${idx >= 0 ? idx : 0}.quantity`,
               code: 'insufficient_inventory',
-              message: `Requested: ${orderItems[idx]?.quantity}, Unfulfillable deficit: ${unfulfilledQty}.`
+              message: `Requested: ${originalTotal} units. Available across cold-chain fleet (W04, W07, W08): ${availableStock} units. Unfulfillable deficit: ${unfulfilledQty} units.`
             }
           ]
         )
@@ -328,14 +340,16 @@ export class FulfillmentEngine {
     for (const [prodId, unfulfilledQty] of remainingAmbientDemands.entries()) {
       if (unfulfilledQty > 0) {
         const prod = productMap.get(prodId)!
+        const originalTotal = mergedQuantities.get(prodId) || unfulfilledQty
+        const availableStock = originalTotal - unfulfilledQty
         const idx = orderItems.findIndex((i) => i.productId === prodId)
         throw new ValidationError(
           `Insufficient regional inventory for product '${prod.name}' (${prod.id}).`,
           [
             {
-              field: `items.${idx}.quantity`,
+              field: `items.${idx >= 0 ? idx : 0}.quantity`,
               code: 'insufficient_inventory',
-              message: `Requested: ${orderItems[idx]?.quantity}, Unfulfillable deficit: ${unfulfilledQty}.`
+              message: `Requested: ${originalTotal} units. Available across all regional facilities: ${availableStock} units. Unfulfillable deficit: ${unfulfilledQty} units.`
             }
           ]
         )

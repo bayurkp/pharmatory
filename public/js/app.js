@@ -177,6 +177,34 @@ function createPharmatoryComponent() {
       return this.products.find((p) => p.id === id) || null
     },
 
+    isProductSelected(productId, currentIndex) {
+      return this.orderItems.some(
+        (item, idx) => idx !== currentIndex && item.productId === productId
+      )
+    },
+
+    getTotalStock(productId) {
+      const product = this.getProduct(productId)
+      if (!product || !this.warehouses.length) return 0
+
+      // For cold chain vaccines, count only warehouses with active refrigerated fleet (W04, W07, W08)
+      const qualifiedWh = product.coldChainRequired
+        ? this.warehouses.filter((w) => w.fullColdChainCapable)
+        : this.warehouses
+
+      return qualifiedWh.reduce((sum, w) => sum + (w.stocks?.[productId] || 0), 0)
+    },
+
+    adjustAllToMaxStock() {
+      for (const item of this.orderItems) {
+        const max = this.getTotalStock(item.productId)
+        if (max > 0) {
+          item.quantity = max
+        }
+      }
+      this.onOrderChange(true)
+    },
+
     onOrderChange(immediate = false) {
       this.activePreset = null
       this.isDirty = true
@@ -197,8 +225,14 @@ function createPharmatoryComponent() {
     },
 
     addOrderItem() {
-      const firstProd = this.products[0]?.id || 'P001'
-      this.orderItems.push({ productId: firstProd, quantity: 20 })
+      // Find the first product that has not yet been added to orderItems
+      const unselected = this.products.find(
+        (p) => !this.orderItems.some((item) => item.productId === p.id)
+      )
+      if (!unselected) {
+        return
+      }
+      this.orderItems.push({ productId: unselected.id, quantity: 20 })
       this.onOrderChange(true)
     },
 
@@ -273,9 +307,11 @@ function createPharmatoryComponent() {
           this.lastEvaluatedSummary = `${summaryParts.join(' + ')} · ${this.orderTime}`
         } else {
           this.error = json.error
+          this.result = null
         }
       } catch (err) {
         this.error = { message: err.message || 'Fulfillment request failed.' }
+        this.result = null
       } finally {
         this.loading = false
       }

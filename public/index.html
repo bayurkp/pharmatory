@@ -287,7 +287,9 @@
                 <button
                   type="button"
                   @click="addOrderItem()"
-                  class="text-xs font-medium text-teal-700 hover:text-teal-800 flex items-center gap-1 transition-colors"
+                  :disabled="orderItems.length >= products.length"
+                  :class="orderItems.length >= products.length ? 'opacity-40 cursor-not-allowed text-slate-400' : 'text-teal-700 hover:text-teal-800 cursor-pointer'"
+                  class="text-xs font-medium flex items-center gap-1 transition-colors"
                 >
                   <svg
                     class="w-3.5 h-3.5"
@@ -376,14 +378,17 @@
                         <template x-for="p in products" :key="p.id">
                           <button
                             type="button"
-                            @click="item.productId = p.id; open = false; onOrderChange(true)"
-                            class="w-full flex items-center justify-between px-3 py-2 text-xs transition-colors text-left group cursor-pointer"
-                            :class="item.productId === p.id ? 'bg-teal-50/70 text-teal-900 font-medium' : 'text-slate-700 hover:bg-slate-50'"
+                            @click="if (!isProductSelected(p.id, index)) { item.productId = p.id; open = false; onOrderChange(true); }"
+                            :disabled="isProductSelected(p.id, index)"
+                            class="w-full flex items-center justify-between px-3 py-2 text-xs transition-colors text-left group"
+                            :class="isProductSelected(p.id, index) 
+                              ? 'opacity-40 cursor-not-allowed bg-slate-50 text-slate-400' 
+                              : (item.productId === p.id ? 'bg-teal-50/70 text-teal-900 font-medium cursor-pointer' : 'text-slate-700 hover:bg-slate-50 cursor-pointer')"
                           >
                             <div class="flex items-center gap-2 truncate pr-2">
                               <span
                                 class="font-semibold"
-                                :class="item.productId === p.id ? 'text-teal-700' : 'text-slate-400 group-hover:text-slate-600'"
+                                :class="isProductSelected(p.id, index) ? 'text-slate-400' : (item.productId === p.id ? 'text-teal-700' : 'text-slate-400 group-hover:text-slate-600')"
                                 x-text="p.id"
                               ></span>
                               <span
@@ -393,11 +398,20 @@
                               ></span>
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0">
-                              <span
-                                class="px-1.5 py-0.5 rounded text-[10px] font-medium border"
-                                :class="p.coldChainRequired ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-500 border-slate-200'"
-                                x-text="p.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
-                              ></span>
+                              <template x-if="isProductSelected(p.id, index)">
+                                <span
+                                  class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-200 text-slate-600"
+                                >
+                                  Already Added
+                                </span>
+                              </template>
+                              <template x-if="!isProductSelected(p.id, index)">
+                                <span
+                                  class="px-1.5 py-0.5 rounded text-[10px] font-medium border"
+                                  :class="p.coldChainRequired ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-500 border-slate-200'"
+                                  x-text="p.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
+                                ></span>
+                              </template>
                               <div class="w-4 flex items-center justify-center">
                                 <svg
                                   x-show="item.productId === p.id"
@@ -420,8 +434,8 @@
                       </div>
                     </div>
 
-                    <!-- Quantity Input -->
-                    <div class="w-14 sm:w-20 shrink-0">
+                    <!-- Quantity Input with Max Regional Stock Indicator -->
+                    <div class="w-16 sm:w-20 shrink-0 text-center">
                       <input
                         type="number"
                         min="1"
@@ -430,6 +444,16 @@
                         @input="onOrderChange()"
                         placeholder="Qty"
                       />
+                      <div
+                        class="text-[10px] text-slate-400 mt-0.5 truncate"
+                        :title="'Total regional stock: ' + getTotalStock(item.productId)"
+                      >
+                        Avail:
+                        <span
+                          class="font-medium text-slate-600"
+                          x-text="getTotalStock(item.productId)"
+                        ></span>
+                      </div>
                     </div>
 
                     <!-- Remove Item Button -->
@@ -713,34 +737,73 @@
               </div>
             </div>
 
-            <!-- Error Notice -->
+            <!-- Error Notice (Prominent Insufficient Inventory & Validation Alert) -->
             <div
               x-show="error"
-              class="p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-800"
+              class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-900 space-y-3"
             >
-              <div class="font-bold flex items-center gap-1.5">
-                <svg
-                  class="w-4 h-4 text-rose-600 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
+              <div class="flex items-start gap-2.5">
+                <div
+                  class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  ></path>
-                </svg>
-                <span x-text="error?.message || 'Error calculating order'"></span>
-              </div>
-              <template x-if="error?.details">
-                <ul class="list-disc list-inside mt-1.5 space-y-0.5 text-[11px] opacity-90 pl-5">
-                  <template x-for="d in error.details" :key="d.code">
-                    <li x-text="d.field + ': ' + d.message"></li>
+                  <svg
+                    class="w-4 h-4 text-rose-600"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div
+                    class="font-bold text-sm text-rose-950"
+                    x-text="error?.message || 'Fulfillment Validation Failed'"
+                  ></div>
+                  <template x-if="error?.details">
+                    <ul class="list-disc list-inside mt-2 space-y-1.5 text-xs text-rose-800">
+                      <template x-for="d in error.details" :key="d.code + d.field">
+                        <li class="leading-relaxed">
+                          <span class="font-semibold text-rose-950" x-text="d.field + ': '"></span>
+                          <span x-text="d.message"></span>
+                        </li>
+                      </template>
+                    </ul>
                   </template>
-                </ul>
-              </template>
+                </div>
+              </div>
+
+              <!-- Quick Action: Auto-Adjust Quantities to Max Regional Stock -->
+              <div
+                class="pt-2 border-t border-rose-200/80 flex flex-wrap items-center justify-between gap-2"
+              >
+                <span class="text-[11px] text-rose-700 font-medium">Auto Allocation:</span>
+                <button
+                  type="button"
+                  @click="adjustAllToMaxStock()"
+                  class="py-1.5 px-3 rounded-lg bg-white border border-rose-300 hover:bg-rose-100/50 text-rose-800 font-semibold text-xs transition-colors shadow-xs cursor-pointer flex items-center gap-1.5"
+                >
+                  <svg
+                    class="w-3.5 h-3.5 text-rose-600"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    ></path>
+                  </svg>
+                  <span>Adjust Quantities to Max Regional Stock</span>
+                </button>
+              </div>
             </div>
 
             <!-- Empty State -->

@@ -178,4 +178,31 @@ describe('FulfillmentEngine Unit Tests', () => {
       ValidationError
     )
   })
+
+  it('merges duplicate order items with identical product IDs before routing', () => {
+    const orderItems = [
+      { productId: 'P001', quantity: 20 },
+      { productId: 'P001', quantity: 30 }
+    ]
+
+    const plan = engine.evaluate(orderItems, mockProducts, mockWarehouses)
+    assert.equal(plan.strategy, 'single_warehouse')
+    assert.equal(plan.shipments[0].warehouseId, 'W01')
+    assert.equal(plan.shipments[0].items.length, 1)
+    assert.equal(plan.shipments[0].items[0].quantity, 50)
+  })
+
+  it('throws ValidationError with insufficient_inventory when order exceeds regional inventory', () => {
+    const orderItems = [{ productId: 'P002', quantity: 9999 }]
+
+    assert.throws(
+      () => engine.evaluate(orderItems, mockProducts, mockWarehouses),
+      (err: unknown) => {
+        const valErr = err as ValidationError
+        assert.equal(valErr.details[0].code, 'insufficient_inventory')
+        assert.match(valErr.details[0].message, /deficit/i)
+        return true
+      }
+    )
+  })
 })
