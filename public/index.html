@@ -272,16 +272,18 @@
                 <div class="form-control w-full">
                   <label class="label py-0 pb-1">
                     <span class="label-text text-[11px] font-medium text-slate-600"
-                      >Departure Time (24h)</span
+                      >Departure Time</span
                     >
                   </label>
-                  <input
-                    type="time"
+                  <select
                     x-model="selectedTime"
                     @change="onCustomTimeChange()"
-                    @input="onCustomTimeChange()"
-                    class="input input-bordered input-sm w-full bg-white text-slate-800 text-xs font-medium focus:border-teal-600 focus:outline-teal-600 cursor-pointer shadow-xs"
-                  />
+                    class="select select-bordered select-sm w-full bg-white text-slate-800 text-xs font-medium focus:border-teal-600 focus:outline-teal-600 cursor-pointer shadow-xs"
+                  >
+                    <template x-for="slot in timeSlots" :key="slot.value">
+                      <option :value="slot.value" x-text="slot.label"></option>
+                    </template>
+                  </select>
                 </div>
               </div>
 

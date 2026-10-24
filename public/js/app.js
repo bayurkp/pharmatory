@@ -52,6 +52,21 @@ function createPharmatoryComponent() {
     selectedDay: 'Mon',
     selectedTime: '14:00',
     orderTime: 'Mon, 14:00',
+    timeSlots: (function () {
+      const slots = []
+      for (let h = 0; h < 24; h++) {
+        for (const m of ['00', '30']) {
+          const hh = String(h).padStart(2, '0')
+          const val = `${hh}:${m}`
+          let tag = ''
+          if (val === '08:00' || val === '08:30') tag = ' · Morning Rush'
+          else if (val === '14:00') tag = ' · Off-Peak'
+          else if (val === '17:00' || val === '17:30') tag = ' · Evening Rush'
+          slots.push({ value: val, label: `${val}${tag}` })
+        }
+      }
+      return slots
+    })(),
     loading: false,
     debounceTimer: null,
     result: null,
