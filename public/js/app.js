@@ -172,6 +172,10 @@ function createPharmatoryComponent() {
 
     // ─── Order & Simulator Management ───────────────────────────
 
+    getProduct(id) {
+      return this.products.find((p) => p.id === id) || null
+    },
+
     onOrderChange() {
       this.activePreset = null
       this.isDirty = true
