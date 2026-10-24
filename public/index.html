@@ -245,18 +245,20 @@
                 ></span>
               </div>
 
-              <!-- Custom Day & Time Pickers -->
+              <!-- Custom Day & Time Pickers (DaisyUI Components) -->
               <div
-                class="grid grid-cols-2 gap-2 bg-slate-50/80 p-2.5 rounded-lg border border-slate-200"
+                class="grid grid-cols-2 gap-2.5 bg-slate-50/80 p-2.5 rounded-lg border border-slate-200"
               >
-                <div>
-                  <label class="block text-[11px] font-medium text-slate-500 mb-1"
-                    >Day of Week</label
-                  >
+                <div class="form-control w-full">
+                  <label class="label py-0 pb-1">
+                    <span class="label-text text-[11px] font-medium text-slate-600"
+                      >Day of Week</span
+                    >
+                  </label>
                   <select
                     x-model="selectedDay"
                     @change="onCustomTimeChange()"
-                    class="w-full text-xs rounded-md border border-slate-300 bg-white py-1.5 px-2 text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 cursor-pointer"
+                    class="select select-bordered select-sm w-full bg-white text-slate-800 text-xs font-medium focus:border-teal-600 focus:outline-teal-600 cursor-pointer shadow-xs"
                   >
                     <option value="Mon">Monday</option>
                     <option value="Tue">Tuesday</option>
@@ -267,16 +269,18 @@
                     <option value="Sun">Sunday</option>
                   </select>
                 </div>
-                <div>
-                  <label class="block text-[11px] font-medium text-slate-500 mb-1"
-                    >Departure Time (24h)</label
-                  >
+                <div class="form-control w-full">
+                  <label class="label py-0 pb-1">
+                    <span class="label-text text-[11px] font-medium text-slate-600"
+                      >Departure Time (24h)</span
+                    >
+                  </label>
                   <input
                     type="time"
                     x-model="selectedTime"
                     @change="onCustomTimeChange()"
                     @input="onCustomTimeChange()"
-                    class="w-full text-xs rounded-md border border-slate-300 bg-white py-1.5 px-2 text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 cursor-pointer"
+                    class="input input-bordered input-sm w-full bg-white text-slate-800 text-xs font-medium focus:border-teal-600 focus:outline-teal-600 cursor-pointer shadow-xs"
                   />
                 </div>
               </div>
