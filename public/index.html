@@ -121,8 +121,9 @@
       <div class="flex items-center gap-1 -mb-px flex-nowrap shrink-0">
         <button
           @click="activeTab = 'simulator'"
+          :style="activeTab === 'simulator' ? 'border-bottom-color: #0d9488;' : 'border-bottom-color: transparent;'"
           :class="activeTab === 'simulator' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
-          class="relative py-3 px-2.5 sm:px-3.5 text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <svg
             class="w-4 h-4 shrink-0"
@@ -138,17 +139,13 @@
             ></path>
           </svg>
           <span>Fulfillment Simulator</span>
-          <span
-            class="tab-active-indicator"
-            style="display: block; height: 2px; background-color: #0d9488"
-            x-show="activeTab === 'simulator'"
-          ></span>
         </button>
 
         <button
           @click="activeTab = 'warehouses'"
+          :style="activeTab === 'warehouses' ? 'border-bottom-color: #0d9488;' : 'border-bottom-color: transparent;'"
           :class="activeTab === 'warehouses' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
-          class="relative py-3 px-2.5 sm:px-3.5 text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <span>Warehouses</span>
           <span
@@ -156,17 +153,13 @@
             :class="activeTab === 'warehouses' ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'"
             x-text="warehouses.length || 8"
           ></span>
-          <span
-            class="tab-active-indicator"
-            style="display: block; height: 2px; background-color: #0d9488"
-            x-show="activeTab === 'warehouses'"
-          ></span>
         </button>
 
         <button
           @click="activeTab = 'products'"
+          :style="activeTab === 'products' ? 'border-bottom-color: #0d9488;' : 'border-bottom-color: transparent;'"
           :class="activeTab === 'products' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
-          class="relative py-3 px-2.5 sm:px-3.5 text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <span>Products</span>
           <span
@@ -174,28 +167,19 @@
             :class="activeTab === 'products' ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'"
             x-text="products.length || 5"
           ></span>
-          <span
-            class="tab-active-indicator"
-            style="display: block; height: 2px; background-color: #0d9488"
-            x-show="activeTab === 'products'"
-          ></span>
         </button>
 
         <button
           @click="activeTab = 'traffic'"
+          :style="activeTab === 'traffic' ? 'border-bottom-color: #0d9488;' : 'border-bottom-color: transparent;'"
           :class="activeTab === 'traffic' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
-          class="relative py-3 px-2.5 sm:px-3.5 text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <span>Traffic &amp; Datasets</span>
           <span
             class="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
             :class="activeTab === 'traffic' ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'"
             x-text="trafficRecords.length ? trafficRecords.length + ' Trips' : '38 Trips'"
-          ></span>
-          <span
-            class="tab-active-indicator"
-            style="display: block; height: 2px; background-color: #0d9488"
-            x-show="activeTab === 'traffic'"
           ></span>
         </button>
       </div>
