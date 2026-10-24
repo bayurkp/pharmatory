@@ -29,3 +29,4 @@ if (
   const { seeded } = runSeeders(db)
   console.log(`[Seeders] Executed ${seeded.length} seeder(s):`, seeded.join(', '))
 }
+

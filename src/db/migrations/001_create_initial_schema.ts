@@ -40,3 +40,4 @@ export function down(db: Database.Database): void {
     DROP TABLE IF EXISTS products;
   `)
 }
+

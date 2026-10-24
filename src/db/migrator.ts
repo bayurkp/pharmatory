@@ -62,3 +62,4 @@ if (
     console.log(`[Migrations] Skipped: ${skipped.join(', ')}`)
   }
 }
+
