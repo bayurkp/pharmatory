@@ -51,3 +51,16 @@ pre {
   --radius-field: 0.375rem;
   --radius-badge: 0.25rem;
 }
+
+/* Crisp Active Indicator Bar for Navigation Tabs */
+.tab-active-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background-color: #0d9488;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  z-index: 10;
+}
