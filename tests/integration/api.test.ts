@@ -278,4 +278,15 @@ describe('Pharmatory API Integration Tests (Fastify inject)', () => {
     assert.equal(response.statusCode, 302)
     assert.equal(response.headers.location, '/docs/v1')
   })
+
+  it('GET /api/health - applies defensive security headers (Helmet)', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/health'
+    })
+
+    assert.equal(response.statusCode, 200)
+    assert.equal(response.headers['x-content-type-options'], 'nosniff')
+    assert.equal(response.headers['x-frame-options'], 'SAMEORIGIN')
+  })
 })

@@ -171,4 +171,3 @@ export function seed(db: Database.Database): void {
     seedWarehouses()
   }
 }
-

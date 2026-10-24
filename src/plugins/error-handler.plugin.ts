@@ -81,6 +81,7 @@ const errorHandlerPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) 
     else if (statusCode === 404) errorCode = 'not_found'
     else if (statusCode === 409) errorCode = 'conflict'
     else if (statusCode === 422) errorCode = 'validation_error'
+    else if (statusCode === 429) errorCode = 'rate_limit_exceeded'
 
     reply.status(statusCode)
     return byJsonError(
