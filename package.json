@@ -42,7 +42,8 @@
     "better-sqlite3": "^13.0.3",
     "daisyui": "^5.7.50",
     "fastify": "^5.12.7",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "timepicker-ui": "^4.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

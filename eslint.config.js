@@ -4,7 +4,15 @@ import globals from 'globals'
 
 export default tseslint.config(
   {
-    ignores: ['dist/**', 'node_modules/**', 'public/css/**', 'public/js/alpine.min.js', 'data/**']
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'public/css/**',
+      'public/js/alpine.min.js',
+      'public/js/timepicker-ui.umd.js',
+      'public/vendor/**',
+      'data/**'
+    ]
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

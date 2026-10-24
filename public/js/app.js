@@ -67,6 +67,7 @@ function createPharmatoryComponent() {
       }
       return slots
     })(),
+    timepicker: null,
     loading: false,
     debounceTimer: null,
     result: null,
@@ -83,6 +84,77 @@ function createPharmatoryComponent() {
       await Promise.all([this.fetchProducts(), this.fetchWarehouses(), this.fetchTraffic()])
       // Initial fulfillment evaluation so the page immediately displays live results
       await this.submitFulfillment()
+
+      // Initialize TimepickerUI with DaisyUI theme integration
+      this.$nextTick(() => {
+        this.initTimepicker()
+      })
+    },
+
+    initTimepicker() {
+      const wrapperEl =
+        document.getElementById('departure-time-wrapper') ||
+        document.getElementById('departure-time-input')
+      if (!wrapperEl) return
+
+      const TimepickerClass =
+        window.TimepickerUI &&
+        (window.TimepickerUI.TimepickerUI || window.TimepickerUI.default || window.TimepickerUI)
+
+      if (!TimepickerClass) {
+        console.warn('TimepickerUI library not available')
+        return
+      }
+
+      try {
+        this.timepicker = new TimepickerClass(wrapperEl, {
+          clock: {
+            type: '24h',
+            incrementHours: 1,
+            incrementMinutes: 5,
+            autoSwitchToMinutes: true
+          },
+          ui: {
+            theme: 'basic',
+            mode: 'clock',
+            animation: true,
+            backdrop: true,
+            editable: false
+          },
+          labels: {
+            time: 'Select Departure Time (24h)',
+            ok: 'Apply',
+            cancel: 'Cancel'
+          },
+          callbacks: {
+            onConfirm: (data) => {
+              if (!data) return
+              const hour = String(data.hour ?? '00').padStart(2, '0')
+              const min = String(data.minutes ?? '00').padStart(2, '0')
+              this.selectedTime = `${hour}:${min}`
+              this.onCustomTimeChange(false)
+            }
+          }
+        })
+
+        this.timepicker.create()
+
+        // Also bind event listener fallback for confirm
+        this.timepicker.on('confirm', (data) => {
+          if (!data) return
+          const hour = String(data.hour ?? '00').padStart(2, '0')
+          const min = String(data.minutes ?? '00').padStart(2, '0')
+          this.selectedTime = `${hour}:${min}`
+          this.onCustomTimeChange(false)
+        })
+
+        // Set initial value in timepicker
+        if (this.selectedTime && typeof this.timepicker.setValue === 'function') {
+          this.timepicker.setValue(this.selectedTime)
+        }
+      } catch (err) {
+        console.error('Failed to initialize TimepickerUI:', err)
+      }
     },
 
     // ─── Data Fetching ──────────────────────────────────────────
@@ -280,13 +352,27 @@ function createPharmatoryComponent() {
       this.selectedDay = day
       this.selectedTime = time
       this.orderTime = `${day}, ${time}`
+      if (this.timepicker && typeof this.timepicker.setValue === 'function') {
+        try {
+          this.timepicker.setValue(time)
+        } catch {
+          // ignore transient sync errors
+        }
+      }
       this.onOrderChange(true)
     },
 
-    onCustomTimeChange() {
+    onCustomTimeChange(syncPicker = true) {
       if (!this.selectedDay) this.selectedDay = 'Mon'
       if (!this.selectedTime) this.selectedTime = '12:00'
       this.orderTime = `${this.selectedDay}, ${this.selectedTime}`
+      if (syncPicker && this.timepicker && typeof this.timepicker.setValue === 'function') {
+        try {
+          this.timepicker.setValue(this.selectedTime)
+        } catch {
+          // ignore transient sync errors
+        }
+      }
       this.onOrderChange(true)
     },
 
@@ -304,6 +390,13 @@ function createPharmatoryComponent() {
           const parts = preset.time.split(',').map((s) => s.trim())
           this.selectedDay = parts[0]
           this.selectedTime = parts[1] || '12:00'
+          if (this.timepicker && typeof this.timepicker.setValue === 'function') {
+            try {
+              this.timepicker.setValue(this.selectedTime)
+            } catch {
+              // ignore transient sync errors
+            }
+          }
         }
       }
       this.isDirty = false

@@ -2,6 +2,8 @@ node_modules/
 dist/
 public/css/
 public/js/alpine.min.js
+public/js/timepicker-ui.umd.js
+public/vendor/
 data/
 *.db
 *.db-*
