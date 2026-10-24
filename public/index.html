@@ -365,6 +365,10 @@
                               Ambient
                             </span>
                           </template>
+                          <span
+                            class="hidden md:inline-block px-1.5 py-0.5 rounded text-[10px] font-normal bg-slate-100 text-slate-600 border border-slate-200"
+                            x-text="'Stock: ' + getTotalStock(item.productId)"
+                          ></span>
                           <svg
                             class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 shrink-0"
                             :class="open ? 'rotate-180 text-teal-600' : ''"
@@ -431,6 +435,10 @@
                                   x-text="p.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
                                 ></span>
                               </template>
+                              <span
+                                class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200"
+                                x-text="'Stock: ' + getTotalStock(p.id)"
+                              ></span>
                               <div class="w-4 flex items-center justify-center">
                                 <svg
                                   x-show="item.productId === p.id"

@@ -5354,6 +5354,11 @@
       line-height: var(--tw-leading, var(--text-xs--line-height));
     }
   }
+  @media (width >= 48rem) {
+    .md\:inline-block {
+      display: inline-block;
+    }
+  }
   @media (width >= 64rem) {
     .lg\:col-span-5 {
       grid-column: span 5 / span 5;
