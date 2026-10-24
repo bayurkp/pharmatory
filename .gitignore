@@ -12,7 +12,7 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# Private Hiring Team Documentation (Confidential Evaluation Dossier)
+# Private Evaluation Dossier
 README.private.md
 README_PRIVATE.md
 

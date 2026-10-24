@@ -1,5 +1,5 @@
 /**
- * Benchmark delivery records from Customer 1 Historical Data.
+ * Benchmark historical delivery records across East Java regional transit corridors.
  * Used as fallback dataset when local CSV file is absent.
  */
 export const DEFAULT_HISTORICAL_CSV = `Delivery ID,Warehouse,Day/Time,Actual Duration (minutes),Notes
