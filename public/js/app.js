@@ -49,6 +49,8 @@ function createPharmatoryComponent() {
       { productId: 'P001', quantity: 50 },
       { productId: 'P003', quantity: 100 }
     ],
+    selectedDay: 'Mon',
+    selectedTime: '14:00',
     orderTime: 'Mon, 14:00',
     loading: false,
     debounceTimer: null,
@@ -259,6 +261,20 @@ function createPharmatoryComponent() {
       }
     },
 
+    selectPresetTime(day, time) {
+      this.selectedDay = day
+      this.selectedTime = time
+      this.orderTime = `${day}, ${time}`
+      this.onOrderChange(true)
+    },
+
+    onCustomTimeChange() {
+      if (!this.selectedDay) this.selectedDay = 'Mon'
+      if (!this.selectedTime) this.selectedTime = '12:00'
+      this.orderTime = `${this.selectedDay}, ${this.selectedTime}`
+      this.onOrderChange(true)
+    },
+
     async loadPreset(type) {
       if (this.debounceTimer) {
         clearTimeout(this.debounceTimer)
@@ -269,6 +285,11 @@ function createPharmatoryComponent() {
       if (preset) {
         this.orderItems = preset.items.map((item) => ({ ...item }))
         this.orderTime = preset.time
+        if (preset.time && preset.time.includes(',')) {
+          const parts = preset.time.split(',').map((s) => s.trim())
+          this.selectedDay = parts[0]
+          this.selectedTime = parts[1] || '12:00'
+        }
       }
       this.isDirty = false
       await this.submitFulfillment()
