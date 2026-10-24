@@ -15,16 +15,7 @@
     <script defer src="/js/app.js"></script>
     <script defer src="/js/alpine.min.js"></script>
     <style>
-      :root {
-        font-family:
-          'Inter',
-          system-ui,
-          -apple-system,
-          BlinkMacSystemFont,
-          'Segoe UI',
-          Roboto,
-          sans-serif;
-      }
+      :root,
       body {
         font-family:
           'Inter',
@@ -35,8 +26,15 @@
           Roboto,
           sans-serif;
       }
-      .font-mono {
-        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      .font-mono,
+      pre,
+      code {
+        font-family:
+          'JetBrains Mono', Consolas, 'Cascadia Code', 'Fira Code', Menlo, Monaco, monospace;
+      }
+      pre {
+        font-size: 11px !important;
+        line-height: 1.5 !important;
       }
     </style>
   </head>
@@ -149,7 +147,7 @@
         >
           <span>Warehouses</span>
           <span
-            class="px-1.5 py-0.2 rounded-full text-2xs font-mono bg-slate-100 text-slate-600"
+            class="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600"
             x-text="warehouses.length || 8"
           ></span>
         </button>
@@ -161,7 +159,7 @@
         >
           <span>Products</span>
           <span
-            class="px-1.5 py-0.2 rounded-full text-2xs font-mono bg-slate-100 text-slate-600"
+            class="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600"
             x-text="products.length || 5"
           ></span>
         </button>
@@ -173,24 +171,10 @@
         >
           <span>Traffic &amp; Datasets</span>
           <span
-            class="px-1.5 py-0.2 rounded-full text-2xs font-mono bg-slate-100 text-slate-600"
+            class="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600"
             x-text="trafficRecords.length ? trafficRecords.length + ' Trips' : '38 Trips'"
           ></span>
         </button>
-      </div>
-
-      <!-- Network Summary Bar -->
-      <div
-        class="hidden md:flex items-center gap-2.5 text-2xs text-slate-500 font-medium py-2 shrink-0"
-      >
-        <span class="flex items-center gap-1 text-teal-700 font-medium">
-          <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
-          8 Warehouses
-        </span>
-        <span>·</span>
-        <span>3 Cold Fleets (W04, W07, W08)</span>
-        <span>·</span>
-        <span>East Java Distribution</span>
       </div>
     </nav>
 
@@ -262,7 +246,7 @@
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
                   <div class="font-medium text-slate-900">Mon 08:00</div>
-                  <div class="text-2xs text-slate-500 mt-0.5">Weekday Rush Peak</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">Weekday Rush Peak</div>
                 </button>
                 <button
                   type="button"
@@ -271,7 +255,7 @@
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
                   <div class="font-medium text-slate-900">Mon 14:00</div>
-                  <div class="text-2xs text-slate-500 mt-0.5">Standard Off-Peak</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">Standard Off-Peak</div>
                 </button>
                 <button
                   type="button"
@@ -280,7 +264,7 @@
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
                   <div class="font-medium text-slate-900">Fri 17:00</div>
-                  <div class="text-2xs text-slate-500 mt-0.5">Evening Peak Hour</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">Evening Peak Hour</div>
                 </button>
                 <button
                   type="button"
@@ -289,7 +273,7 @@
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
                   <div class="font-medium text-slate-900">Sat 08:00</div>
-                  <div class="text-2xs text-slate-500 mt-0.5">Malang Weekend Route</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">Malang Weekend Route</div>
                 </button>
               </div>
             </div>
@@ -336,7 +320,7 @@
                       >
                         <div class="flex items-center gap-1.5 sm:gap-2 truncate">
                           <span
-                            class="font-mono font-bold text-teal-700 text-xs shrink-0"
+                            class="font-semibold text-teal-700 text-xs shrink-0"
                             x-text="item.productId"
                           ></span>
                           <span
@@ -398,7 +382,7 @@
                           >
                             <div class="flex items-center gap-2 truncate pr-2">
                               <span
-                                class="font-mono font-bold"
+                                class="font-semibold"
                                 :class="item.productId === p.id ? 'text-teal-700' : 'text-slate-400 group-hover:text-slate-600'"
                                 x-text="p.id"
                               ></span>
@@ -441,7 +425,7 @@
                       <input
                         type="number"
                         min="1"
-                        class="w-full text-xs text-center font-mono font-semibold rounded-lg border border-slate-300 bg-white py-2 px-1 sm:px-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600"
+                        class="w-full text-xs text-center font-semibold rounded-lg border border-slate-300 bg-white py-2 px-1 sm:px-2 text-slate-900 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600"
                         x-model.number="item.quantity"
                         @input="onOrderChange()"
                         placeholder="Qty"
@@ -535,7 +519,7 @@
                 </div>
                 <span
                   x-show="isDirty"
-                  class="px-2 py-0.5 rounded text-2xs font-semibold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse"
+                  class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse"
                 >
                   Input Changed · Click Calculate
                 </span>
@@ -550,7 +534,7 @@
                     Shipments
                   </div>
                   <div
-                    class="text-lg sm:text-xl font-bold font-mono text-slate-900 mt-0.5 sm:mt-1"
+                    class="text-lg sm:text-xl font-bold text-slate-900 mt-0.5 sm:mt-1"
                     x-text="result?.totalShipments"
                   ></div>
                 </div>
@@ -559,7 +543,7 @@
                     Total Distance
                   </div>
                   <div
-                    class="text-lg sm:text-xl font-bold font-mono text-slate-900 mt-0.5 sm:mt-1"
+                    class="text-lg sm:text-xl font-bold text-slate-900 mt-0.5 sm:mt-1"
                     x-text="result?.totalDistanceKm + ' km'"
                   ></div>
                 </div>
@@ -568,7 +552,7 @@
                     Est. Duration
                   </div>
                   <div
-                    class="text-lg sm:text-xl font-bold font-mono text-teal-700 mt-0.5 sm:mt-1"
+                    class="text-lg sm:text-xl font-bold text-teal-700 mt-0.5 sm:mt-1"
                     x-text="result?.maxEstimatedDurationMinutes + ' min'"
                   ></div>
                 </div>
@@ -615,30 +599,30 @@
                             x-text="s.warehouseId + ' · ' + s.warehouseName"
                           ></span>
                           <span
-                            class="px-1.5 py-0.5 rounded text-2xs bg-slate-100 text-slate-600"
+                            class="px-1.5 py-0.5 rounded text-[11px] bg-slate-100 text-slate-600"
                             x-text="s.location"
                           ></span>
                         </div>
                         <div class="flex items-center gap-2 text-xs">
                           <span
-                            class="px-2 py-0.5 rounded text-2xs font-medium border"
+                            class="px-2 py-0.5 rounded text-[11px] font-medium border"
                             :class="s.fullColdChainCapable ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
                             x-text="s.fleetType"
                           ></span>
                           <span
-                            class="font-mono text-slate-500 whitespace-nowrap"
+                            class="text-slate-500 whitespace-nowrap text-xs"
                             x-text="s.distanceKm + ' km'"
                           ></span>
                           <span class="text-slate-300">·</span>
                           <span
-                            class="font-mono font-semibold text-teal-700 whitespace-nowrap"
+                            class="font-semibold text-teal-700 whitespace-nowrap text-xs"
                             x-text="'~' + s.estimatedDurationMinutes + ' min'"
                           ></span>
                         </div>
                       </div>
 
                       <!-- Traffic Heuristic Note -->
-                      <div class="text-2xs text-slate-500 italic flex items-center gap-1.5">
+                      <div class="text-[11px] text-slate-500 italic flex items-center gap-1.5">
                         <svg
                           class="w-3.5 h-3.5 text-slate-400 shrink-0"
                           fill="none"
@@ -659,7 +643,9 @@
                       <div class="overflow-x-auto pt-1 -mx-1 px-1">
                         <table class="w-full text-xs min-w-[300px]">
                           <thead>
-                            <tr class="border-b border-slate-200 text-2xs text-slate-500 text-left">
+                            <tr
+                              class="border-b border-slate-200 text-[11px] text-slate-500 text-left"
+                            >
                               <th class="font-medium py-1.5 whitespace-nowrap">Product Item</th>
                               <th class="font-medium py-1.5 whitespace-nowrap">Category</th>
                               <th class="font-medium py-1.5 whitespace-nowrap">Storage</th>
@@ -679,13 +665,13 @@
                                 ></td>
                                 <td class="py-2 whitespace-nowrap">
                                   <span
-                                    class="px-2 py-0.5 rounded text-2xs font-medium border"
+                                    class="px-2 py-0.5 rounded text-[11px] font-medium border"
                                     :class="item.coldChainRequired ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
                                     x-text="item.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
                                   ></span>
                                 </td>
                                 <td
-                                  class="py-2 text-right font-mono font-bold text-slate-900 whitespace-nowrap"
+                                  class="py-2 text-right font-semibold text-slate-900 whitespace-nowrap"
                                   x-text="item.quantity"
                                 ></td>
                               </tr>
@@ -709,7 +695,12 @@
                 </button>
                 <div x-show="showRawJson" class="mt-2">
                   <pre
-                    class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-2xs overflow-x-auto max-w-full max-h-56 leading-relaxed"
+                    class="p-3.5 bg-slate-950 text-slate-200 rounded-lg overflow-x-auto max-w-full max-h-60 border border-slate-800"
+                    style="
+                      font-family: 'JetBrains Mono', Consolas, 'Cascadia Code', monospace;
+                      font-size: 11px;
+                      line-height: 1.5;
+                    "
                     x-text="JSON.stringify({ success: true, data: result, error: null, meta }, null, 2)"
                   ></pre>
                 </div>
@@ -738,7 +729,7 @@
                 <span x-text="error?.message || 'Error calculating order'"></span>
               </div>
               <template x-if="error?.details">
-                <ul class="list-disc list-inside mt-1.5 space-y-0.5 text-2xs opacity-90 pl-5">
+                <ul class="list-disc list-inside mt-1.5 space-y-0.5 text-[11px] opacity-90 pl-5">
                   <template x-for="d in error.details" :key="d.code">
                     <li x-text="d.field + ': ' + d.message"></li>
                   </template>
@@ -791,7 +782,9 @@
         <div class="overflow-x-auto -mx-3.5 sm:mx-0 px-3.5 sm:px-0">
           <table class="w-full text-xs min-w-[720px]">
             <thead>
-              <tr class="border-b border-slate-200 text-2xs text-slate-500 font-medium text-left">
+              <tr
+                class="border-b border-slate-200 text-[11px] text-slate-500 font-medium text-left"
+              >
                 <th class="py-2.5 px-2 font-medium whitespace-nowrap">ID</th>
                 <th class="py-2.5 px-2 font-medium whitespace-nowrap">Facility Name</th>
                 <th class="py-2.5 px-2 font-medium whitespace-nowrap">City / Location</th>
@@ -806,7 +799,7 @@
               <template x-for="w in warehouses" :key="w.id">
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td
-                    class="py-2.5 px-2 font-mono font-bold text-teal-700 whitespace-nowrap"
+                    class="py-2.5 px-2 font-semibold text-teal-700 whitespace-nowrap"
                     x-text="w.id"
                   ></td>
                   <td
@@ -815,7 +808,7 @@
                   ></td>
                   <td class="py-2.5 px-2 text-slate-600 whitespace-nowrap" x-text="w.location"></td>
                   <td
-                    class="py-2.5 px-2 font-mono text-slate-500 whitespace-nowrap"
+                    class="py-2.5 px-2 text-slate-500 whitespace-nowrap"
                     x-text="w.distanceKm + ' km'"
                   ></td>
                   <td
@@ -828,16 +821,16 @@
                   ></td>
                   <td class="py-2.5 px-2 whitespace-nowrap">
                     <span
-                      class="px-2 py-0.5 rounded text-2xs font-semibold border"
+                      class="px-2 py-0.5 rounded text-[11px] font-medium border"
                       :class="w.fullColdChainCapable ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-500 border-slate-200'"
                       x-text="w.fullColdChainCapable ? 'Refrigerated Fleet' : 'Standard Fleet'"
                     ></span>
                   </td>
                   <td class="py-2.5 px-2 whitespace-nowrap">
-                    <div class="flex flex-wrap gap-1 font-mono text-2xs">
+                    <div class="flex flex-wrap gap-1 text-[11px]">
                       <template x-for="(qty, pid) in w.stocks" :key="pid">
                         <span
-                          class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700"
+                          class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 font-medium"
                           x-text="pid + ': ' + qty"
                         ></span>
                       </template>
@@ -869,7 +862,9 @@
         <div class="overflow-x-auto -mx-3.5 sm:mx-0 px-3.5 sm:px-0">
           <table class="w-full text-xs min-w-[620px]">
             <thead>
-              <tr class="border-b border-slate-200 text-2xs text-slate-500 font-medium text-left">
+              <tr
+                class="border-b border-slate-200 text-[11px] text-slate-500 font-medium text-left"
+              >
                 <th class="py-2.5 px-2 font-medium whitespace-nowrap">SKU ID</th>
                 <th class="py-2.5 px-2 font-medium whitespace-nowrap">Product Name</th>
                 <th class="py-2.5 px-2 font-medium whitespace-nowrap">Category</th>
@@ -881,7 +876,7 @@
               <template x-for="p in products" :key="p.id">
                 <tr class="hover:bg-slate-50/80 transition-colors">
                   <td
-                    class="py-2.5 px-2 font-mono font-bold text-teal-700 whitespace-nowrap"
+                    class="py-2.5 px-2 font-semibold text-teal-700 whitespace-nowrap"
                     x-text="p.id"
                   ></td>
                   <td
@@ -891,7 +886,7 @@
                   <td class="py-2.5 px-2 text-slate-600 whitespace-nowrap" x-text="p.category"></td>
                   <td class="py-2.5 px-2 whitespace-nowrap">
                     <span
-                      class="px-2 py-0.5 rounded text-2xs font-semibold border"
+                      class="px-2 py-0.5 rounded text-[11px] font-medium border"
                       :class="p.coldChainRequired ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-600 border-slate-200'"
                       x-text="p.coldChainRequired ? 'Cold Chain (2°C - 8°C)' : 'Ambient Storage'"
                     ></span>
@@ -994,14 +989,14 @@
                 <div class="flex items-center justify-between">
                   <span class="font-bold text-xs text-teal-700" x-text="s.warehouseId"></span>
                   <span
-                    class="text-2xs font-mono text-slate-400"
+                    class="text-[11px] font-normal text-slate-500"
                     x-text="s.sampleCount + ' trips'"
                   ></span>
                 </div>
                 <div class="text-[11px] sm:text-xs flex items-center justify-between pt-1">
                   <span class="text-slate-500">Base:</span>
                   <span
-                    class="font-mono font-bold text-slate-900"
+                    class="font-semibold text-slate-900"
                     x-text="s.averageDurationMinutes + 'm'"
                   ></span>
                 </div>
@@ -1009,13 +1004,13 @@
                   class="text-[11px] sm:text-xs flex items-center justify-between text-amber-600 font-medium"
                 >
                   <span>Rush Peak:</span>
-                  <span class="font-mono font-bold" x-text="s.congestedAvgMinutes + 'm'"></span>
+                  <span class="font-semibold" x-text="s.congestedAvgMinutes + 'm'"></span>
                 </div>
                 <div
                   class="text-[11px] sm:text-xs flex items-center justify-between text-emerald-600 font-medium"
                 >
                   <span>Off-Peak:</span>
-                  <span class="font-mono font-bold" x-text="s.offPeakAvgMinutes + 'm'"></span>
+                  <span class="font-semibold" x-text="s.offPeakAvgMinutes + 'm'"></span>
                 </div>
               </div>
             </template>
@@ -1030,7 +1025,7 @@
           >
             <table class="w-full text-xs min-w-[520px]">
               <thead
-                class="sticky top-0 bg-slate-100 border-b border-slate-200 text-left text-2xs text-slate-500"
+                class="sticky top-0 bg-slate-100 border-b border-slate-200 text-left text-[11px] text-slate-500"
               >
                 <tr>
                   <th class="p-2.5 font-semibold whitespace-nowrap">Delivery ID</th>
@@ -1040,7 +1035,7 @@
                   <th class="p-2.5 font-semibold whitespace-nowrap">Corridor Notes</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 font-mono text-2xs">
+              <tbody class="divide-y divide-slate-100 text-xs">
                 <template x-for="rec in trafficRecords" :key="rec.deliveryId">
                   <tr class="hover:bg-slate-50">
                     <td
@@ -1056,11 +1051,11 @@
                       x-text="rec.dayOfWeek + ', ' + rec.timeString"
                     ></td>
                     <td
-                      class="p-2.5 font-bold text-slate-900 whitespace-nowrap"
+                      class="p-2.5 font-semibold text-slate-900 whitespace-nowrap"
                       x-text="rec.actualDurationMinutes + ' min'"
                     ></td>
                     <td
-                      class="p-2.5 font-sans text-slate-500 whitespace-nowrap"
+                      class="p-2.5 text-slate-500 whitespace-nowrap"
                       x-text="rec.notes || '-'"
                     ></td>
                   </tr>
