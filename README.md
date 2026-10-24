@@ -1,5 +1,7 @@
 # Pharmatory
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-pharmatory.onrender.com-22c55e?logo=render&logoColor=white)](https://pharmatory.onrender.com)
+[![API Documentation](https://img.shields.io/badge/API_Docs-Scalar-059669)](https://pharmatory.onrender.com/docs/v1)
 [![Node.js Version](https://img.shields.io/badge/Node.js-v22.x%20LTS-339933?logo=node.js&logoColor=white)](#prerequisites)
 [![Fastify Version](https://img.shields.io/badge/Fastify-v5.x%20LTS-000000?logo=fastify&logoColor=white)](#tech-stack)
 [![API Standard: ByJSON v2.0](https://img.shields.io/badge/API_Standard-ByJSON%20v2.0-0ea5e9?logo=json&logoColor=white)](https://github.com/bayurkp/by-json)
@@ -8,9 +10,12 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.x-06B6D4?logo=tailwindcss&logoColor=white)](#tech-stack)
 [![DaisyUI](https://img.shields.io/badge/DaisyUI-v5.x-5A0EF8?logo=daisyui&logoColor=white)](#tech-stack)
 [![Alpine.js](https://img.shields.io/badge/Alpine.js-v3.x-8BC0D0?logo=alpinedotjs&logoColor=white)](#tech-stack)
-[![API Documentation](https://img.shields.io/badge/API_Docs-Scalar-059669)](#api-documentation--endpoints)
 
 > High-performance, deterministic medical warehouse selection and order fulfillment engine engineered with **Fastify (LTS)**, **TypeScript**, **better-sqlite3**, the **ByJSON Specification (v2.0)**, **Tailwind CSS v4**, **DaisyUI v5**, **Alpine.js**, and interactive API documentation powered by **Scalar**.
+>
+> 🌐 **Live Web Application**: [https://pharmatory.onrender.com](https://pharmatory.onrender.com)  
+> 📖 **Interactive API Documentation (Scalar)**: [https://pharmatory.onrender.com/docs/v1](https://pharmatory.onrender.com/docs/v1)  
+> 🩺 **Health Check**: [https://pharmatory.onrender.com/api/health](https://pharmatory.onrender.com/api/health)
 
 ---
 
