@@ -569,8 +569,11 @@
                   ></div>
                 </div>
                 <div class="px-1 sm:px-2">
-                  <div class="text-[11px] sm:text-xs font-medium text-slate-500 truncate">
-                    Total Distance
+                  <div
+                    class="text-[11px] sm:text-xs font-medium text-slate-500 leading-tight"
+                    x-text="result?.totalShipments > 1 ? 'Total Fleet Distance' : 'Delivery Distance'"
+                  >
+                    Delivery Distance
                   </div>
                   <div
                     class="text-lg sm:text-xl font-bold text-slate-900 mt-0.5 sm:mt-1"
@@ -578,8 +581,11 @@
                   ></div>
                 </div>
                 <div class="px-1 sm:px-2">
-                  <div class="text-[11px] sm:text-xs font-medium text-slate-500 truncate">
-                    Est. Duration
+                  <div
+                    class="text-[11px] sm:text-xs font-medium text-slate-500 leading-tight"
+                    x-text="result?.totalShipments > 1 ? 'Parallel Arrival Time' : 'Estimated Duration'"
+                  >
+                    Estimated Duration
                   </div>
                   <div
                     class="text-lg sm:text-xl font-bold text-teal-700 mt-0.5 sm:mt-1"
