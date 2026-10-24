@@ -66,25 +66,15 @@
             ></path>
           </svg>
         </div>
-        <div class="flex items-center gap-2">
-          <span class="font-bold text-base tracking-tight text-slate-900">Pharmatory</span>
-          <span
-            class="px-1.5 py-0.5 rounded text-2xs font-semibold bg-teal-50 text-teal-700 border border-teal-200"
-            >Pharma Engine</span
-          >
-          <span
-            class="px-1.5 py-0.5 rounded text-2xs font-mono bg-slate-100 text-slate-600 border border-slate-200"
-            >ByJSON v2.0</span
-          >
-        </div>
+        <span class="font-bold text-base tracking-tight text-slate-900">Pharmatory</span>
       </div>
 
       <!-- Action Links & Docs -->
-      <div class="flex items-center gap-3 text-xs">
+      <div class="flex items-center gap-4 text-xs">
         <a
           href="/docs/v1"
           target="_blank"
-          class="flex items-center gap-1 font-medium text-slate-600 hover:text-teal-600 transition-colors"
+          class="flex items-center gap-1.5 font-medium text-slate-600 hover:text-teal-600 transition-colors"
         >
           <svg
             class="w-3.5 h-3.5 text-teal-600"
@@ -105,10 +95,10 @@
         <a
           href="/docs/v1/openapi.json"
           target="_blank"
-          class="flex items-center gap-1 font-medium text-slate-600 hover:text-teal-600 transition-colors"
+          class="flex items-center gap-1.5 font-medium text-slate-600 hover:text-teal-600 transition-colors"
         >
           <svg
-            class="w-3.5 h-3.5 text-slate-500"
+            class="w-3.5 h-3.5 text-slate-400"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -190,14 +180,14 @@
 
       <!-- Network Summary Bar -->
       <div class="hidden sm:flex items-center gap-2.5 text-2xs text-slate-500 font-medium py-2">
-        <span class="flex items-center gap-1 text-teal-700 font-semibold">
+        <span class="flex items-center gap-1 text-teal-700 font-medium">
           <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
           8 Warehouses
         </span>
         <span>·</span>
         <span>3 Cold Fleets (W04, W07, W08)</span>
         <span>·</span>
-        <span>East Java Routing Engine</span>
+        <span>East Java Distribution</span>
       </div>
     </nav>
 
@@ -213,19 +203,15 @@
             class="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-5"
           >
             <div>
-              <h2 class="text-sm font-bold uppercase tracking-wider text-teal-800">
-                Order Configuration
-              </h2>
-              <p class="text-xs text-slate-500 mt-0.5">
+              <h2 class="text-base font-semibold text-slate-900">Order Configuration</h2>
+              <p class="text-xs text-slate-500 mt-1">
                 Select medical supplies and schedule to simulate fulfillment dispatch.
               </p>
             </div>
 
             <!-- Presets Segmented Buttons -->
             <div class="space-y-1.5">
-              <label class="text-2xs font-semibold text-slate-500 uppercase tracking-wider"
-                >Quick Presets</label
-              >
+              <label class="text-xs font-medium text-slate-600">Quick Presets</label>
               <div
                 class="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-lg border border-slate-200/80"
               >
@@ -258,11 +244,9 @@
 
             <!-- Schedule Selector (Clean 2x2 Grid) -->
             <div class="space-y-1.5">
-              <div
-                class="flex items-center justify-between text-2xs font-semibold text-slate-500 uppercase tracking-wider"
-              >
+              <div class="flex items-center justify-between text-xs font-medium text-slate-600">
                 <span>Dispatch Schedule</span>
-                <span class="font-mono text-teal-700 font-bold" x-text="orderTime"></span>
+                <span class="text-xs font-medium text-teal-700" x-text="orderTime"></span>
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <button
@@ -271,8 +255,8 @@
                   :class="orderTime === 'Mon, 08:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
-                  <div class="font-semibold text-slate-900">Mon 08:00</div>
-                  <div class="text-2xs text-slate-500">Weekday Rush Peak</div>
+                  <div class="font-medium text-slate-900">Mon 08:00</div>
+                  <div class="text-2xs text-slate-500 mt-0.5">Weekday Rush Peak</div>
                 </button>
                 <button
                   type="button"
@@ -280,8 +264,8 @@
                   :class="orderTime === 'Mon, 14:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
-                  <div class="font-semibold text-slate-900">Mon 14:00</div>
-                  <div class="text-2xs text-slate-500">Standard Off-Peak</div>
+                  <div class="font-medium text-slate-900">Mon 14:00</div>
+                  <div class="text-2xs text-slate-500 mt-0.5">Standard Off-Peak</div>
                 </button>
                 <button
                   type="button"
@@ -289,8 +273,8 @@
                   :class="orderTime === 'Fri, 17:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
-                  <div class="font-semibold text-slate-900">Fri 17:00</div>
-                  <div class="text-2xs text-slate-500">Evening Peak Hour</div>
+                  <div class="font-medium text-slate-900">Fri 17:00</div>
+                  <div class="text-2xs text-slate-500 mt-0.5">Evening Peak Hour</div>
                 </button>
                 <button
                   type="button"
@@ -298,8 +282,8 @@
                   :class="orderTime === 'Sat, 08:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
-                  <div class="font-semibold text-slate-900">Sat 08:00</div>
-                  <div class="text-2xs text-slate-500">Malang Weekend Route</div>
+                  <div class="font-medium text-slate-900">Sat 08:00</div>
+                  <div class="text-2xs text-slate-500 mt-0.5">Malang Weekend Route</div>
                 </button>
               </div>
             </div>
@@ -307,13 +291,13 @@
             <!-- Order Items List (Clean, Flat, Roomy) -->
             <div class="space-y-2">
               <div class="flex items-center justify-between">
-                <label class="text-2xs font-semibold text-slate-500 uppercase tracking-wider">
+                <label class="text-xs font-medium text-slate-600">
                   Order Items (<span x-text="orderItems.length"></span>)
                 </label>
                 <button
                   type="button"
                   @click="addOrderItem()"
-                  class="text-xs font-semibold text-teal-700 hover:text-teal-800 flex items-center gap-1 transition-colors"
+                  class="text-xs font-medium text-teal-700 hover:text-teal-800 flex items-center gap-1 transition-colors"
                 >
                   <svg
                     class="w-3.5 h-3.5"
@@ -415,33 +399,29 @@
           >
             <!-- Active Result State -->
             <div x-show="result" class="space-y-5">
-              <!-- Status Badges & Request ID -->
+              <!-- Status Badges -->
               <div
                 class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-200"
               >
                 <div class="flex items-center gap-2">
                   <span
-                    class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider border"
-                    :class="result?.strategy === 'single_warehouse' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' : 'bg-amber-50 text-amber-800 border-amber-300'"
-                    x-text="result?.strategy === 'single_warehouse' ? 'Single Origin Dispatch' : 'Split Warehouse Dispatch'"
+                    class="px-2.5 py-0.5 rounded-md text-xs font-medium border"
+                    :class="result?.strategy === 'single_warehouse' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'"
+                    x-text="result?.strategy === 'single_warehouse' ? 'Single Warehouse' : 'Split Fulfillment'"
                   ></span>
                   <span
-                    class="px-2.5 py-1 rounded-md text-xs font-semibold border"
-                    :class="result?.coldChainCompliance === 'verified' ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-50 text-slate-700 border-slate-200'"
-                    x-text="result?.coldChainCompliance === 'verified' ? 'Cold-Chain Certified (2°C - 8°C)' : 'Ambient Logistics'"
+                    class="px-2.5 py-0.5 rounded-md text-xs font-medium border"
+                    :class="result?.coldChainCompliance === 'verified' ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-50 text-slate-600 border-slate-200'"
+                    x-text="result?.coldChainCompliance === 'verified' ? 'Cold Chain (2°C - 8°C)' : 'Ambient'"
                   ></span>
                 </div>
-                <span
-                  class="text-2xs text-slate-400 font-mono"
-                  x-text="'ID: ' + meta?.requestId?.substring(0, 8)"
-                ></span>
               </div>
 
               <!-- Context Order Notice & Dirty State Indicator -->
               <div class="flex items-center justify-between text-xs">
-                <div class="text-slate-500 font-medium">
+                <div class="text-slate-500 font-normal">
                   Evaluation for:
-                  <span class="text-slate-800 font-semibold" x-text="lastEvaluatedSummary"></span>
+                  <span class="text-slate-800 font-medium" x-text="lastEvaluatedSummary"></span>
                 </div>
                 <span
                   x-show="isDirty"
@@ -451,44 +431,36 @@
                 </span>
               </div>
 
-              <!-- Sleek Metric Highlights (Flat Row, Zero Box Nesting) -->
+              <!-- Metric Highlights -->
               <div
                 class="grid grid-cols-3 divide-x divide-slate-200 py-3 border-y border-slate-200 text-center"
               >
                 <div class="px-2">
-                  <div class="text-2xs font-semibold uppercase tracking-wider text-slate-400">
-                    Shipments
-                  </div>
+                  <div class="text-xs font-medium text-slate-500">Shipments</div>
                   <div
-                    class="text-2xl font-bold font-mono text-slate-900 mt-0.5"
+                    class="text-xl font-bold font-mono text-slate-900 mt-1"
                     x-text="result?.totalShipments"
                   ></div>
                 </div>
                 <div class="px-2">
-                  <div class="text-2xs font-semibold uppercase tracking-wider text-slate-400">
-                    Total Distance
-                  </div>
+                  <div class="text-xs font-medium text-slate-500">Total Distance</div>
                   <div
-                    class="text-2xl font-bold font-mono text-slate-900 mt-0.5"
+                    class="text-xl font-bold font-mono text-slate-900 mt-1"
                     x-text="result?.totalDistanceKm + ' km'"
                   ></div>
                 </div>
                 <div class="px-2">
-                  <div class="text-2xs font-semibold uppercase tracking-wider text-slate-400">
-                    Est. Duration
-                  </div>
+                  <div class="text-xs font-medium text-slate-500">Est. Duration</div>
                   <div
-                    class="text-2xl font-bold font-mono text-teal-600 mt-0.5"
+                    class="text-xl font-bold font-mono text-teal-700 mt-1"
                     x-text="result?.maxEstimatedDurationMinutes + ' min'"
                   ></div>
                 </div>
               </div>
 
-              <!-- Decision Rationale (Clean Minimalist Quote Callout) -->
+              <!-- Decision Rationale -->
               <div class="border-l-3 border-teal-600 bg-teal-50/40 p-3.5 rounded-r-lg space-y-1">
-                <div
-                  class="text-2xs font-bold uppercase tracking-wider text-teal-800 flex items-center gap-1.5"
-                >
+                <div class="text-xs font-semibold text-teal-900 flex items-center gap-1.5">
                   <svg
                     class="w-3.5 h-3.5 text-teal-600"
                     fill="none"
@@ -502,7 +474,7 @@
                       d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     ></path>
                   </svg>
-                  <span>Engine Decision Rationale</span>
+                  <span>Decision Rationale</span>
                 </div>
                 <p
                   class="text-xs text-slate-700 leading-relaxed font-normal"
@@ -511,10 +483,8 @@
               </div>
 
               <!-- Shipments Breakdown Section -->
-              <div class="space-y-4 pt-1">
-                <div class="text-2xs font-bold uppercase tracking-wider text-slate-400">
-                  Dispatch Plan Breakdown
-                </div>
+              <div class="space-y-3 pt-1">
+                <div class="text-sm font-semibold text-slate-900">Dispatch Plan Breakdown</div>
 
                 <div class="space-y-4">
                   <template x-for="(s, sIdx) in result?.shipments" :key="sIdx">
@@ -523,18 +493,18 @@
                       <div class="flex flex-wrap items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
                           <span
-                            class="font-bold text-sm text-slate-900"
+                            class="font-semibold text-xs text-slate-900"
                             x-text="s.warehouseId + ' · ' + s.warehouseName"
                           ></span>
                           <span
-                            class="px-1.5 py-0.5 rounded text-2xs font-mono bg-slate-100 text-slate-600"
+                            class="px-1.5 py-0.5 rounded text-2xs bg-slate-100 text-slate-600"
                             x-text="s.location"
                           ></span>
                         </div>
                         <div class="flex items-center gap-2 text-xs">
                           <span
-                            class="px-2 py-0.5 rounded text-2xs font-semibold border"
-                            :class="s.fullColdChainCapable ? 'bg-teal-50 text-teal-800 border-teal-300' : 'bg-slate-100 text-slate-600 border-slate-200'"
+                            class="px-2 py-0.5 rounded text-2xs font-medium border"
+                            :class="s.fullColdChainCapable ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
                             x-text="s.fleetType"
                           ></span>
                           <span
@@ -543,7 +513,7 @@
                           ></span>
                           <span class="text-slate-300">·</span>
                           <span
-                            class="font-mono font-bold text-teal-700"
+                            class="font-mono font-semibold text-teal-700"
                             x-text="'~' + s.estimatedDurationMinutes + ' min'"
                           ></span>
                         </div>
@@ -571,11 +541,11 @@
                       <div class="overflow-x-auto pt-1">
                         <table class="w-full text-xs">
                           <thead>
-                            <tr class="border-b border-slate-200 text-2xs text-slate-400 text-left">
-                              <th class="font-semibold py-1.5">Product Item</th>
-                              <th class="font-semibold py-1.5">Category</th>
-                              <th class="font-semibold py-1.5">Storage</th>
-                              <th class="font-semibold py-1.5 text-right">Qty</th>
+                            <tr class="border-b border-slate-200 text-2xs text-slate-500 text-left">
+                              <th class="font-medium py-1.5">Product Item</th>
+                              <th class="font-medium py-1.5">Category</th>
+                              <th class="font-medium py-1.5">Storage</th>
+                              <th class="font-medium py-1.5 text-right">Qty</th>
                             </tr>
                           </thead>
                           <tbody class="divide-y divide-slate-100">
@@ -589,7 +559,7 @@
                                 <td class="py-2">
                                   <span
                                     class="px-2 py-0.5 rounded text-2xs font-medium border"
-                                    :class="item.coldChainRequired ? 'bg-teal-50 text-teal-800 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
+                                    :class="item.coldChainRequired ? 'bg-teal-50 text-teal-700 border-teal-200' : 'bg-slate-100 text-slate-600 border-slate-200'"
                                     x-text="item.coldChainRequired ? 'Cold (2-8°C)' : 'Ambient'"
                                   ></span>
                                 </td>
@@ -612,15 +582,13 @@
                 <button
                   type="button"
                   @click="showRawJson = !showRawJson"
-                  class="text-2xs text-slate-400 hover:text-slate-700 font-mono flex items-center gap-1 transition-colors"
+                  class="text-xs text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1 transition-colors"
                 >
-                  <span
-                    x-text="showRawJson ? 'Hide Raw ByJSON Payload ↑' : 'View Raw ByJSON Payload ↓'"
-                  ></span>
+                  <span x-text="showRawJson ? 'Hide Raw Payload ↑' : 'View Raw Payload ↓'"></span>
                 </button>
                 <div x-show="showRawJson" class="mt-2">
                   <pre
-                    class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-2xs overflow-x-auto max-h-56 leading-normal"
+                    class="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-2xs overflow-x-auto max-h-56 leading-relaxed"
                     x-text="JSON.stringify({ success: true, data: result, error: null, meta }, null, 2)"
                   ></pre>
                 </div>
@@ -692,35 +660,25 @@
         x-show="activeTab === 'warehouses'"
         class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4"
       >
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-          <div>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-teal-800">
-              Regional Facilities Network
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">
-              8 distribution centers across East Java with live inventory levels.
-            </p>
-          </div>
-          <span
-            class="px-2 py-0.5 rounded text-2xs font-mono bg-slate-100 text-slate-600 border border-slate-200"
-            >SQLite Persistent</span
-          >
+        <div class="pb-3 border-b border-slate-200">
+          <h2 class="text-base font-semibold text-slate-900">Regional Facilities Network</h2>
+          <p class="text-xs text-slate-500 mt-1">
+            8 distribution centers across East Java with live inventory levels.
+          </p>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-xs">
             <thead>
-              <tr
-                class="border-b border-slate-200 text-2xs text-slate-400 uppercase tracking-wider text-left"
-              >
-                <th class="py-2 font-semibold">ID</th>
-                <th class="py-2 font-semibold">Facility Name</th>
-                <th class="py-2 font-semibold">City / Location</th>
-                <th class="py-2 font-semibold">Distance</th>
-                <th class="py-2 font-semibold">Storage Type</th>
-                <th class="py-2 font-semibold">Vehicle Fleet</th>
-                <th class="py-2 font-semibold">Cold Chain Fleet</th>
-                <th class="py-2 font-semibold">Live Stock Levels</th>
+              <tr class="border-b border-slate-200 text-2xs text-slate-500 font-medium text-left">
+                <th class="py-2 font-medium">ID</th>
+                <th class="py-2 font-medium">Facility Name</th>
+                <th class="py-2 font-medium">City / Location</th>
+                <th class="py-2 font-medium">Distance</th>
+                <th class="py-2 font-medium">Storage Type</th>
+                <th class="py-2 font-medium">Vehicle Fleet</th>
+                <th class="py-2 font-medium">Cold Chain Fleet</th>
+                <th class="py-2 font-medium">Live Stock Levels</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -763,32 +721,24 @@
         x-show="activeTab === 'products'"
         class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4"
       >
-        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-          <div>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-teal-800">
-              Medical & Pharmaceutical Catalog
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">
-              Pharmaceutical supplies with mandatory cold-chain classification.
-            </p>
-          </div>
-          <span
-            class="px-2 py-0.5 rounded text-2xs font-mono bg-slate-100 text-slate-600 border border-slate-200"
-            >ByJSON Catalog</span
-          >
+        <div class="pb-3 border-b border-slate-200">
+          <h2 class="text-base font-semibold text-slate-900">
+            Medical &amp; Pharmaceutical Catalog
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Pharmaceutical supplies with mandatory cold-chain classification.
+          </p>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-xs">
             <thead>
-              <tr
-                class="border-b border-slate-200 text-2xs text-slate-400 uppercase tracking-wider text-left"
-              >
-                <th class="py-2 font-semibold">SKU ID</th>
-                <th class="py-2 font-semibold">Product Name</th>
-                <th class="py-2 font-semibold">Category</th>
-                <th class="py-2 font-semibold">Temperature Requirement</th>
-                <th class="py-2 font-semibold">Clinical Specification</th>
+              <tr class="border-b border-slate-200 text-2xs text-slate-500 font-medium text-left">
+                <th class="py-2 font-medium">SKU ID</th>
+                <th class="py-2 font-medium">Product Name</th>
+                <th class="py-2 font-medium">Category</th>
+                <th class="py-2 font-medium">Temperature Requirement</th>
+                <th class="py-2 font-medium">Clinical Specification</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -818,21 +768,13 @@
       <section x-show="activeTab === 'traffic'" class="space-y-6">
         <!-- Upload Bar Card -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4">
-          <div
-            class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3"
-          >
-            <div>
-              <h2 class="text-sm font-bold uppercase tracking-wider text-teal-800">
-                Historical Delivery CSV Processing
-              </h2>
-              <p class="text-xs text-slate-500 mt-0.5">
-                Upload custom delivery data processed strictly in-memory (zero disk writes).
-              </p>
-            </div>
-            <span
-              class="px-2 py-0.5 rounded text-2xs font-mono bg-teal-50 text-teal-800 border border-teal-200"
-              >In-Memory Engine</span
-            >
+          <div class="border-b border-slate-200 pb-3">
+            <h2 class="text-base font-semibold text-slate-900">
+              Historical Delivery CSV Processing
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">
+              Upload custom delivery data processed in-memory for route congestion analysis.
+            </p>
           </div>
 
           <div class="flex flex-wrap items-center gap-3">
@@ -882,15 +824,13 @@
         <div class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4">
           <div class="flex items-center justify-between border-b border-slate-200 pb-3">
             <div>
-              <h3 class="text-sm font-bold uppercase tracking-wider text-teal-800">
-                Route Duration Profiles
-              </h3>
-              <p class="text-xs text-slate-500 mt-0.5">
+              <h3 class="text-base font-semibold text-slate-900">Route Duration Profiles</h3>
+              <p class="text-xs text-slate-500 mt-1">
                 Calculated congestion averages by warehouse corridor.
               </p>
             </div>
             <span
-              class="text-2xs font-mono text-slate-400"
+              class="text-xs text-slate-500 font-normal"
               x-text="trafficRecords.length + ' Total Sample Trips'"
             ></span>
           </div>
@@ -929,9 +869,7 @@
 
         <!-- Historical Trips Log Table -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-3">
-          <div class="text-sm font-bold uppercase tracking-wider text-teal-800">
-            Sample Historical Delivery Logs
-          </div>
+          <div class="text-sm font-semibold text-slate-900">Sample Historical Delivery Logs</div>
           <div class="overflow-x-auto max-h-72 overflow-y-auto border border-slate-200 rounded-lg">
             <table class="w-full text-xs">
               <thead
@@ -967,12 +905,5 @@
         </div>
       </section>
     </main>
-
-    <!-- Minimalist Clean Footer -->
-    <footer
-      class="border-t border-slate-200 py-3 text-center text-2xs text-slate-400 font-mono bg-white"
-    >
-      Pharmatory · Fastify LTS · TypeScript · SQLite · ByJSON v2.0 · Alpine.js · Tailwind CSS
-    </footer>
   </body>
 </html>
