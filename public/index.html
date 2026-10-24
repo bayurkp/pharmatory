@@ -241,7 +241,7 @@
               <div class="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  @click="orderTime = 'Mon, 08:00'; onOrderChange()"
+                  @click="orderTime = 'Mon, 08:00'; onOrderChange(true)"
                   :class="orderTime === 'Mon, 08:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
@@ -250,7 +250,7 @@
                 </button>
                 <button
                   type="button"
-                  @click="orderTime = 'Mon, 14:00'; onOrderChange()"
+                  @click="orderTime = 'Mon, 14:00'; onOrderChange(true)"
                   :class="orderTime === 'Mon, 14:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
@@ -259,7 +259,7 @@
                 </button>
                 <button
                   type="button"
-                  @click="orderTime = 'Fri, 17:00'; onOrderChange()"
+                  @click="orderTime = 'Fri, 17:00'; onOrderChange(true)"
                   :class="orderTime === 'Fri, 17:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
@@ -268,7 +268,7 @@
                 </button>
                 <button
                   type="button"
-                  @click="orderTime = 'Sat, 08:00'; onOrderChange()"
+                  @click="orderTime = 'Sat, 08:00'; onOrderChange(true)"
                   :class="orderTime === 'Sat, 08:00' ? 'border-teal-600 bg-teal-50/50 text-teal-900 font-semibold ring-1 ring-teal-600' : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-slate-50/50'"
                   class="p-2.5 rounded-lg border text-left text-xs transition-all"
                 >
@@ -376,7 +376,7 @@
                         <template x-for="p in products" :key="p.id">
                           <button
                             type="button"
-                            @click="item.productId = p.id; open = false; onOrderChange()"
+                            @click="item.productId = p.id; open = false; onOrderChange(true)"
                             class="w-full flex items-center justify-between px-3 py-2 text-xs transition-colors text-left group cursor-pointer"
                             :class="item.productId === p.id ? 'bg-teal-50/70 text-teal-900 font-medium' : 'text-slate-700 hover:bg-slate-50'"
                           >
@@ -517,12 +517,18 @@
                   Evaluation for:
                   <span class="text-slate-800 font-medium" x-text="lastEvaluatedSummary"></span>
                 </div>
-                <span
-                  x-show="isDirty"
-                  class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse"
-                >
-                  Input Changed · Click Calculate
-                </span>
+                <div class="flex items-center gap-1.5">
+                  <span
+                    x-show="loading"
+                    class="px-2 py-0.5 rounded text-[10px] font-medium bg-teal-50 text-teal-700 border border-teal-200 flex items-center gap-1.5"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-ping"></span>
+                    <span>Updating...</span>
+                  </span>
+                  <span x-show="isDirty && !loading" class="text-[11px] text-slate-400 italic">
+                    Auto-calculating...
+                  </span>
+                </div>
               </div>
 
               <!-- Metric Highlights -->

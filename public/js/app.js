@@ -50,6 +50,7 @@ function createPharmatoryComponent() {
     ],
     orderTime: 'Mon, 14:00',
     loading: false,
+    debounceTimer: null,
     result: null,
     meta: null,
     error: null,
@@ -176,25 +177,43 @@ function createPharmatoryComponent() {
       return this.products.find((p) => p.id === id) || null
     },
 
-    onOrderChange() {
+    onOrderChange(immediate = false) {
       this.activePreset = null
       this.isDirty = true
+
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer)
+        this.debounceTimer = null
+      }
+
+      if (immediate) {
+        this.submitFulfillment()
+        return
+      }
+
+      this.debounceTimer = setTimeout(() => {
+        this.submitFulfillment()
+      }, 350)
     },
 
     addOrderItem() {
       const firstProd = this.products[0]?.id || 'P001'
       this.orderItems.push({ productId: firstProd, quantity: 20 })
-      this.onOrderChange()
+      this.onOrderChange(true)
     },
 
     removeOrderItem(index) {
       if (this.orderItems.length > 1) {
         this.orderItems.splice(index, 1)
-        this.onOrderChange()
+        this.onOrderChange(true)
       }
     },
 
     async loadPreset(type) {
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer)
+        this.debounceTimer = null
+      }
       this.activePreset = type
       const preset = ORDER_PRESETS[type]
       if (preset) {
@@ -206,6 +225,20 @@ function createPharmatoryComponent() {
     },
 
     async submitFulfillment() {
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer)
+        this.debounceTimer = null
+      }
+
+      // Guard against transient invalid quantities during typing
+      const hasInvalidItem = this.orderItems.some(
+        (it) =>
+          !it.productId || it.quantity === '' || it.quantity <= 0 || isNaN(Number(it.quantity))
+      )
+      if (hasInvalidItem) {
+        return
+      }
+
       this.loading = true
       this.error = null
 
