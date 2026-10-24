@@ -113,17 +113,16 @@
       </div>
     </header>
 
-    <!-- Clean Navigation Strip (Tabs & Summary Indicators) -->
+    <!-- Clean Navigation Strip (Pill Tabs & Indicators) -->
     <nav
-      class="border-b border-slate-200 px-3 sm:px-6 lg:px-8 bg-white flex items-center justify-between gap-4 overflow-x-auto"
+      class="border-b border-slate-200 px-3 sm:px-6 lg:px-8 bg-white py-2 flex items-center justify-between gap-4 overflow-x-auto"
       style="scrollbar-width: none; -ms-overflow-style: none"
     >
-      <div class="flex items-center gap-1 -mb-px flex-nowrap shrink-0">
+      <div class="flex items-center gap-1.5 flex-nowrap shrink-0">
         <button
           @click="activeTab = 'simulator'"
-          :style="activeTab === 'simulator' ? 'border-bottom-color: #0d9488;' : 'border-bottom-color: transparent;'"
-          :class="activeTab === 'simulator' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
-          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          :class="activeTab === 'simulator' ? 'bg-teal-50 text-teal-800 font-semibold border border-teal-200' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium border border-transparent'"
+          class="py-1.5 px-3 rounded-lg text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <svg
             class="w-4 h-4 shrink-0"
@@ -143,42 +142,39 @@
 
         <button
           @click="activeTab = 'warehouses'"
-          :style="activeTab === 'warehouses' ? 'border-bottom-color: #0d9488;' : 'border-bottom-color: transparent;'"
-          :class="activeTab === 'warehouses' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
-          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          :class="activeTab === 'warehouses' ? 'bg-teal-50 text-teal-800 font-semibold border border-teal-200' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium border border-transparent'"
+          class="py-1.5 px-3 rounded-lg text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <span>Warehouses</span>
           <span
             class="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
-            :class="activeTab === 'warehouses' ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'"
+            :class="activeTab === 'warehouses' ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-600'"
             x-text="warehouses.length || 8"
           ></span>
         </button>
 
         <button
           @click="activeTab = 'products'"
-          :style="activeTab === 'products' ? 'border-bottom-color: #0d9488;' : 'border-bottom-color: transparent;'"
-          :class="activeTab === 'products' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
-          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          :class="activeTab === 'products' ? 'bg-teal-50 text-teal-800 font-semibold border border-teal-200' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium border border-transparent'"
+          class="py-1.5 px-3 rounded-lg text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <span>Products</span>
           <span
             class="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
-            :class="activeTab === 'products' ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'"
+            :class="activeTab === 'products' ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-600'"
             x-text="products.length || 5"
           ></span>
         </button>
 
         <button
           @click="activeTab = 'traffic'"
-          :style="activeTab === 'traffic' ? 'border-bottom-color: #0d9488;' : 'border-bottom-color: transparent;'"
-          :class="activeTab === 'traffic' ? 'text-teal-700 font-semibold' : 'text-slate-500 hover:text-slate-800 font-medium'"
-          class="py-3 px-2.5 sm:px-3.5 text-xs border-b-2 transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
+          :class="activeTab === 'traffic' ? 'bg-teal-50 text-teal-800 font-semibold border border-teal-200' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium border border-transparent'"
+          class="py-1.5 px-3 rounded-lg text-xs transition-colors flex items-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer"
         >
           <span>Traffic &amp; Datasets</span>
           <span
             class="px-1.5 py-0.5 rounded-full text-[10px] font-medium"
-            :class="activeTab === 'traffic' ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'"
+            :class="activeTab === 'traffic' ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-600'"
             x-text="trafficRecords.length ? trafficRecords.length + ' Trips' : '38 Trips'"
           ></span>
         </button>
