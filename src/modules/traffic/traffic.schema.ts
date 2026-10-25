@@ -11,13 +11,34 @@ export const getTrafficPatternsSchema = {
   querystring: {
     type: 'object',
     properties: {
+      sort: {
+        anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+        description:
+          'ByJSON v2.0 multi-field sort (e.g. sort=+warehouseId&sort=-actualDurationMinutes or sort=+warehouseId,-actualDurationMinutes)'
+      },
       warehouseId: {
         type: 'string',
         description: 'Filter records by warehouse ID (e.g. W01, W04)'
       },
+      'warehouseId.in': {
+        anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+        description: 'ByJSON repeated key filter for multiple warehouse IDs'
+      },
       dayOfWeek: {
         type: 'string',
         description: 'Filter records by day of week (e.g. Mon, Fri)'
+      },
+      'dayOfWeek.in': {
+        anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+        description: 'ByJSON repeated key filter for multiple days'
+      },
+      'actualDurationMinutes.lte': {
+        type: 'number',
+        description: 'Maximum actual delivery duration in minutes'
+      },
+      'actualDurationMinutes.gte': {
+        type: 'number',
+        description: 'Minimum actual delivery duration in minutes'
       },
       search: {
         type: 'string',

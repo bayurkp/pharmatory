@@ -164,6 +164,112 @@ function createPharmatoryComponent() {
     rawTrafficResponse: null,
     filterDebounceTimer: null,
 
+    // Multi-Field Sorting state per collection
+    warehouseSort: [],
+    productSort: [],
+    trafficSort: [],
+
+    toggleTableSort(tab, field, event) {
+      const isMulti = event?.shiftKey === true
+      const sortList =
+        tab === 'warehouses'
+          ? this.warehouseSort
+          : tab === 'products'
+            ? this.productSort
+            : this.trafficSort
+      const existingIdx = sortList.findIndex((s) => s.field === field)
+
+      if (isMulti) {
+        if (existingIdx >= 0) {
+          if (sortList[existingIdx].order === 'asc') {
+            sortList[existingIdx].order = 'desc'
+          } else {
+            sortList.splice(existingIdx, 1)
+          }
+        } else {
+          sortList.push({ field, order: 'asc' })
+        }
+      } else {
+        if (sortList.length === 1 && sortList[0].field === field) {
+          if (sortList[0].order === 'asc') {
+            sortList[0].order = 'desc'
+          } else {
+            sortList.length = 0
+          }
+        } else {
+          sortList.length = 0
+          sortList.push({ field, order: 'asc' })
+        }
+      }
+
+      if (tab === 'warehouses') this.fetchWarehouses()
+      else if (tab === 'products') this.fetchProducts()
+      else if (tab === 'traffic') this.fetchTraffic()
+    },
+
+    getSortInfo(tab, field) {
+      const sortList =
+        tab === 'warehouses'
+          ? this.warehouseSort
+          : tab === 'products'
+            ? this.productSort
+            : this.trafficSort
+      const idx = sortList.findIndex((s) => s.field === field)
+      if (idx === -1) {
+        return { active: false, order: null, level: 0 }
+      }
+      return { active: true, order: sortList[idx].order, level: idx + 1 }
+    },
+
+    removeSortCriterion(tab, field) {
+      const sortList =
+        tab === 'warehouses'
+          ? this.warehouseSort
+          : tab === 'products'
+            ? this.productSort
+            : this.trafficSort
+      const idx = sortList.findIndex((s) => s.field === field)
+      if (idx >= 0) {
+        sortList.splice(idx, 1)
+        if (tab === 'warehouses') this.fetchWarehouses()
+        else if (tab === 'products') this.fetchProducts()
+        else if (tab === 'traffic') this.fetchTraffic()
+      }
+    },
+
+    clearSort(tab) {
+      if (tab === 'warehouses') {
+        this.warehouseSort = []
+        this.fetchWarehouses()
+      } else if (tab === 'products') {
+        this.productSort = []
+        this.fetchProducts()
+      } else if (tab === 'traffic') {
+        this.trafficSort = []
+        this.fetchTraffic()
+      }
+    },
+
+    formatSortField(field) {
+      const labels = {
+        id: 'ID',
+        name: 'Name',
+        location: 'Location',
+        distanceKm: 'Distance',
+        storageType: 'Storage',
+        fleetType: 'Fleet',
+        isColdChainCapable: 'Cold Fleet',
+        category: 'Category',
+        requiresColdChain: 'Temperature',
+        deliveryId: 'Delivery ID',
+        warehouseId: 'Warehouse',
+        dayOfWeek: 'Day',
+        timeString: 'Time',
+        actualDurationMinutes: 'Duration'
+      }
+      return labels[field] || field
+    },
+
     trafficWarehouseOptions: [
       { value: '', label: 'All Warehouses' },
       { value: 'W01', label: 'W01 - Surabaya' },
@@ -282,6 +388,11 @@ function createPharmatoryComponent() {
         if (this.productColdChainFilter !== '') {
           params.set('requiresColdChain', this.productColdChainFilter)
         }
+        if (this.productSort && this.productSort.length > 0) {
+          for (const s of this.productSort) {
+            params.append('sort', (s.order === 'desc' ? '-' : '+') + s.field)
+          }
+        }
         const qs = params.toString() ? `?${params.toString()}` : ''
         const t0 = performance.now()
         const res = await fetch(`/api/v1/products${qs}`)
@@ -323,6 +434,11 @@ function createPharmatoryComponent() {
         if (this.warehouseColdChainFilter !== '') {
           params.set('isColdChainCapable', this.warehouseColdChainFilter)
         }
+        if (this.warehouseSort && this.warehouseSort.length > 0) {
+          for (const s of this.warehouseSort) {
+            params.append('sort', (s.order === 'desc' ? '-' : '+') + s.field)
+          }
+        }
         const qs = params.toString() ? `?${params.toString()}` : ''
         const t0 = performance.now()
         const res = await fetch(`/api/v1/warehouses${qs}`)
@@ -362,6 +478,11 @@ function createPharmatoryComponent() {
         if (this.trafficWarehouseFilter) params.set('warehouseId', this.trafficWarehouseFilter)
         if (this.trafficDayFilter) params.set('dayOfWeek', this.trafficDayFilter)
         if (this.trafficSearch) params.set('search', this.trafficSearch.trim())
+        if (this.trafficSort && this.trafficSort.length > 0) {
+          for (const s of this.trafficSort) {
+            params.append('sort', (s.order === 'desc' ? '-' : '+') + s.field)
+          }
+        }
         const qs = params.toString() ? `?${params.toString()}` : ''
         const t0 = performance.now()
         const res = await fetch(`/api/v1/traffic/patterns${qs}`)

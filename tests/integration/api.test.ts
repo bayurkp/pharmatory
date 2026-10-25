@@ -132,6 +132,88 @@ describe('Pharmatory API Integration Tests (Fastify inject)', () => {
     assert.equal(json.data[0].id, 'W04')
   })
 
+  it('GET /api/v1/warehouses?city.in=Surabaya&city.in=Malang - filters using ByJSON repeated keys', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/warehouses?city.in=Surabaya&city.in=Malang'
+    })
+
+    assert.equal(response.statusCode, 200)
+    const json = JSON.parse(response.payload)
+    assert.equal(json.success, true)
+    assert.equal(json.data.length, 4) // W01, W02 (Surabaya), W05, W06 (Malang)
+    assert.ok(
+      json.data.every(
+        (w: { location: string }) => w.location === 'Surabaya' || w.location === 'Malang'
+      )
+    )
+  })
+
+  it('GET /api/v1/warehouses?distanceKm.lte=30 - filters using ByJSON comparison operator', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/warehouses?distanceKm.lte=30'
+    })
+
+    assert.equal(response.statusCode, 200)
+    const json = JSON.parse(response.payload)
+    assert.equal(json.success, true)
+    assert.ok(json.data.length > 0)
+    assert.ok(json.data.every((w: { distanceKm: number }) => w.distanceKm <= 30))
+  })
+
+  it('GET /api/v1/products?sort=-requiresColdChain&sort=+name - sorts with ByJSON repeated keys', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/products?sort=-requiresColdChain&sort=+name'
+    })
+
+    assert.equal(response.statusCode, 200)
+    const json = JSON.parse(response.payload)
+    assert.equal(json.success, true)
+    assert.equal(json.data.length, 5)
+    // Cold chain items (true) must be first
+    assert.equal(json.data[0].requiresColdChain, true)
+    assert.equal(json.data[1].requiresColdChain, true)
+    assert.equal(json.data[2].requiresColdChain, false)
+    // Within cold chain, sorted alphabetically by name
+    assert.ok(json.data[0].name.localeCompare(json.data[1].name) <= 0)
+  })
+
+  it('GET /api/v1/warehouses?sort=+location,-distanceKm - sorts with ByJSON comma string', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/warehouses?sort=+location,-distanceKm'
+    })
+
+    assert.equal(response.statusCode, 200)
+    const json = JSON.parse(response.payload)
+    assert.equal(json.success, true)
+    assert.equal(json.data.length, 8)
+    // Check that items with the same location are sorted descending by distanceKm
+    for (let i = 0; i < json.data.length - 1; i++) {
+      if (json.data[i].location === json.data[i + 1].location) {
+        assert.ok(json.data[i].distanceKm >= json.data[i + 1].distanceKm)
+      } else {
+        assert.ok(json.data[i].location.localeCompare(json.data[i + 1].location) <= 0)
+      }
+    }
+  })
+
+  it('GET /api/v1/products?sort=invalidField - returns ByJSON HTTP 422 validation_error', async () => {
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/v1/products?sort=invalidField'
+    })
+
+    assert.equal(response.statusCode, 422)
+    const json = JSON.parse(response.payload)
+    assert.equal(json.success, false)
+    assert.equal(json.error.code, 'validation_error')
+    assert.ok(Array.isArray(json.error.details))
+    assert.equal(json.error.details[0].field, 'sort')
+  })
+
   it('POST /api/v1/orders/fulfill - successfully fulfills single-origin order', async () => {
     const response = await app.inject({
       method: 'POST',

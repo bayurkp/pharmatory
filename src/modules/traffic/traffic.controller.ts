@@ -2,10 +2,30 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 import { TrafficService } from './traffic.service.js'
 import { byJsonSuccess } from '../../shared/utils/by-json.util.js'
 import { ValidationError, AppError } from '../../shared/errors/app-error.js'
+import {
+  parseSortQuery,
+  validateSortFields,
+  applyMultiFieldSort,
+  parseArrayQueryParam
+} from '../../shared/utils/by-json-query.util.js'
+
+const ALLOWED_TRAFFIC_SORT_FIELDS = [
+  'deliveryId',
+  'warehouseId',
+  'dayOfWeek',
+  'timeString',
+  'actualDurationMinutes',
+  'notes'
+]
 
 interface GetTrafficPatternsQuery {
+  sort?: string | string[]
   warehouseId?: string
+  'warehouseId.in'?: string | string[]
   dayOfWeek?: string
+  'dayOfWeek.in'?: string | string[]
+  'actualDurationMinutes.lte'?: number | string
+  'actualDurationMinutes.gte'?: number | string
   search?: string
 }
 
@@ -20,19 +40,48 @@ export class TrafficController {
     let summary = this.trafficService.getAllStats()
     let records = this.trafficService.getAllRecords()
 
-    const { warehouseId, dayOfWeek, search } = request.query || {}
+    const { warehouseId, dayOfWeek, search, sort } = request.query || {}
+    const warehouseIds = parseArrayQueryParam(request.query?.['warehouseId.in'])
+    const daysOfWeek = parseArrayQueryParam(request.query?.['dayOfWeek.in'])
+    const minDuration =
+      request.query?.['actualDurationMinutes.gte'] !== undefined
+        ? Number(request.query['actualDurationMinutes.gte'])
+        : undefined
+    const maxDuration =
+      request.query?.['actualDurationMinutes.lte'] !== undefined
+        ? Number(request.query['actualDurationMinutes.lte'])
+        : undefined
 
-    if (warehouseId) {
+    if (warehouseIds && warehouseIds.length > 0) {
+      const targets = warehouseIds.map((w) => w.toUpperCase().trim())
+      records = records.filter((r) => targets.includes(r.warehouseId.toUpperCase()))
+      summary = summary.filter((s) => targets.includes(s.warehouseId.toUpperCase()))
+    } else if (warehouseId) {
       const wid = warehouseId.toUpperCase().trim()
       records = records.filter((r) => r.warehouseId.toUpperCase() === wid)
       summary = summary.filter((s) => s.warehouseId.toUpperCase() === wid)
     }
 
-    if (dayOfWeek) {
+    if (daysOfWeek && daysOfWeek.length > 0) {
+      const targets = daysOfWeek.map((d) => d.toLowerCase().trim())
+      records = records.filter((r) =>
+        targets.some(
+          (t) => r.dayOfWeek.toLowerCase() === t || r.dayOfWeek.toLowerCase().startsWith(t)
+        )
+      )
+    } else if (dayOfWeek) {
       const dow = dayOfWeek.toLowerCase().trim()
       records = records.filter(
         (r) => r.dayOfWeek.toLowerCase() === dow || r.dayOfWeek.toLowerCase().startsWith(dow)
       )
+    }
+
+    if (minDuration !== undefined && !isNaN(minDuration)) {
+      records = records.filter((r) => r.actualDurationMinutes >= minDuration)
+    }
+
+    if (maxDuration !== undefined && !isNaN(maxDuration)) {
+      records = records.filter((r) => r.actualDurationMinutes <= maxDuration)
     }
 
     if (search) {
@@ -45,6 +94,12 @@ export class TrafficController {
           r.timeString.toLowerCase().includes(q) ||
           (r.notes && r.notes.toLowerCase().includes(q))
       )
+    }
+
+    if (sort) {
+      const criteria = parseSortQuery(sort)
+      validateSortFields(criteria, ALLOWED_TRAFFIC_SORT_FIELDS)
+      records = applyMultiFieldSort(records, criteria, 'deliveryId')
     }
 
     return reply.status(200).send(byJsonSuccess({ summary, records }, request.id as string))

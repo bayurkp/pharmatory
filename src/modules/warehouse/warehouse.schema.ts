@@ -62,8 +62,23 @@ export const getWarehousesSchema = {
   querystring: {
     type: 'object',
     properties: {
+      sort: {
+        anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+        description:
+          'ByJSON v2.0 multi-field sort (e.g. sort=+location&sort=-distanceKm or sort=location,-distanceKm)'
+      },
       city: { type: 'string', description: 'Filter warehouses by city (e.g. Surabaya, Malang)' },
       location: { type: 'string', description: 'Alternative alias for city' },
+      'city.in': {
+        anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+        description: 'ByJSON repeated key filter for multiple cities'
+      },
+      'location.in': {
+        anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+        description: 'Alias for city.in'
+      },
+      'distanceKm.lte': { type: 'number', description: 'Maximum distance in km' },
+      'distanceKm.gte': { type: 'number', description: 'Minimum distance in km' },
       search: { type: 'string', description: 'Search warehouses by ID, name, or city' },
       storageType: {
         type: 'string',

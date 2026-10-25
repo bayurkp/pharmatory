@@ -31,10 +31,19 @@ export const getProductsSchema = {
   querystring: {
     type: 'object',
     properties: {
+      sort: {
+        anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+        description:
+          'ByJSON v2.0 multi-field sort (e.g. sort=-requiresColdChain&sort=+name or sort=-requiresColdChain,+name)'
+      },
       category: {
         type: 'string',
         enum: ['medical_supplies', 'pharmaceutical'],
         description: 'Filter products by category'
+      },
+      'category.in': {
+        anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }],
+        description: 'ByJSON repeated key filter for multiple categories'
       },
       search: {
         type: 'string',
