@@ -11,14 +11,9 @@ export async function trafficRoutes(fastify: FastifyInstance): Promise<void> {
   const trafficService = getTrafficService()
   const trafficController = new TrafficController(trafficService)
 
-  // Standard collection metric sub-resources (ByJSON v2.0 Section 6.2)
+  // Traffic analytics endpoint returning aggregated summary & trip records
   fastify.get(
     '/patterns',
-    { schema: getTrafficPatternsSchema },
-    trafficController.getTrafficPatterns
-  )
-  fastify.get(
-    '/summary',
     { schema: getTrafficPatternsSchema },
     trafficController.getTrafficPatterns
   )

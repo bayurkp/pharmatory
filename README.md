@@ -210,7 +210,6 @@ pharmatory/
 | `GET`  | `/api/v1/products`         | Lists pharmaceutical and medical supplies. Supports `?category` and `?coldChainRequired`. |
 | `GET`  | `/api/v1/warehouses`       | Lists 8 regional warehouses. Supports `?location` and `?fullColdChainCapable`.            |
 | `GET`  | `/api/v1/traffic/patterns` | Returns aggregated delivery duration statistics and active trip records.                  |
-| `GET`  | `/api/v1/traffic/summary`  | Read-only aggregate metrics alias conforming to ByJSON Section 6.2.                       |
 | `POST` | `/api/v1/traffic/upload`   | Processes custom delivery CSV in memory (zero disk storage).                              |
 | `POST` | `/api/v1/traffic/reset`    | Resets in-memory traffic models back to benchmark records.                                |
 | `GET`  | `/api/health`              | Health check endpoint returning system status in ByJSON format.                           |
