@@ -22,10 +22,12 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [ByJSON v2.0 Compliance Audit](#byjson-v20-compliance-audit)
+- [ByJSON v2.0 Compliance & Advanced Wire Protocol](#byjson-v20-compliance--advanced-wire-protocol)
   - [Response Envelope Specification](#response-envelope-specification)
   - [Standard Error Codes & Validation Paths](#standard-error-codes--validation-paths)
-  - [Query Filtering & Wire Conventions](#query-filtering--wire-conventions)
+  - [Advanced Filtering & Multi-Field Sorting (Products & Warehouses)](#advanced-filtering--multi-field-sorting-products--warehouses)
+  - [Zero N+1 Queries & SQLite Engine Optimization](#zero-n1-queries--sqlite-engine-optimization)
+  - [API Documentation Design & Canonical Architecture](#api-documentation-design--canonical-architecture)
 - [Domain Model & Business Rules](#domain-model--business-rules)
   - [Cold Chain Inviolability](#cold-chain-inviolability)
   - [Fulfillment Decision Engine](#fulfillment-decision-engine)
@@ -60,26 +62,26 @@ When orders containing multiple medical and pharmaceutical products are placed b
 
 ---
 
-## ByJSON v2.0 Compliance Audit
+## ByJSON v2.0 Compliance & Advanced Wire Protocol
 
 The API strictly adheres to the official [ByJSON Specification (Version 2.0)](https://github.com/bayurkp/by-json):
 
 ### Response Envelope Specification
 
-Every response contains exactly four root keys:
+Every HTTP response strictly returns the four-key ByJSON envelope:
 
 ```typescript
 export interface ApiResponse<T> {
-  success: boolean // Explicit discriminator (true on 2xx, false on 4xx/5xx)
-  data: T | null // Populated on success; strictly null on error
-  error: ApiError | null // Populated on error; strictly null on success
-  meta: ApiMeta // Request context: requestId (UUID) and timestamp (ISO 8601)
+  success: boolean // Explicit boolean discriminator (true on 2xx, false on 4xx/5xx)
+  data: T | null // Populated payload on success; strictly null on error
+  error: ApiError | null // Populated error details on failure; strictly null on success
+  meta: ApiMeta // Request context: requestId (UUIDv4) and ISO-8601 timestamp
 }
 ```
 
 ### Standard Error Codes & Validation Paths
 
-- Machine-readable error codes strictly use `snake_case` (Section 2.3 & 7.1).
+- Machine-readable error codes strictly adhere to ByJSON Table 7.1 and use `snake_case` (Section 2.3 & 7.1).
 - Validation errors use **Dot Notation** for field paths (Section 5.4 A):
   ```json
   {
@@ -98,7 +100,7 @@ export interface ApiResponse<T> {
     },
     "meta": {
       "requestId": "8f830a6e-4e8c-4a37-b6e5-22e70df4ab75",
-      "timestamp": "2026-10-23T12:00:00.000Z"
+      "timestamp": "2026-10-25T05:00:00.000Z"
     }
   }
   ```
@@ -107,14 +109,87 @@ export interface ApiResponse<T> {
   - Oversized payloads return HTTP 422 with `code: "file_too_large"`.
   - Malformed JSON payloads return HTTP 400 with `code: "bad_request"`.
 
-### Query Filtering & Wire Conventions
+---
 
-- All JSON body keys and query parameters use `camelCase` (Section 2.1 & 4.5).
-- Equality query filtering is supported across collections:
-  - `GET /api/v1/products?coldChainRequired=true`
-  - `GET /api/v1/products?category=Pharmaceutical`
-  - `GET /api/v1/warehouses?location=Surabaya`
-  - `GET /api/v1/warehouses?fullColdChainCapable=true`
+### Advanced Filtering & Multi-Field Sorting (Products & Warehouses)
+
+All query parameters strictly follow ByJSON Section 2 (`camelCase` only; `snake_case` parameter aliases are prohibited). Filtering and sorting operate seamlessly across both catalogs:
+
+#### 1. Product Catalog (`GET /api/v1/products`)
+
+| Parameter           | Type       | Standard                        | Example & Description                                                     |
+| :------------------ | :--------- | :------------------------------ | :------------------------------------------------------------------------ |
+| `search`            | `string`   | Text Search                     | `?search=Vaccine` (Searches SKU ID, clinical name, or description)        |
+| `category`          | `string`   | Equality Filter                 | `?category=pharmaceutical` (Filter by specific category enum)             |
+| `category.in`       | `string[]` | Repeated Key Filter (Sec 4.3 B) | `?category.in=pharmaceutical&category.in=medical_supplies`                |
+| `requiresColdChain` | `boolean`  | Predicate Filter                | `?requiresColdChain=true` (Also accepts `coldChain=true`)                 |
+| `sort`              | `string[]` | Multi-Field Sort (Sec 4.1 B)    | `?sort=-requiresColdChain&sort=+name` or `?sort=-requiresColdChain,+name` |
+
+#### 2. Regional Warehouse Network (`GET /api/v1/warehouses`)
+
+| Parameter            | Type       | Standard                        | Example & Description                                               |
+| :------------------- | :--------- | :------------------------------ | :------------------------------------------------------------------ |
+| `search`             | `string`   | Text Search                     | `?search=Malang` (Searches facility ID, name, or location)          |
+| `city` / `location`  | `string`   | Equality Filter                 | `?city=Surabaya` (Filter warehouses by municipal location)          |
+| `city.in`            | `string[]` | Repeated Key Filter (Sec 4.3 B) | `?city.in=Surabaya&city.in=Malang` (Multi-city selection)           |
+| `distanceKm.lte`     | `number`   | Comparison Operator (Sec 4.2)   | `?distanceKm.lte=30` (Warehouses within $\le 30\text{ km}$)         |
+| `distanceKm.gte`     | `number`   | Comparison Operator (Sec 4.2)   | `?distanceKm.gte=10` (Warehouses at $\ge 10\text{ km}$)             |
+| `storageType`        | `string`   | Equality Filter                 | `?storageType=refrigerated` (`ambient` or `refrigerated`)           |
+| `isColdChainCapable` | `boolean`  | Predicate Filter                | `?isColdChainCapable=true` (Active refrigerated storage & fleet)    |
+| `sort`               | `string[]` | Multi-Field Sort (Sec 4.1 B)    | `?sort=+location&sort=-distanceKm` or `?sort=+location,-distanceKm` |
+
+> **Sorting Syntax**: Uses `+` prefix for Ascending (ASC) and `-` prefix for Descending (DESC). If an invalid sort field is supplied, the API responds with HTTP 422 `validation_error` specifying the invalid field path.
+
+---
+
+### Zero N+1 Queries & SQLite Engine Optimization
+
+A common bottleneck in REST APIs when rendering parent-child collections (e.g. warehouses with live product inventories) is the **N+1 query antipattern**—executing 1 query for the parent records followed by $N$ secondary queries for each item's children.
+
+Pharmatory completely eliminates this overhead using a high-efficiency **Two-Phase Bulk Fetch Architecture** in [`WarehouseRepository`](file:///d:/Projects/pharmatory/src/modules/warehouse/warehouse.repository.ts):
+
+1. **Phase 1 (Database-Level Filter & Multi-Sort)**:
+   Filtering predicates (`WHERE`, `LIKE`, `IN`, `>= <=`) and multi-column sorting (`ORDER BY`) are dynamically compiled and executed directly inside SQLite using prepared statements:
+   ```sql
+   SELECT id, name, location, distance_km, storage_type, fleet_type, is_cold_chain_capable
+   FROM warehouses
+   WHERE is_cold_chain_capable = 1 AND distance_km <= 50
+   ORDER BY location ASC, distance_km DESC;
+   ```
+2. **Phase 2 (Single Bulk Inventory Query - $O(1)$ Overhead)**:
+   Instead of looping through warehouses to query stocks one-by-one, all matched warehouse IDs are retrieved in **one single SQL query**:
+   ```sql
+   SELECT ws.warehouse_id, ws.product_id, ws.quantity, p.name AS product_name, p.requires_cold_chain
+   FROM warehouse_stocks ws
+   JOIN products p ON ws.product_id = p.id
+   WHERE ws.warehouse_id IN (?, ?, ?);
+   ```
+3. **In-Memory Hash Map Aggregation**:
+   The retrieved inventory rows are aggregated into warehouse entities in memory in linear time ($O(M)$ where $M$ is total inventory entries), ensuring a constant **total of 2 database queries** regardless of dataset size.
+
+---
+
+### API Documentation Design & Canonical Architecture
+
+#### 1. Schema-First Design (Fastify) vs. NestJS Decorators
+
+Unlike frameworks like NestJS which rely on runtime reflection metadata (`reflect-metadata`) and TypeScript class decorators (`@ApiTags()`, `@ApiOperation()`, `@ApiResponse()`), Fastify uses a **Schema-First JSON Schema architecture**:
+
+- **Zero Runtime Reflection Overhead**: Route schemas are compiled ahead-of-time by `Ajv` and `fast-json-stringify` into C-speed validation and serialization routines.
+- **Dual-Use Single Source of Truth**: The identical schema definition validates incoming HTTP requests, serializes outgoing JSON responses, and automatically generates the OpenAPI 3.1 contract.
+
+#### 2. Canonical Process Endpoint Consolidation
+
+To maintain strict compliance with ByJSON v2.0 Section 3.2 (Process Endpoints / RPC Actions):
+
+- **Selected Canonical Endpoint**: **`POST /api/v1/orders/fulfill`**
+- **Rationale**: Order fulfillment is a deterministic algorithmic solver rather than a persistent database entity creation. Using RESTful CRUD (`POST /api/v1/orders`) would be misleading because no order entity is stored. Process actions are modeled as `POST /{resource}/{action}`.
+- **Elimination of Clutter**: Redundant endpoint aliases (`POST /api/v1/orders/`, `POST /api/v1/fulfillments/fulfill`, `POST /api/v1/fulfillments/`, and `GET /api/v1/traffic/summary`) were removed to guarantee clean, unambiguous API contracts.
+
+#### 3. Route Concealment & OpenAPI Path Normalization
+
+- **Route Concealment**: Internal redirection routes (`/docs` $\to$ `/docs/v1`) and raw schema providers (`/api/v1/openapi`) are configured with `{ schema: { hide: true } }` so they do not pollute public API documentation.
+- **Trailing Slash Normalization**: An automated Fastify Swagger `transform` hook strips trailing slashes on route URLs (e.g., transforming `/api/v1/products/` into `/api/v1/products`). This completely resolves client-side hash routing anomalies in modern documentation viewers like Scalar.
 
 ---
 
