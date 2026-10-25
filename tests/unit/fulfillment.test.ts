@@ -204,8 +204,9 @@ describe('FulfillmentEngine Unit Tests', () => {
       () => engine.evaluate(orderItems, mockProducts, mockWarehouses),
       (err: unknown) => {
         const valErr = err as ValidationError
-        assert.equal(valErr.details[0].code, 'insufficient_inventory')
-        assert.match(valErr.details[0].message, /deficit/i)
+        assert.ok(valErr.details)
+        assert.equal(valErr.details![0].code, 'insufficient_inventory')
+        assert.match(valErr.details![0].message, /deficit/i)
         return true
       }
     )

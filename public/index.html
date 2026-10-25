@@ -688,7 +688,7 @@
 
               <!-- Context Order Notice & Dirty State Indicator -->
               <div
-                class="h-7 min-h-[28px] max-h-7 overflow-hidden flex items-center justify-between gap-2 text-xs"
+                class="h-7 min-h-7 max-h-7 overflow-hidden flex items-center justify-between gap-2 text-xs"
               >
                 <div class="text-slate-500 font-normal min-w-0 truncate py-0.5 flex items-center">
                   <span>Evaluation for:&nbsp;</span>
@@ -697,7 +697,7 @@
                     x-text="lastEvaluatedSummary"
                   ></span>
                 </div>
-                <div class="h-6 flex items-center justify-end shrink-0 min-w-[95px]">
+                <div class="h-6 flex items-center justify-end shrink-0 min-w-23.75">
                   <span
                     x-show="loading"
                     x-cloak
@@ -838,7 +838,7 @@
 
                       <!-- Clean Table of Dispatched Items -->
                       <div class="overflow-x-auto pt-1 -mx-1 px-1">
-                        <table class="w-full text-xs min-w-[300px]">
+                        <table class="w-full text-xs min-w-75">
                           <thead>
                             <tr
                               class="border-b border-slate-200 text-[11px] text-slate-500 text-left"
@@ -1036,7 +1036,7 @@
 
         <!-- Warehouses Search & Filter Toolbar -->
         <div class="flex flex-wrap items-center gap-2.5 pt-1">
-          <div class="relative flex-1 min-w-[200px]">
+          <div class="relative flex-1 min-w-50">
             <input
               type="text"
               x-model="warehouseSearch"
@@ -1063,7 +1063,7 @@
             <button
               type="button"
               @click="open = !open"
-              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[125px]"
+              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-31.25"
               :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
             >
               <span class="truncate" x-text="getWarehouseCityLabel()"></span>
@@ -1087,7 +1087,7 @@
               x-transition:leave="transition ease-in duration-75"
               x-transition:leave-start="opacity-100 translate-y-0 scale-100"
               x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-              class="absolute top-full left-0 mt-1 min-w-[170px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-64 overflow-y-auto"
+              class="absolute top-full left-0 mt-1 min-w-42.5 w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-64 overflow-y-auto"
               style="display: none"
             >
               <div
@@ -1130,7 +1130,7 @@
             <button
               type="button"
               @click="open = !open"
-              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[135px]"
+              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-33.75"
               :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
             >
               <span class="truncate" x-text="getWarehouseDistanceLabel()"></span>
@@ -1154,7 +1154,7 @@
               x-transition:leave="transition ease-in duration-75"
               x-transition:leave-start="opacity-100 translate-y-0 scale-100"
               x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-              class="absolute top-full left-0 mt-1 min-w-[160px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+              class="absolute top-full left-0 mt-1 min-w-40 w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
               style="display: none"
             >
               <template x-for="opt in warehouseDistanceOptions" :key="opt.value">
@@ -1194,7 +1194,7 @@
             <button
               type="button"
               @click="open = !open"
-              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[145px]"
+              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-36.25"
               :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
             >
               <span class="truncate" x-text="getWarehouseFleetLabel()"></span>
@@ -1218,7 +1218,7 @@
               x-transition:leave="transition ease-in duration-75"
               x-transition:leave-start="opacity-100 translate-y-0 scale-100"
               x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-              class="absolute top-full left-0 mt-1 min-w-[170px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+              class="absolute top-full left-0 mt-1 min-w-42.5 w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
               style="display: none"
             >
               <template x-for="opt in warehouseFleetOptions" :key="opt.value">
@@ -1297,7 +1297,7 @@
         </div>
 
         <div class="overflow-x-auto -mx-3.5 sm:mx-0 px-3.5 sm:px-0">
-          <table class="w-full text-xs min-w-[720px]">
+          <table class="w-full text-xs min-w-180">
             <thead>
               <tr
                 class="border-b border-slate-200 text-[11px] text-slate-500 font-medium text-left"
@@ -1544,7 +1544,7 @@
 
         <!-- Products Search & Filter Toolbar -->
         <div class="flex flex-wrap items-center gap-2.5 pt-1">
-          <div class="relative flex-1 min-w-[200px]">
+          <div class="relative flex-1 min-w-50">
             <input
               type="text"
               x-model="productSearch"
@@ -1571,7 +1571,7 @@
             <button
               type="button"
               @click="open = !open"
-              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[140px]"
+              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-35"
               :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
             >
               <span class="truncate" x-text="getProductCategoryLabel()"></span>
@@ -1595,7 +1595,7 @@
               x-transition:leave="transition ease-in duration-75"
               x-transition:leave-start="opacity-100 translate-y-0 scale-100"
               x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-              class="absolute top-full left-0 mt-1 min-w-[170px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-60 overflow-y-auto"
+              class="absolute top-full left-0 mt-1 min-w-42.5 w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-60 overflow-y-auto"
               style="display: none"
             >
               <div
@@ -1638,7 +1638,7 @@
             <button
               type="button"
               @click="open = !open"
-              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[155px]"
+              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-38.75"
               :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
             >
               <span class="truncate" x-text="getProductColdChainLabel()"></span>
@@ -1662,7 +1662,7 @@
               x-transition:leave="transition ease-in duration-75"
               x-transition:leave-start="opacity-100 translate-y-0 scale-100"
               x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-              class="absolute top-full left-0 mt-1 min-w-[180px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+              class="absolute top-full left-0 mt-1 min-w-45 w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
               style="display: none"
             >
               <template x-for="opt in productColdChainOptions" :key="opt.value">
@@ -1741,7 +1741,7 @@
         </div>
 
         <div class="overflow-x-auto -mx-3.5 sm:mx-0 px-3.5 sm:px-0">
-          <table class="w-full text-xs min-w-[620px]">
+          <table class="w-full text-xs min-w-155">
             <thead>
               <tr
                 class="border-b border-slate-200 text-[11px] text-slate-500 font-medium text-left"
@@ -2042,7 +2042,7 @@
 
           <!-- Traffic Search & Filter Toolbar -->
           <div class="flex flex-wrap items-center gap-2.5 pt-1">
-            <div class="relative flex-1 min-w-[180px]">
+            <div class="relative flex-1 min-w-45">
               <input
                 type="text"
                 x-model="trafficSearch"
@@ -2069,7 +2069,7 @@
               <button
                 type="button"
                 @click="open = !open"
-                class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[155px]"
+                class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-38.75"
                 :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
               >
                 <span class="truncate" x-text="getTrafficWarehouseLabel()"></span>
@@ -2093,7 +2093,7 @@
                 x-transition:leave="transition ease-in duration-75"
                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                 x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-                class="absolute top-full left-0 mt-1 min-w-[190px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-64 overflow-y-auto"
+                class="absolute top-full left-0 mt-1 min-w-47.5 w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-64 overflow-y-auto"
                 style="display: none"
               >
                 <div
@@ -2136,7 +2136,7 @@
               <button
                 type="button"
                 @click="open = !open"
-                class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[125px]"
+                class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-31.25"
                 :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
               >
                 <span class="truncate" x-text="getTrafficDayLabel()"></span>
@@ -2160,7 +2160,7 @@
                 x-transition:leave="transition ease-in duration-75"
                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                 x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-                class="absolute top-full left-0 mt-1 min-w-[160px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-64 overflow-y-auto"
+                class="absolute top-full left-0 mt-1 min-w-40 w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-64 overflow-y-auto"
                 style="display: none"
               >
                 <div
@@ -2203,7 +2203,7 @@
               <button
                 type="button"
                 @click="open = !open"
-                class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[140px]"
+                class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-35"
                 :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
               >
                 <span class="truncate" x-text="getTrafficDurationLabel()"></span>
@@ -2227,7 +2227,7 @@
                 x-transition:leave="transition ease-in duration-75"
                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                 x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-                class="absolute top-full left-0 mt-1 min-w-[175px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+                class="absolute top-full left-0 mt-1 min-w-43.75 w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
                 style="display: none"
               >
                 <template x-for="opt in trafficDurationOptions" :key="opt.value">
@@ -2308,7 +2308,7 @@
           <div
             class="overflow-x-auto max-h-72 overflow-y-auto border border-slate-200 rounded-lg -mx-1 sm:mx-0"
           >
-            <table class="w-full text-xs min-w-[520px]">
+            <table class="w-full text-xs min-w-130">
               <thead
                 class="sticky top-0 bg-slate-100 border-b border-slate-200 text-left text-[11px] text-slate-500"
               >
