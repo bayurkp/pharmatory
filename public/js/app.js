@@ -101,12 +101,60 @@ function createPharmatoryComponent() {
     showRawWarehousesJson: false,
     rawWarehousesResponse: null,
 
+    warehouseCityOptions: [
+      { value: '', label: 'All Cities' },
+      { value: 'Surabaya', label: 'Surabaya' },
+      { value: 'Sidoarjo', label: 'Sidoarjo' },
+      { value: 'Gresik', label: 'Gresik' },
+      { value: 'Pasuruan', label: 'Pasuruan' },
+      { value: 'Malang', label: 'Malang' },
+      { value: 'Jember', label: 'Jember' }
+    ],
+    getWarehouseCityLabel() {
+      const opt = this.warehouseCityOptions.find((o) => o.value === this.warehouseCityFilter)
+      return opt ? opt.label : 'All Cities'
+    },
+
+    warehouseFleetOptions: [
+      { value: '', label: 'All Fleets' },
+      { value: 'true', label: 'Refrigerated Vans Only' },
+      { value: 'false', label: 'Standard Fleet' }
+    ],
+    getWarehouseFleetLabel() {
+      const opt = this.warehouseFleetOptions.find(
+        (o) => o.value === String(this.warehouseColdChainFilter)
+      )
+      return opt ? opt.label : 'All Fleets'
+    },
+
     // Product Catalog Filters & Raw Payload
     productSearch: '',
     productCategoryFilter: '',
     productColdChainFilter: '',
     showRawProductsJson: false,
     rawProductsResponse: null,
+
+    productCategoryOptions: [
+      { value: '', label: 'All Categories' },
+      { value: 'medical_supplies', label: 'Medical Supplies' },
+      { value: 'pharmaceutical', label: 'Pharmaceutical' }
+    ],
+    getProductCategoryLabel() {
+      const opt = this.productCategoryOptions.find((o) => o.value === this.productCategoryFilter)
+      return opt ? opt.label : 'All Categories'
+    },
+
+    productColdChainOptions: [
+      { value: '', label: 'All Temperatures' },
+      { value: 'true', label: 'Cold Chain (2-8°C)' },
+      { value: 'false', label: 'Ambient Storage' }
+    ],
+    getProductColdChainLabel() {
+      const opt = this.productColdChainOptions.find(
+        (o) => o.value === String(this.productColdChainFilter)
+      )
+      return opt ? opt.label : 'All Temperatures'
+    },
 
     // Traffic Analytics Filters & Raw Payload
     trafficWarehouseFilter: '',
@@ -115,6 +163,37 @@ function createPharmatoryComponent() {
     showRawTrafficJson: false,
     rawTrafficResponse: null,
     filterDebounceTimer: null,
+
+    trafficWarehouseOptions: [
+      { value: '', label: 'All Warehouses' },
+      { value: 'W01', label: 'W01 - Surabaya' },
+      { value: 'W02', label: 'W02 - Sidoarjo' },
+      { value: 'W03', label: 'W03 - Gresik' },
+      { value: 'W04', label: 'W04 - Pasuruan' },
+      { value: 'W05', label: 'W05 - Malang' },
+      { value: 'W06', label: 'W06 - Jember' },
+      { value: 'W07', label: 'W07 - Surabaya Barat' },
+      { value: 'W08', label: 'W08 - Sidoarjo Selatan' }
+    ],
+    getTrafficWarehouseLabel() {
+      const opt = this.trafficWarehouseOptions.find((o) => o.value === this.trafficWarehouseFilter)
+      return opt ? opt.label : 'All Warehouses'
+    },
+
+    trafficDayOptions: [
+      { value: '', label: 'All Days' },
+      { value: 'Monday', label: 'Monday' },
+      { value: 'Tuesday', label: 'Tuesday' },
+      { value: 'Wednesday', label: 'Wednesday' },
+      { value: 'Thursday', label: 'Thursday' },
+      { value: 'Friday', label: 'Friday' },
+      { value: 'Saturday', label: 'Saturday' },
+      { value: 'Sunday', label: 'Sunday' }
+    ],
+    getTrafficDayLabel() {
+      const opt = this.trafficDayOptions.find((o) => o.value === this.trafficDayFilter)
+      return opt ? opt.label : 'All Days'
+    },
 
     async init() {
       await Promise.all([this.fetchProducts(), this.fetchWarehouses(), this.fetchTraffic()])

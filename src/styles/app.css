@@ -2,6 +2,11 @@
 @plugin "daisyui";
 @import 'timepicker-ui/main.css';
 
+html {
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
 @theme {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', Consolas, 'Cascadia Code', 'Fira Code', Menlo, Monaco, monospace;
