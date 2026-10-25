@@ -104,9 +104,7 @@ export async function buildApp(opts: FastifyServerOptions = {}): Promise<Fastify
   await app.register(productRoutes, { prefix: '/api/v1/products' })
   await app.register(warehouseRoutes, { prefix: '/api/v1/warehouses' })
   await app.register(trafficRoutes, { prefix: '/api/v1/traffic' })
-  // Support both Process Endpoint (/api/v1/orders/fulfill) and Resource Endpoint (/api/v1/fulfillments)
   await app.register(fulfillmentRoutes, { prefix: '/api/v1/orders' })
-  await app.register(fulfillmentRoutes, { prefix: '/api/v1/fulfillments' })
 
   return app
 }

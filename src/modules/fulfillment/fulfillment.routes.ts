@@ -19,9 +19,6 @@ export async function fulfillmentRoutes(fastify: FastifyInstance): Promise<void>
   )
   const fulfillmentController = new FulfillmentController(fulfillmentService)
 
-  // 1. Process Endpoint conforming to ByJSON v2.0 Section 3.2: POST /{subsystem}/{verb}
+  // Process Endpoint conforming to ByJSON v2.0 Section 3.2: POST /api/v1/orders/fulfill
   fastify.post('/fulfill', { schema: fulfillOrderSchema }, fulfillmentController.fulfillOrder)
-
-  // 2. Resource-oriented endpoint alias conforming to ByJSON v2.0 Section 3.1
-  fastify.post('/', { schema: fulfillOrderSchema }, fulfillmentController.fulfillOrder)
 }

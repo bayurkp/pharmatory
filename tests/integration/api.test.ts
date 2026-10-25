@@ -224,23 +224,6 @@ describe('Pharmatory API Integration Tests (Fastify inject)', () => {
     assert.equal(json.meta.requestId.length, 36)
   })
 
-  it('POST /api/v1/fulfillments - supports ByJSON Section 3.1 resource-oriented alias', async () => {
-    const response = await app.inject({
-      method: 'POST',
-      url: '/api/v1/fulfillments',
-      payload: {
-        destinationCity: 'Surabaya',
-        items: [{ productId: 'P001', quantity: 20 }],
-        orderTime: 'Mon, 14:00'
-      }
-    })
-
-    assert.equal(response.statusCode, 200)
-    const json = JSON.parse(response.payload)
-    assert.equal(json.success, true)
-    assert.equal(json.data.strategy, 'single_warehouse')
-  })
-
   it('POST /api/v1/orders/fulfill - returns 422 with ByJSON error details when payload schema is invalid', async () => {
     const response = await app.inject({
       method: 'POST',
