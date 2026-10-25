@@ -53,13 +53,13 @@ function createPharmatoryComponent() {
     selectedTime: '14:00',
     orderTime: 'Mon, 14:00',
     daysList: [
-      { code: 'Mon', label: 'Monday', tag: 'Weekday' },
-      { code: 'Tue', label: 'Tuesday', tag: 'Weekday' },
-      { code: 'Wed', label: 'Wednesday', tag: 'Weekday' },
-      { code: 'Thu', label: 'Thursday', tag: 'Weekday' },
-      { code: 'Fri', label: 'Friday', tag: 'Peak' },
-      { code: 'Sat', label: 'Saturday', tag: 'Weekend' },
-      { code: 'Sun', label: 'Sunday', tag: 'Weekend' }
+      { code: 'Mon', label: 'Monday' },
+      { code: 'Tue', label: 'Tuesday' },
+      { code: 'Wed', label: 'Wednesday' },
+      { code: 'Thu', label: 'Thursday' },
+      { code: 'Fri', label: 'Friday' },
+      { code: 'Sat', label: 'Saturday' },
+      { code: 'Sun', label: 'Sunday' }
     ],
 
     getDayLabel(code) {

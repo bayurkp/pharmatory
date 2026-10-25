@@ -243,10 +243,6 @@
             <div class="space-y-2">
               <div class="flex items-center justify-between text-xs font-medium text-slate-600">
                 <span>Dispatch Schedule</span>
-                <span
-                  class="text-xs font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200"
-                  x-text="orderTime"
-                ></span>
               </div>
 
               <!-- Custom Day & Time Pickers (DaisyUI Components) -->
@@ -308,35 +304,26 @@
                           class="w-full flex items-center justify-between px-3 py-2 text-xs transition-colors text-left group cursor-pointer"
                           :class="selectedDay === day.code ? 'bg-teal-50/70 text-teal-900 font-semibold' : 'text-slate-700 hover:bg-slate-50'"
                         >
-                          <div class="flex items-center gap-2 truncate">
-                            <span
-                              class="text-xs"
-                              :class="selectedDay === day.code ? 'font-semibold text-slate-900' : 'text-slate-700'"
-                              x-text="day.label"
-                            ></span>
-                          </div>
-                          <div class="flex items-center gap-1.5 shrink-0">
-                            <span
-                              class="px-1.5 py-0.5 rounded text-[10px] font-medium"
-                              :class="day.tag === 'Weekend' ? 'bg-amber-50 text-amber-700 border border-amber-200' : (day.tag === 'Peak' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-500 border border-slate-200')"
-                              x-text="day.tag"
-                            ></span>
-                            <div class="w-4 flex items-center justify-center">
-                              <svg
-                                x-show="selectedDay === day.code"
-                                class="w-3.5 h-3.5 text-teal-600"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2.5"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M5 13l4 4L19 7"
-                                ></path>
-                              </svg>
-                            </div>
+                          <span
+                            class="text-xs"
+                            :class="selectedDay === day.code ? 'font-semibold text-slate-900' : 'text-slate-700'"
+                            x-text="day.label"
+                          ></span>
+                          <div class="w-4 flex items-center justify-center shrink-0">
+                            <svg
+                              x-show="selectedDay === day.code"
+                              class="w-3.5 h-3.5 text-teal-600"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2.5"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M5 13l4 4L19 7"
+                              ></path>
+                            </svg>
                           </div>
                         </button>
                       </template>
@@ -355,7 +342,7 @@
                       type="text"
                       x-model="selectedTime"
                       readonly
-                      class="input input-bordered input-sm w-full bg-white text-slate-800 text-xs font-medium focus:border-teal-600 focus:outline-teal-600 cursor-pointer shadow-xs pr-8"
+                      class="w-full text-xs font-medium rounded-lg border border-slate-300 bg-white h-8 py-1.5 px-2.5 sm:px-3 text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 cursor-pointer shadow-xs pr-8"
                       placeholder="14:00"
                       aria-label="Departure Time (24h)"
                     />
