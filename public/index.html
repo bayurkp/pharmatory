@@ -683,20 +683,25 @@
               </div>
 
               <!-- Context Order Notice & Dirty State Indicator -->
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                <div class="text-slate-500 font-normal">
+              <div class="h-7 min-h-[28px] flex items-center justify-between gap-2 text-xs">
+                <div class="text-slate-500 font-normal min-w-0 truncate py-0.5">
                   Evaluation for:
                   <span class="text-slate-800 font-medium" x-text="lastEvaluatedSummary"></span>
                 </div>
-                <div class="flex items-center gap-1.5">
+                <div class="h-6 flex items-center justify-end shrink-0 min-w-[95px]">
                   <span
                     x-show="loading"
-                    class="px-2 py-0.5 rounded text-[10px] font-medium bg-teal-50 text-teal-700 border border-teal-200 flex items-center gap-1.5"
+                    x-cloak
+                    class="h-5 px-2 rounded text-[10px] font-medium bg-teal-50 text-teal-700 border border-teal-200 inline-flex items-center gap-1.5 shadow-2xs"
                   >
                     <span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-ping"></span>
                     <span>Updating...</span>
                   </span>
-                  <span x-show="isDirty && !loading" class="text-[11px] text-slate-400 italic">
+                  <span
+                    x-show="isDirty && !loading"
+                    x-cloak
+                    class="h-5 text-[11px] text-slate-400 italic inline-flex items-center"
+                  >
                     Auto-calculating...
                   </span>
                 </div>

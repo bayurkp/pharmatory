@@ -541,6 +541,7 @@ function createPharmatoryComponent() {
 
       this.loading = true
       this.error = null
+      const fetchStart = performance.now()
 
       try {
         const payload = {
@@ -587,6 +588,11 @@ function createPharmatoryComponent() {
           meta: { timestamp: new Date().toISOString() }
         }
       } finally {
+        // Enforce smooth minimum display duration (280ms) to eliminate micro-blinking on instant local responses
+        const elapsed = performance.now() - fetchStart
+        if (elapsed < 280) {
+          await new Promise((resolve) => setTimeout(resolve, 280 - elapsed))
+        }
         this.loading = false
       }
     }
