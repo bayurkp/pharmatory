@@ -74,18 +74,6 @@ describe('Pharmatory API Integration Tests (Fastify inject)', () => {
     assert.equal(json.data.length, 2)
   })
 
-  it('GET /api/v1/products?cold_chain=true - filters by concise snake_case parameter', async () => {
-    const response = await app.inject({
-      method: 'GET',
-      url: '/api/v1/products?cold_chain=true'
-    })
-
-    assert.equal(response.statusCode, 200)
-    const json = JSON.parse(response.payload)
-    assert.equal(json.success, true)
-    assert.equal(json.data.length, 2)
-  })
-
   it('GET /api/v1/warehouses - retrieves all 8 warehouses and inventory', async () => {
     const response = await app.inject({
       method: 'GET',
@@ -118,10 +106,10 @@ describe('Pharmatory API Integration Tests (Fastify inject)', () => {
     assert.ok(json.data.every((w: { location: string }) => w.location === 'Surabaya'))
   })
 
-  it('GET /api/v1/warehouses?city=Gresik&cold_chain=true - filters by concise parameters', async () => {
+  it('GET /api/v1/warehouses?city=Gresik&coldChain=true - filters by concise parameters', async () => {
     const response = await app.inject({
       method: 'GET',
-      url: '/api/v1/warehouses?city=Gresik&cold_chain=true'
+      url: '/api/v1/warehouses?city=Gresik&coldChain=true'
     })
 
     assert.equal(response.statusCode, 200)

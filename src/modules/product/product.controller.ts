@@ -9,9 +9,7 @@ interface GetProductsQuery {
   'category.in'?: string | string[]
   search?: string
   requiresColdChain?: boolean | string
-  requires_cold_chain?: boolean | string
   coldChain?: boolean | string
-  cold_chain?: boolean | string
   coldChainRequired?: boolean | string
 }
 
@@ -25,11 +23,7 @@ export class ProductController {
     const { category, search, sort } = request.query
     const categories = parseArrayQueryParam(request.query['category.in'])
     const rawVal =
-      request.query.requiresColdChain ??
-      request.query.requires_cold_chain ??
-      request.query.coldChain ??
-      request.query.cold_chain ??
-      request.query.coldChainRequired
+      request.query.requiresColdChain ?? request.query.coldChain ?? request.query.coldChainRequired
     const isColdChain =
       rawVal !== undefined
         ? typeof rawVal === 'boolean'

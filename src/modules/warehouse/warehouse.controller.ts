@@ -14,9 +14,7 @@ interface GetWarehousesQuery {
   search?: string
   storageType?: string
   isColdChainCapable?: boolean | string
-  is_cold_chain_capable?: boolean | string
   coldChain?: boolean | string
-  cold_chain?: boolean | string
   fullColdChainCapable?: boolean | string
 }
 
@@ -41,9 +39,7 @@ export class WarehouseController {
     const { search, storageType, sort } = request.query
     const rawVal =
       request.query.isColdChainCapable ??
-      request.query.is_cold_chain_capable ??
       request.query.coldChain ??
-      request.query.cold_chain ??
       request.query.fullColdChainCapable
     const isColdFleet =
       rawVal !== undefined

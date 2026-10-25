@@ -53,15 +53,10 @@ export const getProductsSchema = {
         type: 'boolean',
         description: 'Filter products by cold chain requirement (true/false)'
       },
-      requires_cold_chain: {
-        type: 'boolean',
-        description: 'Filter products by cold chain requirement (snake_case alias)'
-      },
       coldChain: {
         type: 'boolean',
         description: 'Convenience query parameter alias'
-      },
-      cold_chain: { type: 'boolean', description: 'Convenience query parameter snake_case alias' }
+      }
     }
   },
   response: {

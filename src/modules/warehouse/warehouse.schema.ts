@@ -89,15 +89,10 @@ export const getWarehousesSchema = {
         type: 'boolean',
         description: 'Filter warehouses by full cold-chain capability (true/false)'
       },
-      is_cold_chain_capable: {
-        type: 'boolean',
-        description: 'Filter warehouses by full cold-chain capability (snake_case alias)'
-      },
       coldChain: {
         type: 'boolean',
         description: 'Convenience query parameter alias'
-      },
-      cold_chain: { type: 'boolean', description: 'Convenience query parameter snake_case alias' }
+      }
     }
   },
   response: {
