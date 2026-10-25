@@ -32,6 +32,11 @@ const swaggerPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
           description: 'Empirical delivery duration models and congestion analytics'
         }
       ]
+    },
+    transform: ({ schema, url }) => {
+      // Normalize trailing slashes so OpenAPI paths are clean (e.g. /api/v1/products instead of /api/v1/products/)
+      const cleanUrl = url.length > 1 && url.endsWith('/') ? url.slice(0, -1) : url
+      return { schema, url: cleanUrl }
     }
   })
 
@@ -46,12 +51,12 @@ const swaggerPlugin: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   })
 
   // Top-level redirect /docs -> /docs/v1
-  fastify.get('/docs', async (request, reply) => {
+  fastify.get('/docs', { schema: { hide: true } }, async (request, reply) => {
     return reply.redirect('/docs/v1', 302)
   })
 
   // OpenAPI contract JSON alias
-  fastify.get('/api/v1/openapi', async (request, reply) => {
+  fastify.get('/api/v1/openapi', { schema: { hide: true } }, async (request, reply) => {
     return reply.status(200).send(fastify.swagger())
   })
 }
