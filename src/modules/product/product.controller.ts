@@ -4,6 +4,7 @@ import { byJsonSuccess } from '../../shared/utils/by-json.util.js'
 
 interface GetProductsQuery {
   category?: string
+  search?: string
   requiresColdChain?: boolean | string
   requires_cold_chain?: boolean | string
   coldChain?: boolean | string
@@ -18,7 +19,7 @@ export class ProductController {
     request: FastifyRequest<{ Querystring: GetProductsQuery }>,
     reply: FastifyReply
   ) => {
-    const { category } = request.query
+    const { category, search } = request.query
     const rawVal =
       request.query.requiresColdChain ??
       request.query.requires_cold_chain ??
@@ -34,6 +35,7 @@ export class ProductController {
 
     const products = this.productService.getAllProducts({
       category,
+      search,
       requiresColdChain: isColdChain
     })
 

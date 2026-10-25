@@ -64,6 +64,12 @@ export const getWarehousesSchema = {
     properties: {
       city: { type: 'string', description: 'Filter warehouses by city (e.g. Surabaya, Malang)' },
       location: { type: 'string', description: 'Alternative alias for city' },
+      search: { type: 'string', description: 'Search warehouses by ID, name, or city' },
+      storageType: {
+        type: 'string',
+        enum: ['ambient', 'refrigerated'],
+        description: 'Filter warehouses by storage type'
+      },
       isColdChainCapable: {
         type: 'boolean',
         description: 'Filter warehouses by full cold-chain capability (true/false)'

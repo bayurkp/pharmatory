@@ -3,13 +3,50 @@ import { TrafficService } from './traffic.service.js'
 import { byJsonSuccess } from '../../shared/utils/by-json.util.js'
 import { ValidationError, AppError } from '../../shared/errors/app-error.js'
 
+interface GetTrafficPatternsQuery {
+  warehouseId?: string
+  dayOfWeek?: string
+  search?: string
+}
+
 export class TrafficController {
   constructor(private readonly trafficService: TrafficService) {}
 
-  getTrafficPatterns = async (request: FastifyRequest, reply: FastifyReply) => {
+  getTrafficPatterns = async (
+    request: FastifyRequest<{ Querystring: GetTrafficPatternsQuery }>,
+    reply: FastifyReply
+  ) => {
     await this.trafficService.initialize()
-    const summary = this.trafficService.getAllStats()
-    const records = this.trafficService.getAllRecords()
+    let summary = this.trafficService.getAllStats()
+    let records = this.trafficService.getAllRecords()
+
+    const { warehouseId, dayOfWeek, search } = request.query || {}
+
+    if (warehouseId) {
+      const wid = warehouseId.toUpperCase().trim()
+      records = records.filter((r) => r.warehouseId.toUpperCase() === wid)
+      summary = summary.filter((s) => s.warehouseId.toUpperCase() === wid)
+    }
+
+    if (dayOfWeek) {
+      const dow = dayOfWeek.toLowerCase().trim()
+      records = records.filter(
+        (r) => r.dayOfWeek.toLowerCase() === dow || r.dayOfWeek.toLowerCase().startsWith(dow)
+      )
+    }
+
+    if (search) {
+      const q = search.toLowerCase().trim()
+      records = records.filter(
+        (r) =>
+          r.deliveryId.toLowerCase().includes(q) ||
+          r.warehouseId.toLowerCase().includes(q) ||
+          r.dayOfWeek.toLowerCase().includes(q) ||
+          r.timeString.toLowerCase().includes(q) ||
+          (r.notes && r.notes.toLowerCase().includes(q))
+      )
+    }
+
     return reply.status(200).send(byJsonSuccess({ summary, records }, request.id as string))
   }
 

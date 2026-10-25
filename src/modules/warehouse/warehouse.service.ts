@@ -9,12 +9,29 @@ export class WarehouseService {
     location?: string
     isColdChainCapable?: boolean
     fullColdChainCapable?: boolean
+    storageType?: string
+    search?: string
   }): Warehouse[] {
     let warehouses = this.warehouseRepo.findAllWithInventories()
 
+    if (filters?.search) {
+      const q = filters.search.toLowerCase().trim()
+      warehouses = warehouses.filter(
+        (w) =>
+          w.id.toLowerCase().includes(q) ||
+          w.name.toLowerCase().includes(q) ||
+          w.location.toLowerCase().includes(q)
+      )
+    }
+
     if (filters?.location) {
-      const loc = filters.location.toLowerCase()
+      const loc = filters.location.toLowerCase().trim()
       warehouses = warehouses.filter((w) => w.location.toLowerCase() === loc)
+    }
+
+    if (filters?.storageType) {
+      const st = filters.storageType.toLowerCase().trim()
+      warehouses = warehouses.filter((w) => w.storageType.toLowerCase() === st)
     }
 
     const capable = filters?.isColdChainCapable ?? filters?.fullColdChainCapable

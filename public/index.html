@@ -370,7 +370,7 @@
               <!-- Traffic Benchmarks Compact Chips -->
               <div class="space-y-1.5 pt-0.5">
                 <div class="flex items-center justify-between text-[11px] text-slate-500">
-                  <span class="font-medium text-slate-600">Traffic Benchmarks:</span>
+                  <span class="font-medium text-slate-600">Traffic Benchmarks</span>
                   <span class="text-[10px] text-slate-400">One-click schedule</span>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
@@ -1011,11 +1011,77 @@
         x-show="activeTab === 'warehouses'"
         class="bg-white rounded-xl border border-slate-200 shadow-xs p-3.5 sm:p-5 space-y-4"
       >
-        <div class="pb-3 border-b border-slate-200">
-          <h2 class="text-base font-semibold text-slate-900">Regional Facilities Network</h2>
-          <p class="text-xs text-slate-500 mt-1">
-            8 distribution centers across East Java with live inventory levels.
-          </p>
+        <div
+          class="pb-3 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+        >
+          <div>
+            <h2 class="text-base font-semibold text-slate-900">Regional Facilities Network</h2>
+            <p class="text-xs text-slate-500 mt-0.5">
+              8 distribution centers across East Java with live inventory levels.
+            </p>
+          </div>
+          <span
+            class="text-xs text-slate-500 font-medium self-start sm:self-auto px-2.5 py-1 bg-slate-100 rounded-md border border-slate-200"
+            x-text="warehouses.length + ' Facilities'"
+          ></span>
+        </div>
+
+        <!-- Warehouses Search & Filter Toolbar -->
+        <div class="flex flex-wrap items-center gap-2.5 pt-1">
+          <div class="relative flex-1 min-w-[200px]">
+            <input
+              type="text"
+              x-model="warehouseSearch"
+              @input="onWarehouseFilterChange()"
+              placeholder="Search ID, facility name, city..."
+              class="w-full text-xs font-medium rounded-lg border border-slate-300 bg-white h-8 py-1.5 pl-8 pr-3 text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 shadow-xs"
+            />
+            <div
+              class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none text-slate-400"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <select
+            x-model="warehouseCityFilter"
+            @change="onWarehouseFilterChange(true)"
+            class="h-8 py-1 px-2.5 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 shadow-xs cursor-pointer"
+          >
+            <option value="">All Cities</option>
+            <option value="Surabaya">Surabaya</option>
+            <option value="Sidoarjo">Sidoarjo</option>
+            <option value="Gresik">Gresik</option>
+            <option value="Pasuruan">Pasuruan</option>
+            <option value="Malang">Malang</option>
+            <option value="Jember">Jember</option>
+          </select>
+
+          <select
+            x-model="warehouseColdChainFilter"
+            @change="onWarehouseFilterChange(true)"
+            class="h-8 py-1 px-2.5 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 shadow-xs cursor-pointer"
+          >
+            <option value="">All Fleets</option>
+            <option value="true">Refrigerated Vans Only</option>
+            <option value="false">Standard Fleet</option>
+          </select>
+
+          <button
+            type="button"
+            x-show="warehouseSearch || warehouseCityFilter || warehouseColdChainFilter"
+            @click="resetWarehouseFilters()"
+            class="h-8 py-1 px-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs text-slate-600 font-medium transition-colors cursor-pointer"
+          >
+            Reset Filters
+          </button>
         </div>
 
         <div class="overflow-x-auto -mx-3.5 sm:mx-0 px-3.5 sm:px-0">
@@ -1077,8 +1143,48 @@
                   </td>
                 </tr>
               </template>
+              <tr x-show="warehouses.length === 0">
+                <td colspan="8" class="py-8 text-center text-slate-400">
+                  No facilities match your search criteria.
+                </td>
+              </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Collapsible Raw JSON Response for Warehouses -->
+        <div class="pt-3 border-t border-slate-200">
+          <button
+            type="button"
+            @click="showRawWarehousesJson = !showRawWarehousesJson"
+            class="text-xs text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <svg
+              class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+              :class="showRawWarehousesJson ? 'rotate-180 text-teal-600' : ''"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+            </svg>
+            <span
+              x-text="showRawWarehousesJson ? 'Hide Raw Payload' : 'View Raw Payload (GET /api/v1/warehouses)'"
+            ></span>
+            <template x-if="rawWarehousesResponse?.meta?.durationMs !== undefined">
+              <span
+                class="text-[10px] text-slate-400 font-mono ml-1"
+                x-text="'(HTTP 200 · ' + rawWarehousesResponse.meta.durationMs + 'ms)'"
+              ></span>
+            </template>
+          </button>
+          <div x-show="showRawWarehousesJson" class="mt-2.5">
+            <pre
+              class="p-3.5 bg-slate-950 text-slate-200 rounded-lg overflow-x-auto max-w-full max-h-72 border border-slate-800 font-mono text-[11px] leading-relaxed"
+              x-text="JSON.stringify(rawWarehousesResponse, null, 2)"
+            ></pre>
+          </div>
         </div>
       </section>
 
@@ -1089,13 +1195,75 @@
         x-show="activeTab === 'products'"
         class="bg-white rounded-xl border border-slate-200 shadow-xs p-3.5 sm:p-5 space-y-4"
       >
-        <div class="pb-3 border-b border-slate-200">
-          <h2 class="text-base font-semibold text-slate-900">
-            Medical &amp; Pharmaceutical Catalog
-          </h2>
-          <p class="text-xs text-slate-500 mt-1">
-            Pharmaceutical supplies with mandatory cold-chain classification.
-          </p>
+        <div
+          class="pb-3 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+        >
+          <div>
+            <h2 class="text-base font-semibold text-slate-900">
+              Medical &amp; Pharmaceutical Catalog
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Pharmaceutical supplies with mandatory cold-chain classification.
+            </p>
+          </div>
+          <span
+            class="text-xs text-slate-500 font-medium self-start sm:self-auto px-2.5 py-1 bg-slate-100 rounded-md border border-slate-200"
+            x-text="products.length + ' Products'"
+          ></span>
+        </div>
+
+        <!-- Products Search & Filter Toolbar -->
+        <div class="flex flex-wrap items-center gap-2.5 pt-1">
+          <div class="relative flex-1 min-w-[200px]">
+            <input
+              type="text"
+              x-model="productSearch"
+              @input="onProductFilterChange()"
+              placeholder="Search SKU ID, product name, specs..."
+              class="w-full text-xs font-medium rounded-lg border border-slate-300 bg-white h-8 py-1.5 pl-8 pr-3 text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 shadow-xs"
+            />
+            <div
+              class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none text-slate-400"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <select
+            x-model="productCategoryFilter"
+            @change="onProductFilterChange(true)"
+            class="h-8 py-1 px-2.5 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 shadow-xs cursor-pointer"
+          >
+            <option value="">All Categories</option>
+            <option value="medical_supplies">Medical Supplies</option>
+            <option value="pharmaceutical">Pharmaceutical</option>
+          </select>
+
+          <select
+            x-model="productColdChainFilter"
+            @change="onProductFilterChange(true)"
+            class="h-8 py-1 px-2.5 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 shadow-xs cursor-pointer"
+          >
+            <option value="">All Temperatures</option>
+            <option value="true">Cold Chain (2-8°C)</option>
+            <option value="false">Ambient Storage</option>
+          </select>
+
+          <button
+            type="button"
+            x-show="productSearch || productCategoryFilter || productColdChainFilter"
+            @click="resetProductFilters()"
+            class="h-8 py-1 px-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs text-slate-600 font-medium transition-colors cursor-pointer"
+          >
+            Reset Filters
+          </button>
         </div>
 
         <div class="overflow-x-auto -mx-3.5 sm:mx-0 px-3.5 sm:px-0">
@@ -1139,8 +1307,48 @@
                   ></td>
                 </tr>
               </template>
+              <tr x-show="products.length === 0">
+                <td colspan="5" class="py-8 text-center text-slate-400">
+                  No products match your search criteria.
+                </td>
+              </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Collapsible Raw JSON Response for Products -->
+        <div class="pt-3 border-t border-slate-200">
+          <button
+            type="button"
+            @click="showRawProductsJson = !showRawProductsJson"
+            class="text-xs text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <svg
+              class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+              :class="showRawProductsJson ? 'rotate-180 text-teal-600' : ''"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+            </svg>
+            <span
+              x-text="showRawProductsJson ? 'Hide Raw Payload' : 'View Raw Payload (GET /api/v1/products)'"
+            ></span>
+            <template x-if="rawProductsResponse?.meta?.durationMs !== undefined">
+              <span
+                class="text-[10px] text-slate-400 font-mono ml-1"
+                x-text="'(HTTP 200 · ' + rawProductsResponse.meta.durationMs + 'ms)'"
+              ></span>
+            </template>
+          </button>
+          <div x-show="showRawProductsJson" class="mt-2.5">
+            <pre
+              class="p-3.5 bg-slate-950 text-slate-200 rounded-lg overflow-x-auto max-w-full max-h-72 border border-slate-800 font-mono text-[11px] leading-relaxed"
+              x-text="JSON.stringify(rawProductsResponse, null, 2)"
+            ></pre>
+          </div>
         </div>
       </section>
 
@@ -1261,7 +1469,86 @@
 
         <!-- Historical Trips Log Table -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-xs p-3.5 sm:p-5 space-y-3">
-          <div class="text-sm font-semibold text-slate-900">Sample Historical Delivery Logs</div>
+          <div
+            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200 pb-3"
+          >
+            <div>
+              <h3 class="text-base font-semibold text-slate-900">Historical Delivery Logs</h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Filter transit records by corridor, day of week, or notes.
+              </p>
+            </div>
+            <span
+              class="text-xs text-slate-500 font-medium self-start sm:self-auto px-2.5 py-1 bg-slate-100 rounded-md border border-slate-200"
+              x-text="trafficRecords.length + ' Trips'"
+            ></span>
+          </div>
+
+          <!-- Traffic Search & Filter Toolbar -->
+          <div class="flex flex-wrap items-center gap-2.5 pt-1">
+            <div class="relative flex-1 min-w-[180px]">
+              <input
+                type="text"
+                x-model="trafficSearch"
+                @input="onTrafficFilterChange()"
+                placeholder="Search trip ID, corridor notes..."
+                class="w-full text-xs font-medium rounded-lg border border-slate-300 bg-white h-8 py-1.5 pl-8 pr-3 text-slate-800 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 shadow-xs"
+              />
+              <div
+                class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none text-slate-400"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <select
+              x-model="trafficWarehouseFilter"
+              @change="onTrafficFilterChange(true)"
+              class="h-8 py-1 px-2.5 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 shadow-xs cursor-pointer"
+            >
+              <option value="">All Warehouses</option>
+              <option value="W01">W01 - Surabaya</option>
+              <option value="W02">W02 - Sidoarjo</option>
+              <option value="W03">W03 - Gresik</option>
+              <option value="W04">W04 - Pasuruan</option>
+              <option value="W05">W05 - Malang</option>
+              <option value="W06">W06 - Jember</option>
+              <option value="W07">W07 - Surabaya Barat</option>
+              <option value="W08">W08 - Sidoarjo Selatan</option>
+            </select>
+
+            <select
+              x-model="trafficDayFilter"
+              @change="onTrafficFilterChange(true)"
+              class="h-8 py-1 px-2.5 rounded-lg border border-slate-300 bg-white text-xs font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-600 focus:border-teal-600 shadow-xs cursor-pointer"
+            >
+              <option value="">All Days</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+
+            <button
+              type="button"
+              x-show="trafficWarehouseFilter || trafficDayFilter || trafficSearch"
+              @click="resetTrafficFilters()"
+              class="h-8 py-1 px-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs text-slate-600 font-medium transition-colors cursor-pointer"
+            >
+              Reset Filters
+            </button>
+          </div>
+
           <div
             class="overflow-x-auto max-h-72 overflow-y-auto border border-slate-200 rounded-lg -mx-1 sm:mx-0"
           >
@@ -1302,8 +1589,48 @@
                     ></td>
                   </tr>
                 </template>
+                <tr x-show="trafficRecords.length === 0">
+                  <td colspan="5" class="py-8 text-center text-slate-400">
+                    No historical records match your filter criteria.
+                  </td>
+                </tr>
               </tbody>
             </table>
+          </div>
+
+          <!-- Collapsible Raw JSON Response for Traffic -->
+          <div class="pt-3 border-t border-slate-200">
+            <button
+              type="button"
+              @click="showRawTrafficJson = !showRawTrafficJson"
+              class="text-xs text-slate-500 hover:text-slate-800 font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <svg
+                class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+                :class="showRawTrafficJson ? 'rotate-180 text-teal-600' : ''"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+              </svg>
+              <span
+                x-text="showRawTrafficJson ? 'Hide Raw Payload' : 'View Raw Payload (GET /api/v1/traffic/patterns)'"
+              ></span>
+              <template x-if="rawTrafficResponse?.meta?.durationMs !== undefined">
+                <span
+                  class="text-[10px] text-slate-400 font-mono ml-1"
+                  x-text="'(HTTP 200 · ' + rawTrafficResponse.meta.durationMs + 'ms)'"
+                ></span>
+              </template>
+            </button>
+            <div x-show="showRawTrafficJson" class="mt-2.5">
+              <pre
+                class="p-3.5 bg-slate-950 text-slate-200 rounded-lg overflow-x-auto max-w-full max-h-72 border border-slate-800 font-mono text-[11px] leading-relaxed"
+                x-text="JSON.stringify(rawTrafficResponse, null, 2)"
+              ></pre>
+            </div>
           </div>
         </div>
       </section>

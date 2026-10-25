@@ -94,6 +94,28 @@ function createPharmatoryComponent() {
     uploadSuccessMessage: null,
     uploadErrorMessage: null,
 
+    // Warehouse Directory Filters & Raw Payload
+    warehouseSearch: '',
+    warehouseCityFilter: '',
+    warehouseColdChainFilter: '',
+    showRawWarehousesJson: false,
+    rawWarehousesResponse: null,
+
+    // Product Catalog Filters & Raw Payload
+    productSearch: '',
+    productCategoryFilter: '',
+    productColdChainFilter: '',
+    showRawProductsJson: false,
+    rawProductsResponse: null,
+
+    // Traffic Analytics Filters & Raw Payload
+    trafficWarehouseFilter: '',
+    trafficDayFilter: '',
+    trafficSearch: '',
+    showRawTrafficJson: false,
+    rawTrafficResponse: null,
+    filterDebounceTimer: null,
+
     async init() {
       await Promise.all([this.fetchProducts(), this.fetchWarehouses(), this.fetchTraffic()])
       // Initial fulfillment evaluation so the page immediately displays live results
@@ -175,8 +197,19 @@ function createPharmatoryComponent() {
 
     async fetchProducts() {
       try {
-        const res = await fetch('/api/v1/products')
+        const params = new URLSearchParams()
+        if (this.productSearch) params.set('search', this.productSearch.trim())
+        if (this.productCategoryFilter) params.set('category', this.productCategoryFilter)
+        if (this.productColdChainFilter !== '') {
+          params.set('requiresColdChain', this.productColdChainFilter)
+        }
+        const qs = params.toString() ? `?${params.toString()}` : ''
+        const t0 = performance.now()
+        const res = await fetch(`/api/v1/products${qs}`)
         const json = await res.json()
+        const t1 = performance.now()
+        if (json.meta) json.meta.durationMs = Math.round((t1 - t0) * 10) / 10
+        this.rawProductsResponse = json
         if (json.success) {
           this.products = json.data
         }
@@ -185,10 +218,39 @@ function createPharmatoryComponent() {
       }
     },
 
+    onProductFilterChange(immediate = false) {
+      if (this.filterDebounceTimer) clearTimeout(this.filterDebounceTimer)
+      if (immediate) {
+        this.fetchProducts()
+        return
+      }
+      this.filterDebounceTimer = setTimeout(() => {
+        this.fetchProducts()
+      }, 250)
+    },
+
+    resetProductFilters() {
+      this.productSearch = ''
+      this.productCategoryFilter = ''
+      this.productColdChainFilter = ''
+      this.fetchProducts()
+    },
+
     async fetchWarehouses() {
       try {
-        const res = await fetch('/api/v1/warehouses')
+        const params = new URLSearchParams()
+        if (this.warehouseSearch) params.set('search', this.warehouseSearch.trim())
+        if (this.warehouseCityFilter) params.set('city', this.warehouseCityFilter)
+        if (this.warehouseColdChainFilter !== '') {
+          params.set('isColdChainCapable', this.warehouseColdChainFilter)
+        }
+        const qs = params.toString() ? `?${params.toString()}` : ''
+        const t0 = performance.now()
+        const res = await fetch(`/api/v1/warehouses${qs}`)
         const json = await res.json()
+        const t1 = performance.now()
+        if (json.meta) json.meta.durationMs = Math.round((t1 - t0) * 10) / 10
+        this.rawWarehousesResponse = json
         if (json.success) {
           this.warehouses = json.data
         }
@@ -197,10 +259,37 @@ function createPharmatoryComponent() {
       }
     },
 
+    onWarehouseFilterChange(immediate = false) {
+      if (this.filterDebounceTimer) clearTimeout(this.filterDebounceTimer)
+      if (immediate) {
+        this.fetchWarehouses()
+        return
+      }
+      this.filterDebounceTimer = setTimeout(() => {
+        this.fetchWarehouses()
+      }, 250)
+    },
+
+    resetWarehouseFilters() {
+      this.warehouseSearch = ''
+      this.warehouseCityFilter = ''
+      this.warehouseColdChainFilter = ''
+      this.fetchWarehouses()
+    },
+
     async fetchTraffic() {
       try {
-        const res = await fetch('/api/v1/traffic/patterns')
+        const params = new URLSearchParams()
+        if (this.trafficWarehouseFilter) params.set('warehouseId', this.trafficWarehouseFilter)
+        if (this.trafficDayFilter) params.set('dayOfWeek', this.trafficDayFilter)
+        if (this.trafficSearch) params.set('search', this.trafficSearch.trim())
+        const qs = params.toString() ? `?${params.toString()}` : ''
+        const t0 = performance.now()
+        const res = await fetch(`/api/v1/traffic/patterns${qs}`)
         const json = await res.json()
+        const t1 = performance.now()
+        if (json.meta) json.meta.durationMs = Math.round((t1 - t0) * 10) / 10
+        this.rawTrafficResponse = json
         if (json.success) {
           this.trafficSummary = json.data.summary
           this.trafficRecords = json.data.records
@@ -208,6 +297,24 @@ function createPharmatoryComponent() {
       } catch (err) {
         console.error('Failed to load traffic patterns:', err)
       }
+    },
+
+    onTrafficFilterChange(immediate = false) {
+      if (this.filterDebounceTimer) clearTimeout(this.filterDebounceTimer)
+      if (immediate) {
+        this.fetchTraffic()
+        return
+      }
+      this.filterDebounceTimer = setTimeout(() => {
+        this.fetchTraffic()
+      }, 250)
+    },
+
+    resetTrafficFilters() {
+      this.trafficWarehouseFilter = ''
+      this.trafficDayFilter = ''
+      this.trafficSearch = ''
+      this.fetchTraffic()
     },
 
     // ─── Traffic CSV Management ─────────────────────────────────

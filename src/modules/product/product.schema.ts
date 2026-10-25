@@ -36,6 +36,10 @@ export const getProductsSchema = {
         enum: ['medical_supplies', 'pharmaceutical'],
         description: 'Filter products by category'
       },
+      search: {
+        type: 'string',
+        description: 'Search products by SKU ID, name, or clinical description'
+      },
       requiresColdChain: {
         type: 'boolean',
         description: 'Filter products by cold chain requirement (true/false)'

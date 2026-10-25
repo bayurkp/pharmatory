@@ -8,6 +8,23 @@ export const getTrafficPatternsSchema = {
   summary: 'Retrieve historical delivery traffic analytics',
   description:
     'Returns aggregated delivery duration statistics and empirical records processed in memory across regional routes.',
+  querystring: {
+    type: 'object',
+    properties: {
+      warehouseId: {
+        type: 'string',
+        description: 'Filter records by warehouse ID (e.g. W01, W04)'
+      },
+      dayOfWeek: {
+        type: 'string',
+        description: 'Filter records by day of week (e.g. Mon, Fri)'
+      },
+      search: {
+        type: 'string',
+        description: 'Search records by delivery ID, warehouse, or notes'
+      }
+    }
+  },
   response: {
     200: buildByJsonSuccessSchema(
       {

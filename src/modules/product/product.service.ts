@@ -9,8 +9,19 @@ export class ProductService {
     category?: string
     requiresColdChain?: boolean
     coldChainRequired?: boolean
+    search?: string
   }): Product[] {
     let products = this.productRepo.findAll()
+
+    if (filters?.search) {
+      const q = filters.search.toLowerCase().trim()
+      products = products.filter(
+        (p) =>
+          p.id.toLowerCase().includes(q) ||
+          p.name.toLowerCase().includes(q) ||
+          (p.description && p.description.toLowerCase().includes(q))
+      )
+    }
 
     if (filters?.category) {
       const cat = filters.category.toLowerCase().replace(/\s+/g, '_')
