@@ -52,6 +52,20 @@ function createPharmatoryComponent() {
     selectedDay: 'Mon',
     selectedTime: '14:00',
     orderTime: 'Mon, 14:00',
+    daysList: [
+      { code: 'Mon', label: 'Monday', tag: 'Weekday' },
+      { code: 'Tue', label: 'Tuesday', tag: 'Weekday' },
+      { code: 'Wed', label: 'Wednesday', tag: 'Weekday' },
+      { code: 'Thu', label: 'Thursday', tag: 'Weekday' },
+      { code: 'Fri', label: 'Friday', tag: 'Peak' },
+      { code: 'Sat', label: 'Saturday', tag: 'Weekend' },
+      { code: 'Sun', label: 'Sunday', tag: 'Weekend' }
+    ],
+
+    getDayLabel(code) {
+      const d = this.daysList.find((item) => item.code === code)
+      return d ? d.label : code
+    },
     timeSlots: (function () {
       const slots = []
       for (let h = 0; h < 24; h++) {
