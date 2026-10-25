@@ -4,7 +4,7 @@ import { NotFoundError } from '../../shared/errors/app-error.js'
 import {
   parseSortQuery,
   validateSortFields,
-  applyMultiFieldSort
+  SortCriterion
 } from '../../shared/utils/by-json-query.util.js'
 
 const ALLOWED_PRODUCT_SORT_FIELDS = ['id', 'name', 'category', 'requiresColdChain', 'description']
@@ -20,44 +20,21 @@ export class ProductService {
     search?: string
     sort?: string | string[]
   }): Product[] {
-    let products = this.productRepo.findAll()
-
-    if (filters?.search) {
-      const q = filters.search.toLowerCase().trim()
-      products = products.filter(
-        (p) =>
-          p.id.toLowerCase().includes(q) ||
-          p.name.toLowerCase().includes(q) ||
-          (p.description && p.description.toLowerCase().includes(q))
-      )
-    }
-
-    if (filters?.categories && filters.categories.length > 0) {
-      const targetCategories = filters.categories.map((c) => c.toLowerCase().replace(/\s+/g, '_'))
-      products = products.filter((p) =>
-        targetCategories.includes(p.category.toLowerCase().replace(/\s+/g, '_'))
-      )
-    } else if (filters?.category) {
-      const cat = filters.category.toLowerCase().replace(/\s+/g, '_')
-      products = products.filter(
-        (p) =>
-          p.category.toLowerCase() === cat ||
-          p.category.toLowerCase() === filters.category!.toLowerCase()
-      )
+    let sortCriteria: SortCriterion[] = []
+    if (filters?.sort) {
+      sortCriteria = parseSortQuery(filters.sort)
+      validateSortFields(sortCriteria, ALLOWED_PRODUCT_SORT_FIELDS)
     }
 
     const coldChain = filters?.requiresColdChain ?? filters?.coldChainRequired
-    if (typeof coldChain === 'boolean') {
-      products = products.filter((p) => p.requiresColdChain === coldChain)
-    }
 
-    if (filters?.sort) {
-      const criteria = parseSortQuery(filters.sort)
-      validateSortFields(criteria, ALLOWED_PRODUCT_SORT_FIELDS)
-      products = applyMultiFieldSort(products, criteria, 'id')
-    }
-
-    return products
+    return this.productRepo.findFiltered({
+      category: filters?.category,
+      categories: filters?.categories,
+      requiresColdChain: typeof coldChain === 'boolean' ? coldChain : undefined,
+      search: filters?.search,
+      sortCriteria
+    })
   }
 
   getProductById(id: string): Product {

@@ -4,7 +4,7 @@ import { NotFoundError } from '../../shared/errors/app-error.js'
 import {
   parseSortQuery,
   validateSortFields,
-  applyMultiFieldSort
+  SortCriterion
 } from '../../shared/utils/by-json-query.util.js'
 
 const ALLOWED_WAREHOUSE_SORT_FIELDS = [
@@ -31,51 +31,24 @@ export class WarehouseService {
     search?: string
     sort?: string | string[]
   }): Warehouse[] {
-    let warehouses = this.warehouseRepo.findAllWithInventories()
-
-    if (filters?.search) {
-      const q = filters.search.toLowerCase().trim()
-      warehouses = warehouses.filter(
-        (w) =>
-          w.id.toLowerCase().includes(q) ||
-          w.name.toLowerCase().includes(q) ||
-          w.location.toLowerCase().includes(q)
-      )
-    }
-
-    if (filters?.cities && filters.cities.length > 0) {
-      const targetCities = filters.cities.map((c) => c.toLowerCase().trim())
-      warehouses = warehouses.filter((w) => targetCities.includes(w.location.toLowerCase()))
-    } else if (filters?.location) {
-      const loc = filters.location.toLowerCase().trim()
-      warehouses = warehouses.filter((w) => w.location.toLowerCase() === loc)
-    }
-
-    if (filters?.minDistanceKm !== undefined && !isNaN(filters.minDistanceKm)) {
-      warehouses = warehouses.filter((w) => w.distanceKm >= filters.minDistanceKm!)
-    }
-
-    if (filters?.maxDistanceKm !== undefined && !isNaN(filters.maxDistanceKm)) {
-      warehouses = warehouses.filter((w) => w.distanceKm <= filters.maxDistanceKm!)
-    }
-
-    if (filters?.storageType) {
-      const st = filters.storageType.toLowerCase().trim()
-      warehouses = warehouses.filter((w) => w.storageType.toLowerCase() === st)
+    let sortCriteria: SortCriterion[] = []
+    if (filters?.sort) {
+      sortCriteria = parseSortQuery(filters.sort)
+      validateSortFields(sortCriteria, ALLOWED_WAREHOUSE_SORT_FIELDS)
     }
 
     const capable = filters?.isColdChainCapable ?? filters?.fullColdChainCapable
-    if (typeof capable === 'boolean') {
-      warehouses = warehouses.filter((w) => w.isColdChainCapable === capable)
-    }
 
-    if (filters?.sort) {
-      const criteria = parseSortQuery(filters.sort)
-      validateSortFields(criteria, ALLOWED_WAREHOUSE_SORT_FIELDS)
-      warehouses = applyMultiFieldSort(warehouses, criteria, 'id')
-    }
-
-    return warehouses
+    return this.warehouseRepo.findFilteredWithInventories({
+      search: filters?.search,
+      cities: filters?.cities,
+      location: filters?.location,
+      minDistanceKm: filters?.minDistanceKm,
+      maxDistanceKm: filters?.maxDistanceKm,
+      storageType: filters?.storageType,
+      isColdChainCapable: typeof capable === 'boolean' ? capable : undefined,
+      sortCriteria
+    })
   }
 
   getWarehouseById(id: string): Warehouse {
