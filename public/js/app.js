@@ -297,8 +297,7 @@ function createPharmatoryComponent() {
           sortList.splice(existingIdx, 1)
         }
       } else {
-        // Simple direct click sets primary sort
-        sortList.length = 0
+        // Multi-field sorting: direct click appends to sort criteria without needing Shift key
         sortList.push({ field, order: 'asc' })
       }
 
