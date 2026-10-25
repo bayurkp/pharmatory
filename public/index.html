@@ -1269,21 +1269,26 @@
           class="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 pt-0.5 pb-1"
         >
           <span class="text-[11px] font-medium text-slate-400">Sorted by:</span>
-          <template x-for="s in warehouseSort" :key="s.field">
-            <span
-              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-800 border border-teal-200"
-            >
+          <template x-for="(s, idx) in warehouseSort" :key="s.field">
+            <div class="inline-flex items-center gap-1.5">
+              <span x-show="idx > 0" class="text-slate-400 text-[10px] font-semibold">then by</span>
               <span
-                x-text="formatSortField(s.field) + ' (' + (s.order === 'asc' ? 'ASC' : 'DESC') + ')'"
-              ></span>
-              <button
-                type="button"
-                @click.stop="removeSortCriterion('warehouses', s.field)"
-                class="hover:text-teal-950 font-bold ml-0.5 cursor-pointer"
+                class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-800 border border-teal-200"
               >
-                ×
-              </button>
-            </span>
+                <span x-text="formatSortField(s.field)"></span>
+                <span
+                  class="font-semibold text-teal-600 text-[10px]"
+                  x-text="s.order === 'asc' ? '▲ ASC' : '▼ DESC'"
+                ></span>
+                <button
+                  type="button"
+                  @click.stop="removeSortCriterion('warehouses', s.field)"
+                  class="hover:text-teal-950 font-bold ml-0.5 cursor-pointer"
+                >
+                  ×
+                </button>
+              </span>
+            </div>
           </template>
           <button
             type="button"
@@ -1711,21 +1716,26 @@
           class="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 pt-0.5 pb-1"
         >
           <span class="text-[11px] font-medium text-slate-400">Sorted by:</span>
-          <template x-for="s in productSort" :key="s.field">
-            <span
-              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-800 border border-teal-200"
-            >
+          <template x-for="(s, idx) in productSort" :key="s.field">
+            <div class="inline-flex items-center gap-1.5">
+              <span x-show="idx > 0" class="text-slate-400 text-[10px] font-semibold">then by</span>
               <span
-                x-text="formatSortField(s.field) + ' (' + (s.order === 'asc' ? 'ASC' : 'DESC') + ')'"
-              ></span>
-              <button
-                type="button"
-                @click.stop="removeSortCriterion('products', s.field)"
-                class="hover:text-teal-950 font-bold ml-0.5 cursor-pointer"
+                class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-800 border border-teal-200"
               >
-                ×
-              </button>
-            </span>
+                <span x-text="formatSortField(s.field)"></span>
+                <span
+                  class="font-semibold text-teal-600 text-[10px]"
+                  x-text="s.order === 'asc' ? '▲ ASC' : '▼ DESC'"
+                ></span>
+                <button
+                  type="button"
+                  @click.stop="removeSortCriterion('products', s.field)"
+                  class="hover:text-teal-950 font-bold ml-1 cursor-pointer"
+                >
+                  ×
+                </button>
+              </span>
+            </div>
           </template>
           <button
             type="button"
@@ -2274,21 +2284,28 @@
             class="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 pt-0.5 pb-1"
           >
             <span class="text-[11px] font-medium text-slate-400">Sorted by:</span>
-            <template x-for="s in trafficSort" :key="s.field">
-              <span
-                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-800 border border-teal-200"
-              >
-                <span
-                  x-text="formatSortField(s.field) + ' (' + (s.order === 'asc' ? 'ASC' : 'DESC') + ')'"
-                ></span>
-                <button
-                  type="button"
-                  @click.stop="removeSortCriterion('traffic', s.field)"
-                  class="hover:text-teal-950 font-bold ml-0.5 cursor-pointer"
+            <template x-for="(s, idx) in trafficSort" :key="s.field">
+              <div class="inline-flex items-center gap-1.5">
+                <span x-show="idx > 0" class="text-slate-400 text-[10px] font-semibold"
+                  >then by</span
                 >
-                  ×
-                </button>
-              </span>
+                <span
+                  class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-800 border border-teal-200"
+                >
+                  <span x-text="formatSortField(s.field)"></span>
+                  <span
+                    class="font-semibold text-teal-600 text-[10px]"
+                    x-text="s.order === 'asc' ? '▲ ASC' : '▼ DESC'"
+                  ></span>
+                  <button
+                    type="button"
+                    @click.stop="removeSortCriterion('traffic', s.field)"
+                    class="hover:text-teal-950 font-bold ml-1 cursor-pointer"
+                  >
+                    ×
+                  </button>
+                </span>
+              </div>
             </template>
             <button
               type="button"
