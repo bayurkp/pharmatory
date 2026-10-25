@@ -96,23 +96,45 @@ function createPharmatoryComponent() {
 
     // Warehouse Directory Filters & Raw Payload
     warehouseSearch: '',
-    warehouseCityFilter: '',
+    warehouseCities: [],
+    warehouseDistanceRange: '',
     warehouseColdChainFilter: '',
     showRawWarehousesJson: false,
     rawWarehousesResponse: null,
 
-    warehouseCityOptions: [
-      { value: '', label: 'All Cities' },
-      { value: 'Surabaya', label: 'Surabaya' },
-      { value: 'Sidoarjo', label: 'Sidoarjo' },
-      { value: 'Gresik', label: 'Gresik' },
-      { value: 'Pasuruan', label: 'Pasuruan' },
-      { value: 'Malang', label: 'Malang' },
-      { value: 'Jember', label: 'Jember' }
-    ],
+    warehouseCityList: ['Surabaya', 'Sidoarjo', 'Gresik', 'Pasuruan', 'Malang', 'Jember'],
     getWarehouseCityLabel() {
-      const opt = this.warehouseCityOptions.find((o) => o.value === this.warehouseCityFilter)
-      return opt ? opt.label : 'All Cities'
+      if (this.warehouseCities.length === 0) return 'All Cities'
+      if (this.warehouseCities.length === 1) return this.warehouseCities[0]
+      return `${this.warehouseCities.length} Cities`
+    },
+    toggleWarehouseCity(city) {
+      const idx = this.warehouseCities.indexOf(city)
+      if (idx >= 0) {
+        this.warehouseCities.splice(idx, 1)
+      } else {
+        this.warehouseCities.push(city)
+      }
+      this.onWarehouseFilterChange(true)
+    },
+    selectAllCities() {
+      this.warehouseCities = [...this.warehouseCityList]
+      this.onWarehouseFilterChange(true)
+    },
+    clearAllCities() {
+      this.warehouseCities = []
+      this.onWarehouseFilterChange(true)
+    },
+
+    warehouseDistanceOptions: [
+      { value: '', label: 'All Distances' },
+      { value: '30', label: 'Radius ≤ 30 km' },
+      { value: '50', label: 'Radius ≤ 50 km' },
+      { value: '100', label: 'Radius ≤ 100 km' }
+    ],
+    getWarehouseDistanceLabel() {
+      const opt = this.warehouseDistanceOptions.find((o) => o.value === this.warehouseDistanceRange)
+      return opt ? opt.label : 'All Distances'
     },
 
     warehouseFleetOptions: [
@@ -129,19 +151,39 @@ function createPharmatoryComponent() {
 
     // Product Catalog Filters & Raw Payload
     productSearch: '',
-    productCategoryFilter: '',
+    productCategories: [],
     productColdChainFilter: '',
     showRawProductsJson: false,
     rawProductsResponse: null,
 
-    productCategoryOptions: [
-      { value: '', label: 'All Categories' },
+    productCategoryList: [
       { value: 'medical_supplies', label: 'Medical Supplies' },
       { value: 'pharmaceutical', label: 'Pharmaceutical' }
     ],
     getProductCategoryLabel() {
-      const opt = this.productCategoryOptions.find((o) => o.value === this.productCategoryFilter)
-      return opt ? opt.label : 'All Categories'
+      if (this.productCategories.length === 0) return 'All Categories'
+      if (this.productCategories.length === 1) {
+        const item = this.productCategoryList.find((c) => c.value === this.productCategories[0])
+        return item ? item.label : this.productCategories[0]
+      }
+      return `${this.productCategories.length} Categories`
+    },
+    toggleProductCategory(cat) {
+      const idx = this.productCategories.indexOf(cat)
+      if (idx >= 0) {
+        this.productCategories.splice(idx, 1)
+      } else {
+        this.productCategories.push(cat)
+      }
+      this.onProductFilterChange(true)
+    },
+    selectAllCategories() {
+      this.productCategories = this.productCategoryList.map((c) => c.value)
+      this.onProductFilterChange(true)
+    },
+    clearAllCategories() {
+      this.productCategories = []
+      this.onProductFilterChange(true)
     },
 
     productColdChainOptions: [
@@ -157,49 +199,127 @@ function createPharmatoryComponent() {
     },
 
     // Traffic Analytics Filters & Raw Payload
-    trafficWarehouseFilter: '',
-    trafficDayFilter: '',
+    trafficWarehouses: [],
+    trafficDays: [],
+    trafficDurationRange: '',
     trafficSearch: '',
     showRawTrafficJson: false,
     rawTrafficResponse: null,
     filterDebounceTimer: null,
+
+    trafficWarehouseList: [
+      { value: 'W01', label: 'W01 - Surabaya' },
+      { value: 'W02', label: 'W02 - Sidoarjo' },
+      { value: 'W03', label: 'W03 - Gresik' },
+      { value: 'W04', label: 'W04 - Pasuruan' },
+      { value: 'W05', label: 'W05 - Malang' },
+      { value: 'W06', label: 'W06 - Jember' },
+      { value: 'W07', label: 'W07 - Surabaya Barat' },
+      { value: 'W08', label: 'W08 - Sidoarjo Selatan' }
+    ],
+    getTrafficWarehouseLabel() {
+      if (this.trafficWarehouses.length === 0) return 'All Warehouses'
+      if (this.trafficWarehouses.length === 1) return this.trafficWarehouses[0]
+      return `${this.trafficWarehouses.length} Warehouses`
+    },
+    toggleTrafficWarehouse(wid) {
+      const idx = this.trafficWarehouses.indexOf(wid)
+      if (idx >= 0) {
+        this.trafficWarehouses.splice(idx, 1)
+      } else {
+        this.trafficWarehouses.push(wid)
+      }
+      this.onTrafficFilterChange(true)
+    },
+    selectAllTrafficWarehouses() {
+      this.trafficWarehouses = this.trafficWarehouseList.map((w) => w.value)
+      this.onTrafficFilterChange(true)
+    },
+    clearAllTrafficWarehouses() {
+      this.trafficWarehouses = []
+      this.onTrafficFilterChange(true)
+    },
+
+    trafficDayList: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    getTrafficDayLabel() {
+      if (this.trafficDays.length === 0) return 'All Days'
+      if (this.trafficDays.length === 1) return this.trafficDays[0]
+      return `${this.trafficDays.length} Days`
+    },
+    toggleTrafficDay(day) {
+      const idx = this.trafficDays.indexOf(day)
+      if (idx >= 0) {
+        this.trafficDays.splice(idx, 1)
+      } else {
+        this.trafficDays.push(day)
+      }
+      this.onTrafficFilterChange(true)
+    },
+    selectAllTrafficDays() {
+      this.trafficDays = [...this.trafficDayList]
+      this.onTrafficFilterChange(true)
+    },
+    clearAllTrafficDays() {
+      this.trafficDays = []
+      this.onTrafficFilterChange(true)
+    },
+
+    trafficDurationOptions: [
+      { value: '', label: 'All Durations' },
+      { value: 'lte:30', label: 'Fast (≤ 30 min)' },
+      { value: 'gte:60', label: 'Congested (≥ 60 min)' },
+      { value: 'gte:120', label: 'Severe Peak (≥ 120 min)' }
+    ],
+    getTrafficDurationLabel() {
+      const opt = this.trafficDurationOptions.find((o) => o.value === this.trafficDurationRange)
+      return opt ? opt.label : 'All Durations'
+    },
 
     // Multi-Field Sorting state per collection
     warehouseSort: [],
     productSort: [],
     trafficSort: [],
 
-    toggleTableSort(tab, field, event) {
-      const isMulti = event?.shiftKey === true
+    toggleTableSort(tab, field) {
       const sortList =
         tab === 'warehouses'
           ? this.warehouseSort
           : tab === 'products'
             ? this.productSort
             : this.trafficSort
+
       const existingIdx = sortList.findIndex((s) => s.field === field)
 
-      if (isMulti) {
-        if (existingIdx >= 0) {
-          if (sortList[existingIdx].order === 'asc') {
-            sortList[existingIdx].order = 'desc'
-          } else {
-            sortList.splice(existingIdx, 1)
-          }
+      if (existingIdx >= 0) {
+        if (sortList[existingIdx].order === 'asc') {
+          sortList[existingIdx].order = 'desc'
         } else {
-          sortList.push({ field, order: 'asc' })
+          sortList.splice(existingIdx, 1)
         }
       } else {
-        if (sortList.length === 1 && sortList[0].field === field) {
-          if (sortList[0].order === 'asc') {
-            sortList[0].order = 'desc'
-          } else {
-            sortList.length = 0
-          }
-        } else {
-          sortList.length = 0
-          sortList.push({ field, order: 'asc' })
-        }
+        // Simple direct click sets primary sort
+        sortList.length = 0
+        sortList.push({ field, order: 'asc' })
+      }
+
+      if (tab === 'warehouses') this.fetchWarehouses()
+      else if (tab === 'products') this.fetchProducts()
+      else if (tab === 'traffic') this.fetchTraffic()
+    },
+
+    addSortLevel(tab, field, order = 'asc') {
+      const sortList =
+        tab === 'warehouses'
+          ? this.warehouseSort
+          : tab === 'products'
+            ? this.productSort
+            : this.trafficSort
+
+      const existingIdx = sortList.findIndex((s) => s.field === field)
+      if (existingIdx >= 0) {
+        sortList[existingIdx].order = order
+      } else {
+        sortList.push({ field, order })
       }
 
       if (tab === 'warehouses') this.fetchWarehouses()
@@ -268,37 +388,6 @@ function createPharmatoryComponent() {
         actualDurationMinutes: 'Duration'
       }
       return labels[field] || field
-    },
-
-    trafficWarehouseOptions: [
-      { value: '', label: 'All Warehouses' },
-      { value: 'W01', label: 'W01 - Surabaya' },
-      { value: 'W02', label: 'W02 - Sidoarjo' },
-      { value: 'W03', label: 'W03 - Gresik' },
-      { value: 'W04', label: 'W04 - Pasuruan' },
-      { value: 'W05', label: 'W05 - Malang' },
-      { value: 'W06', label: 'W06 - Jember' },
-      { value: 'W07', label: 'W07 - Surabaya Barat' },
-      { value: 'W08', label: 'W08 - Sidoarjo Selatan' }
-    ],
-    getTrafficWarehouseLabel() {
-      const opt = this.trafficWarehouseOptions.find((o) => o.value === this.trafficWarehouseFilter)
-      return opt ? opt.label : 'All Warehouses'
-    },
-
-    trafficDayOptions: [
-      { value: '', label: 'All Days' },
-      { value: 'Monday', label: 'Monday' },
-      { value: 'Tuesday', label: 'Tuesday' },
-      { value: 'Wednesday', label: 'Wednesday' },
-      { value: 'Thursday', label: 'Thursday' },
-      { value: 'Friday', label: 'Friday' },
-      { value: 'Saturday', label: 'Saturday' },
-      { value: 'Sunday', label: 'Sunday' }
-    ],
-    getTrafficDayLabel() {
-      const opt = this.trafficDayOptions.find((o) => o.value === this.trafficDayFilter)
-      return opt ? opt.label : 'All Days'
     },
 
     async init() {
@@ -384,7 +473,11 @@ function createPharmatoryComponent() {
       try {
         const params = new URLSearchParams()
         if (this.productSearch) params.set('search', this.productSearch.trim())
-        if (this.productCategoryFilter) params.set('category', this.productCategoryFilter)
+        if (this.productCategories && this.productCategories.length > 0) {
+          for (const c of this.productCategories) {
+            params.append('category.in', c)
+          }
+        }
         if (this.productColdChainFilter !== '') {
           params.set('requiresColdChain', this.productColdChainFilter)
         }
@@ -421,8 +514,9 @@ function createPharmatoryComponent() {
 
     resetProductFilters() {
       this.productSearch = ''
-      this.productCategoryFilter = ''
+      this.productCategories = []
       this.productColdChainFilter = ''
+      this.productSort = []
       this.fetchProducts()
     },
 
@@ -430,7 +524,14 @@ function createPharmatoryComponent() {
       try {
         const params = new URLSearchParams()
         if (this.warehouseSearch) params.set('search', this.warehouseSearch.trim())
-        if (this.warehouseCityFilter) params.set('city', this.warehouseCityFilter)
+        if (this.warehouseCities && this.warehouseCities.length > 0) {
+          for (const c of this.warehouseCities) {
+            params.append('city.in', c)
+          }
+        }
+        if (this.warehouseDistanceRange) {
+          params.set('distanceKm.lte', this.warehouseDistanceRange)
+        }
         if (this.warehouseColdChainFilter !== '') {
           params.set('isColdChainCapable', this.warehouseColdChainFilter)
         }
@@ -467,17 +568,34 @@ function createPharmatoryComponent() {
 
     resetWarehouseFilters() {
       this.warehouseSearch = ''
-      this.warehouseCityFilter = ''
+      this.warehouseCities = []
+      this.warehouseDistanceRange = ''
       this.warehouseColdChainFilter = ''
+      this.warehouseSort = []
       this.fetchWarehouses()
     },
 
     async fetchTraffic() {
       try {
         const params = new URLSearchParams()
-        if (this.trafficWarehouseFilter) params.set('warehouseId', this.trafficWarehouseFilter)
-        if (this.trafficDayFilter) params.set('dayOfWeek', this.trafficDayFilter)
         if (this.trafficSearch) params.set('search', this.trafficSearch.trim())
+        if (this.trafficWarehouses && this.trafficWarehouses.length > 0) {
+          for (const w of this.trafficWarehouses) {
+            params.append('warehouseId.in', w)
+          }
+        }
+        if (this.trafficDays && this.trafficDays.length > 0) {
+          for (const d of this.trafficDays) {
+            params.append('dayOfWeek.in', d)
+          }
+        }
+        if (this.trafficDurationRange) {
+          if (this.trafficDurationRange.startsWith('lte:')) {
+            params.set('actualDurationMinutes.lte', this.trafficDurationRange.slice(4))
+          } else if (this.trafficDurationRange.startsWith('gte:')) {
+            params.set('actualDurationMinutes.gte', this.trafficDurationRange.slice(4))
+          }
+        }
         if (this.trafficSort && this.trafficSort.length > 0) {
           for (const s of this.trafficSort) {
             params.append('sort', (s.order === 'desc' ? '-' : '+') + s.field)
@@ -511,9 +629,11 @@ function createPharmatoryComponent() {
     },
 
     resetTrafficFilters() {
-      this.trafficWarehouseFilter = ''
-      this.trafficDayFilter = ''
       this.trafficSearch = ''
+      this.trafficWarehouses = []
+      this.trafficDays = []
+      this.trafficDurationRange = ''
+      this.trafficSort = []
       this.fetchTraffic()
     },
 

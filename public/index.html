@@ -687,16 +687,21 @@
               </div>
 
               <!-- Context Order Notice & Dirty State Indicator -->
-              <div class="h-7 min-h-[28px] flex items-center justify-between gap-2 text-xs">
-                <div class="text-slate-500 font-normal min-w-0 truncate py-0.5">
-                  Evaluation for:
-                  <span class="text-slate-800 font-medium" x-text="lastEvaluatedSummary"></span>
+              <div
+                class="h-7 min-h-[28px] max-h-7 overflow-hidden flex items-center justify-between gap-2 text-xs"
+              >
+                <div class="text-slate-500 font-normal min-w-0 truncate py-0.5 flex items-center">
+                  <span>Evaluation for:&nbsp;</span>
+                  <span
+                    class="text-slate-800 font-medium truncate"
+                    x-text="lastEvaluatedSummary"
+                  ></span>
                 </div>
                 <div class="h-6 flex items-center justify-end shrink-0 min-w-[95px]">
                   <span
                     x-show="loading"
                     x-cloak
-                    class="h-5 px-2 rounded text-[10px] font-medium bg-teal-50 text-teal-700 border border-teal-200 inline-flex items-center gap-1.5 shadow-2xs"
+                    class="h-5 px-2 rounded text-[10px] leading-none font-medium bg-teal-50 text-teal-700 border border-teal-200 inline-flex items-center gap-1.5 shadow-2xs shrink-0"
                   >
                     <span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-ping"></span>
                     <span>Updating...</span>
@@ -704,7 +709,7 @@
                   <span
                     x-show="isDirty && !loading"
                     x-cloak
-                    class="h-5 text-[11px] text-slate-400 italic inline-flex items-center"
+                    class="h-5 text-[11px] leading-none text-slate-400 italic inline-flex items-center shrink-0"
                   >
                     Auto-calculating...
                   </span>
@@ -1053,7 +1058,7 @@
             </div>
           </div>
 
-          <!-- Custom City Filter Dropdown -->
+          <!-- Custom City Multi-Select Filter Dropdown (DaisyUI Checkboxes) -->
           <div class="relative" x-data="{ open: false }" @click.outside="open = false">
             <button
               type="button"
@@ -1082,23 +1087,90 @@
               x-transition:leave="transition ease-in duration-75"
               x-transition:leave-start="opacity-100 translate-y-0 scale-100"
               x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-              class="absolute top-full left-0 mt-1 min-w-[150px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+              class="absolute top-full left-0 mt-1 min-w-[170px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-64 overflow-y-auto"
               style="display: none"
             >
-              <template x-for="opt in warehouseCityOptions" :key="opt.value">
+              <div
+                class="px-3 py-1.5 flex items-center justify-between border-b border-slate-100 bg-slate-50/70 text-[11px]"
+              >
                 <button
                   type="button"
-                  @click="warehouseCityFilter = opt.value; onWarehouseFilterChange(true); open = false"
+                  @click="selectAllCities()"
+                  class="text-teal-700 hover:text-teal-900 font-semibold cursor-pointer"
+                >
+                  Select All
+                </button>
+                <button
+                  type="button"
+                  @click="clearAllCities()"
+                  class="text-slate-500 hover:text-slate-700 cursor-pointer"
+                >
+                  Clear
+                </button>
+              </div>
+              <template x-for="city in warehouseCityList" :key="city">
+                <label
+                  @click.prevent="toggleWarehouseCity(city)"
+                  class="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs transition-colors cursor-pointer hover:bg-slate-50 select-none"
+                  :class="warehouseCities.includes(city) ? 'bg-teal-50/50 text-teal-950 font-medium' : 'text-slate-700'"
+                >
+                  <input
+                    type="checkbox"
+                    class="checkbox checkbox-xs checkbox-primary rounded pointer-events-none"
+                    :checked="warehouseCities.includes(city)"
+                  />
+                  <span x-text="city"></span>
+                </label>
+              </template>
+            </div>
+          </div>
+
+          <!-- Custom Distance Range Filter Dropdown (lte / gte) -->
+          <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+            <button
+              type="button"
+              @click="open = !open"
+              class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[135px]"
+              :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
+            >
+              <span class="truncate" x-text="getWarehouseDistanceLabel()"></span>
+              <svg
+                class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 shrink-0"
+                :class="open ? 'rotate-180 text-teal-600' : ''"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div
+              x-show="open"
+              x-cloak
+              x-transition:enter="transition ease-out duration-100"
+              x-transition:enter-start="opacity-0 translate-y-1 scale-98"
+              x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+              x-transition:leave-end="opacity-0 translate-y-1 scale-98"
+              class="absolute top-full left-0 mt-1 min-w-[160px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+              style="display: none"
+            >
+              <template x-for="opt in warehouseDistanceOptions" :key="opt.value">
+                <button
+                  type="button"
+                  @click="warehouseDistanceRange = opt.value; onWarehouseFilterChange(true); open = false"
                   class="w-full flex items-center justify-between px-3 py-1.5 text-xs transition-colors text-left group cursor-pointer"
-                  :class="warehouseCityFilter === opt.value ? 'bg-teal-50/70 text-teal-900 font-semibold' : 'text-slate-700 hover:bg-slate-50'"
+                  :class="warehouseDistanceRange === opt.value ? 'bg-teal-50/70 text-teal-900 font-semibold' : 'text-slate-700 hover:bg-slate-50'"
                 >
                   <span
                     x-text="opt.label"
-                    :class="warehouseCityFilter === opt.value ? 'font-semibold text-slate-900' : 'text-slate-700'"
+                    :class="warehouseDistanceRange === opt.value ? 'font-semibold text-slate-900' : 'text-slate-700'"
                   ></span>
                   <div class="w-4 flex items-center justify-center shrink-0 ml-2">
                     <svg
-                      x-show="warehouseCityFilter === opt.value"
+                      x-show="warehouseDistanceRange === opt.value"
                       class="w-3.5 h-3.5 text-teal-600"
                       fill="none"
                       stroke="currentColor"
@@ -1183,7 +1255,7 @@
 
           <button
             type="button"
-            x-show="warehouseSearch || warehouseCityFilter || warehouseColdChainFilter || warehouseSort.length > 0"
+            x-show="warehouseSearch || warehouseCities.length > 0 || warehouseDistanceRange || warehouseColdChainFilter !== '' || warehouseSort.length > 0"
             @click="resetWarehouseFilters(); clearSort('warehouses')"
             class="h-8 py-1 px-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs text-slate-600 font-medium transition-colors cursor-pointer"
           >
@@ -1197,11 +1269,10 @@
           class="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 pt-0.5 pb-1"
         >
           <span class="text-[11px] font-medium text-slate-400">Sorted by:</span>
-          <template x-for="(s, idx) in warehouseSort" :key="s.field">
+          <template x-for="s in warehouseSort" :key="s.field">
             <span
               class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-800 border border-teal-200"
             >
-              <span class="font-bold text-[10px]" x-text="'#' + (idx + 1)"></span>
               <span
                 x-text="formatSortField(s.field) + ' (' + (s.order === 'asc' ? 'ASC' : 'DESC') + ')'"
               ></span>
@@ -1232,162 +1303,134 @@
                 <th
                   @click="toggleTableSort('warehouses', 'id', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>ID</span>
                     <span
                       x-show="getSortInfo('warehouses', 'id').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('warehouses', 'id').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('warehouses', 'id').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('warehouses', 'id').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="warehouseSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('warehouses', 'id').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('warehouses', 'name', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>Facility Name</span>
                     <span
                       x-show="getSortInfo('warehouses', 'name').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('warehouses', 'name').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('warehouses', 'name').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('warehouses', 'name').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="warehouseSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('warehouses', 'name').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('warehouses', 'location', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>City / Location</span>
                     <span
                       x-show="getSortInfo('warehouses', 'location').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('warehouses', 'location').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('warehouses', 'location').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('warehouses', 'location').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="warehouseSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('warehouses', 'location').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('warehouses', 'distanceKm', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>Distance</span>
                     <span
                       x-show="getSortInfo('warehouses', 'distanceKm').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('warehouses', 'distanceKm').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('warehouses', 'distanceKm').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('warehouses', 'distanceKm').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="warehouseSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('warehouses', 'distanceKm').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('warehouses', 'storageType', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>Storage Type</span>
                     <span
                       x-show="getSortInfo('warehouses', 'storageType').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('warehouses', 'storageType').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('warehouses', 'storageType').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('warehouses', 'storageType').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="warehouseSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('warehouses', 'storageType').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('warehouses', 'fleetType', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>Vehicle Fleet</span>
                     <span
                       x-show="getSortInfo('warehouses', 'fleetType').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('warehouses', 'fleetType').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('warehouses', 'fleetType').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('warehouses', 'fleetType').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="warehouseSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('warehouses', 'fleetType').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('warehouses', 'isColdChainCapable', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>Cold Chain Fleet</span>
                     <span
                       x-show="getSortInfo('warehouses', 'isColdChainCapable').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('warehouses', 'isColdChainCapable').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('warehouses', 'isColdChainCapable').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('warehouses', 'isColdChainCapable').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="warehouseSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('warehouses', 'isColdChainCapable').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th class="py-2.5 px-2 font-medium whitespace-nowrap">Live Stock Levels</th>
@@ -1521,7 +1564,7 @@
             </div>
           </div>
 
-          <!-- Custom Category Filter Dropdown -->
+          <!-- Custom Category Multi-Select Filter Dropdown (DaisyUI Checkboxes) -->
           <div class="relative" x-data="{ open: false }" @click.outside="open = false">
             <button
               type="button"
@@ -1550,37 +1593,40 @@
               x-transition:leave="transition ease-in duration-75"
               x-transition:leave-start="opacity-100 translate-y-0 scale-100"
               x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-              class="absolute top-full left-0 mt-1 min-w-[160px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+              class="absolute top-full left-0 mt-1 min-w-[170px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-60 overflow-y-auto"
               style="display: none"
             >
-              <template x-for="opt in productCategoryOptions" :key="opt.value">
+              <div
+                class="px-3 py-1.5 flex items-center justify-between border-b border-slate-100 bg-slate-50/70 text-[11px]"
+              >
                 <button
                   type="button"
-                  @click="productCategoryFilter = opt.value; onProductFilterChange(true); open = false"
-                  class="w-full flex items-center justify-between px-3 py-1.5 text-xs transition-colors text-left group cursor-pointer"
-                  :class="productCategoryFilter === opt.value ? 'bg-teal-50/70 text-teal-900 font-semibold' : 'text-slate-700 hover:bg-slate-50'"
+                  @click="selectAllCategories()"
+                  class="text-teal-700 hover:text-teal-900 font-semibold cursor-pointer"
                 >
-                  <span
-                    x-text="opt.label"
-                    :class="productCategoryFilter === opt.value ? 'font-semibold text-slate-900' : 'text-slate-700'"
-                  ></span>
-                  <div class="w-4 flex items-center justify-center shrink-0 ml-2">
-                    <svg
-                      x-show="productCategoryFilter === opt.value"
-                      class="w-3.5 h-3.5 text-teal-600"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                  </div>
+                  Select All
                 </button>
+                <button
+                  type="button"
+                  @click="clearAllCategories()"
+                  class="text-slate-500 hover:text-slate-700 cursor-pointer"
+                >
+                  Clear
+                </button>
+              </div>
+              <template x-for="cat in productCategoryList" :key="cat.value">
+                <label
+                  @click.prevent="toggleProductCategory(cat.value)"
+                  class="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs transition-colors cursor-pointer hover:bg-slate-50 select-none"
+                  :class="productCategories.includes(cat.value) ? 'bg-teal-50/50 text-teal-950 font-medium' : 'text-slate-700'"
+                >
+                  <input
+                    type="checkbox"
+                    class="checkbox checkbox-xs checkbox-primary rounded pointer-events-none"
+                    :checked="productCategories.includes(cat.value)"
+                  />
+                  <span x-text="cat.label"></span>
+                </label>
               </template>
             </div>
           </div>
@@ -1651,7 +1697,7 @@
 
           <button
             type="button"
-            x-show="productSearch || productCategoryFilter || productColdChainFilter || productSort.length > 0"
+            x-show="productSearch || productCategories.length > 0 || productColdChainFilter !== '' || productSort.length > 0"
             @click="resetProductFilters(); clearSort('products')"
             class="h-8 py-1 px-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs text-slate-600 font-medium transition-colors cursor-pointer"
           >
@@ -1665,11 +1711,10 @@
           class="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 pt-0.5 pb-1"
         >
           <span class="text-[11px] font-medium text-slate-400">Sorted by:</span>
-          <template x-for="(s, idx) in productSort" :key="s.field">
+          <template x-for="s in productSort" :key="s.field">
             <span
               class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-800 border border-teal-200"
             >
-              <span class="font-bold text-[10px]" x-text="'#' + (idx + 1)"></span>
               <span
                 x-text="formatSortField(s.field) + ' (' + (s.order === 'asc' ? 'ASC' : 'DESC') + ')'"
               ></span>
@@ -1700,116 +1745,96 @@
                 <th
                   @click="toggleTableSort('products', 'id', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>SKU ID</span>
                     <span
                       x-show="getSortInfo('products', 'id').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('products', 'id').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('products', 'id').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('products', 'id').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="productSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('products', 'id').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('products', 'name', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>Product Name</span>
                     <span
                       x-show="getSortInfo('products', 'name').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('products', 'name').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('products', 'name').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('products', 'name').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="productSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('products', 'name').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('products', 'category', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>Category</span>
                     <span
                       x-show="getSortInfo('products', 'category').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('products', 'category').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('products', 'category').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('products', 'category').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="productSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('products', 'category').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('products', 'requiresColdChain', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>Temperature Requirement</span>
                     <span
                       x-show="getSortInfo('products', 'requiresColdChain').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('products', 'requiresColdChain').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('products', 'requiresColdChain').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('products', 'requiresColdChain').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="productSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('products', 'requiresColdChain').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
                 <th
                   @click="toggleTableSort('products', 'description', $event)"
                   class="py-2.5 px-2 font-medium whitespace-nowrap cursor-pointer hover:bg-slate-50 transition-colors select-none group"
-                  title="Click to sort, Shift+Click for multi-column"
+                  title="Click to sort (Asc / Desc / Neutral)"
                 >
                   <div class="inline-flex items-center gap-1">
                     <span>Clinical Specification</span>
                     <span
                       x-show="getSortInfo('products', 'description').active"
-                      class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                      class="text-teal-600 font-bold text-xs"
+                      x-text="getSortInfo('products', 'description').order === 'asc' ? '▲' : '▼'"
+                    ></span>
+                    <span
+                      x-show="!getSortInfo('products', 'description').active"
+                      class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >↕</span
                     >
-                      <span
-                        x-text="getSortInfo('products', 'description').order === 'asc' ? '▲' : '▼'"
-                      ></span>
-                      <template x-if="productSort.length > 1">
-                        <span
-                          class="text-[9px]"
-                          x-text="getSortInfo('products', 'description').level"
-                        ></span>
-                      </template>
-                    </span>
                   </div>
                 </th>
               </tr>
@@ -2035,7 +2060,7 @@
               </div>
             </div>
 
-            <!-- Custom Warehouse Filter Dropdown -->
+            <!-- Custom Warehouse Multi-Select Filter Dropdown (DaisyUI Checkboxes) -->
             <div class="relative" x-data="{ open: false }" @click.outside="open = false">
               <button
                 type="button"
@@ -2064,47 +2089,50 @@
                 x-transition:leave="transition ease-in duration-75"
                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                 x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-                class="absolute top-full left-0 mt-1 min-w-[180px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+                class="absolute top-full left-0 mt-1 min-w-[190px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-64 overflow-y-auto"
                 style="display: none"
               >
-                <template x-for="opt in trafficWarehouseOptions" :key="opt.value">
+                <div
+                  class="px-3 py-1.5 flex items-center justify-between border-b border-slate-100 bg-slate-50/70 text-[11px]"
+                >
                   <button
                     type="button"
-                    @click="trafficWarehouseFilter = opt.value; onTrafficFilterChange(true); open = false"
-                    class="w-full flex items-center justify-between px-3 py-1.5 text-xs transition-colors text-left group cursor-pointer"
-                    :class="trafficWarehouseFilter === opt.value ? 'bg-teal-50/70 text-teal-900 font-semibold' : 'text-slate-700 hover:bg-slate-50'"
+                    @click="selectAllTrafficWarehouses()"
+                    class="text-teal-700 hover:text-teal-900 font-semibold cursor-pointer"
                   >
-                    <span
-                      x-text="opt.label"
-                      :class="trafficWarehouseFilter === opt.value ? 'font-semibold text-slate-900' : 'text-slate-700'"
-                    ></span>
-                    <div class="w-4 flex items-center justify-center shrink-0 ml-2">
-                      <svg
-                        x-show="trafficWarehouseFilter === opt.value"
-                        class="w-3.5 h-3.5 text-teal-600"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M5 13l4 4L19 7"
-                        ></path>
-                      </svg>
-                    </div>
+                    Select All
                   </button>
+                  <button
+                    type="button"
+                    @click="clearAllTrafficWarehouses()"
+                    class="text-slate-500 hover:text-slate-700 cursor-pointer"
+                  >
+                    Clear
+                  </button>
+                </div>
+                <template x-for="item in trafficWarehouseList" :key="item.value">
+                  <label
+                    @click.prevent="toggleTrafficWarehouse(item.value)"
+                    class="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs transition-colors cursor-pointer hover:bg-slate-50 select-none"
+                    :class="trafficWarehouses.includes(item.value) ? 'bg-teal-50/50 text-teal-950 font-medium' : 'text-slate-700'"
+                  >
+                    <input
+                      type="checkbox"
+                      class="checkbox checkbox-xs checkbox-primary rounded pointer-events-none"
+                      :checked="trafficWarehouses.includes(item.value)"
+                    />
+                    <span x-text="item.label"></span>
+                  </label>
                 </template>
               </div>
             </div>
 
-            <!-- Custom Day Filter Dropdown -->
+            <!-- Custom Day Multi-Select Filter Dropdown (DaisyUI Checkboxes) -->
             <div class="relative" x-data="{ open: false }" @click.outside="open = false">
               <button
                 type="button"
                 @click="open = !open"
-                class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[120px]"
+                class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[125px]"
                 :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
               >
                 <span class="truncate" x-text="getTrafficDayLabel()"></span>
@@ -2128,23 +2156,90 @@
                 x-transition:leave="transition ease-in duration-75"
                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                 x-transition:leave-end="opacity-0 translate-y-1 scale-98"
-                class="absolute top-full left-0 mt-1 min-w-[140px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+                class="absolute top-full left-0 mt-1 min-w-[160px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden max-h-64 overflow-y-auto"
                 style="display: none"
               >
-                <template x-for="opt in trafficDayOptions" :key="opt.value">
+                <div
+                  class="px-3 py-1.5 flex items-center justify-between border-b border-slate-100 bg-slate-50/70 text-[11px]"
+                >
                   <button
                     type="button"
-                    @click="trafficDayFilter = opt.value; onTrafficFilterChange(true); open = false"
+                    @click="selectAllTrafficDays()"
+                    class="text-teal-700 hover:text-teal-900 font-semibold cursor-pointer"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    type="button"
+                    @click="clearAllTrafficDays()"
+                    class="text-slate-500 hover:text-slate-700 cursor-pointer"
+                  >
+                    Clear
+                  </button>
+                </div>
+                <template x-for="day in trafficDayList" :key="day">
+                  <label
+                    @click.prevent="toggleTrafficDay(day)"
+                    class="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs transition-colors cursor-pointer hover:bg-slate-50 select-none"
+                    :class="trafficDays.includes(day) ? 'bg-teal-50/50 text-teal-950 font-medium' : 'text-slate-700'"
+                  >
+                    <input
+                      type="checkbox"
+                      class="checkbox checkbox-xs checkbox-primary rounded pointer-events-none"
+                      :checked="trafficDays.includes(day)"
+                    />
+                    <span x-text="day"></span>
+                  </label>
+                </template>
+              </div>
+            </div>
+
+            <!-- Custom Duration Range Filter Dropdown (lte / gte) -->
+            <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+              <button
+                type="button"
+                @click="open = !open"
+                class="h-8 py-1 px-2.5 rounded-lg border bg-white text-xs font-medium text-slate-700 flex items-center justify-between gap-2 shadow-xs transition-all cursor-pointer focus:outline-none min-w-[140px]"
+                :class="open ? 'border-teal-600 ring-1 ring-teal-600' : 'border-slate-300 hover:border-slate-400'"
+              >
+                <span class="truncate" x-text="getTrafficDurationLabel()"></span>
+                <svg
+                  class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 shrink-0"
+                  :class="open ? 'rotate-180 text-teal-600' : ''"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div
+                x-show="open"
+                x-cloak
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="opacity-0 translate-y-1 scale-98"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 translate-y-1 scale-98"
+                class="absolute top-full left-0 mt-1 min-w-[175px] w-max bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 overflow-hidden divide-y divide-slate-50 max-h-60 overflow-y-auto"
+                style="display: none"
+              >
+                <template x-for="opt in trafficDurationOptions" :key="opt.value">
+                  <button
+                    type="button"
+                    @click="trafficDurationRange = opt.value; onTrafficFilterChange(true); open = false"
                     class="w-full flex items-center justify-between px-3 py-1.5 text-xs transition-colors text-left group cursor-pointer"
-                    :class="trafficDayFilter === opt.value ? 'bg-teal-50/70 text-teal-900 font-semibold' : 'text-slate-700 hover:bg-slate-50'"
+                    :class="trafficDurationRange === opt.value ? 'bg-teal-50/70 text-teal-900 font-semibold' : 'text-slate-700 hover:bg-slate-50'"
                   >
                     <span
                       x-text="opt.label"
-                      :class="trafficDayFilter === opt.value ? 'font-semibold text-slate-900' : 'text-slate-700'"
+                      :class="trafficDurationRange === opt.value ? 'font-semibold text-slate-900' : 'text-slate-700'"
                     ></span>
                     <div class="w-4 flex items-center justify-center shrink-0 ml-2">
                       <svg
-                        x-show="trafficDayFilter === opt.value"
+                        x-show="trafficDurationRange === opt.value"
                         class="w-3.5 h-3.5 text-teal-600"
                         fill="none"
                         stroke="currentColor"
@@ -2165,7 +2260,7 @@
 
             <button
               type="button"
-              x-show="trafficWarehouseFilter || trafficDayFilter || trafficSearch || trafficSort.length > 0"
+              x-show="trafficWarehouses.length > 0 || trafficDays.length > 0 || trafficDurationRange || trafficSearch || trafficSort.length > 0"
               @click="resetTrafficFilters(); clearSort('traffic')"
               class="h-8 py-1 px-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs text-slate-600 font-medium transition-colors cursor-pointer"
             >
@@ -2179,11 +2274,10 @@
             class="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 pt-0.5 pb-1"
           >
             <span class="text-[11px] font-medium text-slate-400">Sorted by:</span>
-            <template x-for="(s, idx) in trafficSort" :key="s.field">
+            <template x-for="s in trafficSort" :key="s.field">
               <span
                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-800 border border-teal-200"
               >
-                <span class="font-bold text-[10px]" x-text="'#' + (idx + 1)"></span>
                 <span
                   x-text="formatSortField(s.field) + ' (' + (s.order === 'asc' ? 'ASC' : 'DESC') + ')'"
                 ></span>
@@ -2216,116 +2310,96 @@
                   <th
                     @click="toggleTableSort('traffic', 'deliveryId', $event)"
                     class="p-2.5 font-semibold whitespace-nowrap cursor-pointer hover:bg-slate-200/70 transition-colors select-none group"
-                    title="Click to sort, Shift+Click for multi-column"
+                    title="Click to sort (Asc / Desc / Neutral)"
                   >
                     <div class="inline-flex items-center gap-1">
                       <span>Delivery ID</span>
                       <span
                         x-show="getSortInfo('traffic', 'deliveryId').active"
-                        class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                        class="text-teal-600 font-bold text-xs"
+                        x-text="getSortInfo('traffic', 'deliveryId').order === 'asc' ? '▲' : '▼'"
+                      ></span>
+                      <span
+                        x-show="!getSortInfo('traffic', 'deliveryId').active"
+                        class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                        >↕</span
                       >
-                        <span
-                          x-text="getSortInfo('traffic', 'deliveryId').order === 'asc' ? '▲' : '▼'"
-                        ></span>
-                        <template x-if="trafficSort.length > 1">
-                          <span
-                            class="text-[9px]"
-                            x-text="getSortInfo('traffic', 'deliveryId').level"
-                          ></span>
-                        </template>
-                      </span>
                     </div>
                   </th>
                   <th
                     @click="toggleTableSort('traffic', 'warehouseId', $event)"
                     class="p-2.5 font-semibold whitespace-nowrap cursor-pointer hover:bg-slate-200/70 transition-colors select-none group"
-                    title="Click to sort, Shift+Click for multi-column"
+                    title="Click to sort (Asc / Desc / Neutral)"
                   >
                     <div class="inline-flex items-center gap-1">
                       <span>Warehouse</span>
                       <span
                         x-show="getSortInfo('traffic', 'warehouseId').active"
-                        class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                        class="text-teal-600 font-bold text-xs"
+                        x-text="getSortInfo('traffic', 'warehouseId').order === 'asc' ? '▲' : '▼'"
+                      ></span>
+                      <span
+                        x-show="!getSortInfo('traffic', 'warehouseId').active"
+                        class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                        >↕</span
                       >
-                        <span
-                          x-text="getSortInfo('traffic', 'warehouseId').order === 'asc' ? '▲' : '▼'"
-                        ></span>
-                        <template x-if="trafficSort.length > 1">
-                          <span
-                            class="text-[9px]"
-                            x-text="getSortInfo('traffic', 'warehouseId').level"
-                          ></span>
-                        </template>
-                      </span>
                     </div>
                   </th>
                   <th
                     @click="toggleTableSort('traffic', 'dayOfWeek', $event)"
                     class="p-2.5 font-semibold whitespace-nowrap cursor-pointer hover:bg-slate-200/70 transition-colors select-none group"
-                    title="Click to sort, Shift+Click for multi-column"
+                    title="Click to sort (Asc / Desc / Neutral)"
                   >
                     <div class="inline-flex items-center gap-1">
                       <span>Scheduled Day &amp; Time</span>
                       <span
                         x-show="getSortInfo('traffic', 'dayOfWeek').active"
-                        class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                        class="text-teal-600 font-bold text-xs"
+                        x-text="getSortInfo('traffic', 'dayOfWeek').order === 'asc' ? '▲' : '▼'"
+                      ></span>
+                      <span
+                        x-show="!getSortInfo('traffic', 'dayOfWeek').active"
+                        class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                        >↕</span
                       >
-                        <span
-                          x-text="getSortInfo('traffic', 'dayOfWeek').order === 'asc' ? '▲' : '▼'"
-                        ></span>
-                        <template x-if="trafficSort.length > 1">
-                          <span
-                            class="text-[9px]"
-                            x-text="getSortInfo('traffic', 'dayOfWeek').level"
-                          ></span>
-                        </template>
-                      </span>
                     </div>
                   </th>
                   <th
                     @click="toggleTableSort('traffic', 'actualDurationMinutes', $event)"
                     class="p-2.5 font-semibold whitespace-nowrap cursor-pointer hover:bg-slate-200/70 transition-colors select-none group"
-                    title="Click to sort, Shift+Click for multi-column"
+                    title="Click to sort (Asc / Desc / Neutral)"
                   >
                     <div class="inline-flex items-center gap-1">
                       <span>Recorded Duration</span>
                       <span
                         x-show="getSortInfo('traffic', 'actualDurationMinutes').active"
-                        class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                        class="text-teal-600 font-bold text-xs"
+                        x-text="getSortInfo('traffic', 'actualDurationMinutes').order === 'asc' ? '▲' : '▼'"
+                      ></span>
+                      <span
+                        x-show="!getSortInfo('traffic', 'actualDurationMinutes').active"
+                        class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                        >↕</span
                       >
-                        <span
-                          x-text="getSortInfo('traffic', 'actualDurationMinutes').order === 'asc' ? '▲' : '▼'"
-                        ></span>
-                        <template x-if="trafficSort.length > 1">
-                          <span
-                            class="text-[9px]"
-                            x-text="getSortInfo('traffic', 'actualDurationMinutes').level"
-                          ></span>
-                        </template>
-                      </span>
                     </div>
                   </th>
                   <th
                     @click="toggleTableSort('traffic', 'notes', $event)"
                     class="p-2.5 font-semibold whitespace-nowrap cursor-pointer hover:bg-slate-200/70 transition-colors select-none group"
-                    title="Click to sort, Shift+Click for multi-column"
+                    title="Click to sort (Asc / Desc / Neutral)"
                   >
                     <div class="inline-flex items-center gap-1">
                       <span>Corridor Notes</span>
                       <span
                         x-show="getSortInfo('traffic', 'notes').active"
-                        class="px-1 py-0.2 rounded text-[10px] font-semibold bg-teal-100 text-teal-800 border border-teal-300"
+                        class="text-teal-600 font-bold text-xs"
+                        x-text="getSortInfo('traffic', 'notes').order === 'asc' ? '▲' : '▼'"
+                      ></span>
+                      <span
+                        x-show="!getSortInfo('traffic', 'notes').active"
+                        class="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                        >↕</span
                       >
-                        <span
-                          x-text="getSortInfo('traffic', 'notes').order === 'asc' ? '▲' : '▼'"
-                        ></span>
-                        <template x-if="trafficSort.length > 1">
-                          <span
-                            class="text-[9px]"
-                            x-text="getSortInfo('traffic', 'notes').level"
-                          ></span>
-                        </template>
-                      </span>
                     </div>
                   </th>
                 </tr>
